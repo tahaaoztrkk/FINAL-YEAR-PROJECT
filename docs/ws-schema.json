@@ -1,0 +1,613 @@
+{
+  "$defs": {
+    "GazePoint": {
+      "additionalProperties": false,
+      "description": "Tek bir bakış örneği.\n\nKoordinatlar 0–1 aralığında normalize edilir; böylece farklı ekran\nçözünürlükleri arasında taşınabilir olur. Dönüşümü arayüz yapar.",
+      "properties": {
+        "x": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Y",
+          "type": "number"
+        },
+        "t": {
+          "description": "İstemci zaman damgası, saniye",
+          "title": "T",
+          "type": "number"
+        },
+        "confidence": {
+          "default": 1.0,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "t"
+      ],
+      "title": "GazePoint",
+      "type": "object"
+    },
+    "GazeTarget": {
+      "additionalProperties": false,
+      "description": "Ekranda bakışla seçilebilen dikdörtgen alan.\n\nKonum ve boyut normalize edilmiştir. ``kind`` alanı seçimin arayüzde ne\nanlama geldiğini söyler; sunucu bunu yorumlamaz, yalnızca geri bildirir.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "x": {
+          "description": "Sol kenar",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "description": "Üst kenar",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Y",
+          "type": "number"
+        },
+        "width": {
+          "exclusiveMinimum": 0.0,
+          "maximum": 1.0,
+          "title": "Width",
+          "type": "number"
+        },
+        "height": {
+          "exclusiveMinimum": 0.0,
+          "maximum": 1.0,
+          "title": "Height",
+          "type": "number"
+        },
+        "label": {
+          "default": "",
+          "title": "Label",
+          "type": "string"
+        },
+        "kind": {
+          "default": "key",
+          "description": "key | group | candidate | action",
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "x",
+        "y",
+        "width",
+        "height"
+      ],
+      "title": "GazeTarget",
+      "type": "object"
+    },
+    "Candidate": {
+      "additionalProperties": false,
+      "description": "Bir kısaltmaya karşılık üretilen aday cümle.",
+      "properties": {
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "score": {
+          "default": 0.0,
+          "description": "Sağlayıcının güven puanı; karşılaştırma için sıralama anahtarı",
+          "title": "Score",
+          "type": "number"
+        },
+        "valid": {
+          "default": true,
+          "description": "Adayın kısaltması girdiyle eşleşiyor mu (geri kontrol sonucu)",
+          "title": "Valid",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "title": "Candidate",
+      "type": "object"
+    }
+  },
+  "messages": {
+    "ClientHello": {
+      "additionalProperties": false,
+      "description": "Bağlantı kurulduğunda gönderilen ilk mesaj.",
+      "properties": {
+        "type": {
+          "const": "hello",
+          "default": "hello",
+          "title": "Type",
+          "type": "string"
+        },
+        "screen_width": {
+          "description": "Ekran genişliği, piksel",
+          "exclusiveMinimum": 0,
+          "title": "Screen Width",
+          "type": "integer"
+        },
+        "screen_height": {
+          "description": "Ekran yüksekliği, piksel",
+          "exclusiveMinimum": 0,
+          "title": "Screen Height",
+          "type": "integer"
+        },
+        "participant_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Deney oturumlarında katılımcı kodu (ör. P07)",
+          "title": "Participant Id"
+        }
+      },
+      "required": [
+        "screen_width",
+        "screen_height"
+      ],
+      "title": "ClientHello",
+      "type": "object"
+    },
+    "ClientGazeSample": {
+      "additionalProperties": false,
+      "description": "Tek bir bakış örneği.\n\nArayüz bunu kare hızında (~30 Hz) gönderir. Sunucu yumuşatma ve dwell\nkararını bu akış üzerinden verir.",
+      "properties": {
+        "type": {
+          "const": "gaze",
+          "default": "gaze",
+          "title": "Type",
+          "type": "string"
+        },
+        "point": {
+          "$ref": "#/$defs/GazePoint"
+        }
+      },
+      "required": [
+        "point"
+      ],
+      "title": "ClientGazeSample",
+      "type": "object"
+    },
+    "ClientCalibrationSample": {
+      "additionalProperties": false,
+      "description": "Kalibrasyon sırasında, kullanıcının baktığı bilinen nokta.",
+      "properties": {
+        "type": {
+          "const": "calibration_sample",
+          "default": "calibration_sample",
+          "title": "Type",
+          "type": "string"
+        },
+        "target_x": {
+          "description": "Hedefin normalize x konumu",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Target X",
+          "type": "number"
+        },
+        "target_y": {
+          "description": "Hedefin normalize y konumu",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Target Y",
+          "type": "number"
+        },
+        "features": {
+          "description": "Göz/baş öznitelik vektörü",
+          "items": {
+            "type": "number"
+          },
+          "title": "Features",
+          "type": "array"
+        }
+      },
+      "required": [
+        "target_x",
+        "target_y",
+        "features"
+      ],
+      "title": "ClientCalibrationSample",
+      "type": "object"
+    },
+    "ClientCalibrationFit": {
+      "additionalProperties": false,
+      "description": "Toplanan örneklerle regresyon modelini eğitmeyi ister.",
+      "properties": {
+        "type": {
+          "const": "calibration_fit",
+          "default": "calibration_fit",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "title": "ClientCalibrationFit",
+      "type": "object"
+    },
+    "ClientTargets": {
+      "additionalProperties": false,
+      "description": "Ekrandaki dwell hedeflerinin güncel listesi.\n\nArayüz düzeni değiştiğinde (harf grubundan harfe geçiş, aday listesinin\naçılması) yeniden gönderilir.",
+      "properties": {
+        "type": {
+          "const": "targets",
+          "default": "targets",
+          "title": "Type",
+          "type": "string"
+        },
+        "targets": {
+          "items": {
+            "$ref": "#/$defs/GazeTarget"
+          },
+          "title": "Targets",
+          "type": "array"
+        }
+      },
+      "required": [
+        "targets"
+      ],
+      "title": "ClientTargets",
+      "type": "object"
+    },
+    "ClientSelect": {
+      "additionalProperties": false,
+      "description": "Dwell dışında yapılan doğrudan seçim (fare ile geliştirme, erişilebilirlik\ndüğmesi veya test otomasyonu).",
+      "properties": {
+        "type": {
+          "const": "select",
+          "default": "select",
+          "title": "Type",
+          "type": "string"
+        },
+        "target_id": {
+          "title": "Target Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "target_id"
+      ],
+      "title": "ClientSelect",
+      "type": "object"
+    },
+    "ClientExpand": {
+      "additionalProperties": false,
+      "description": "Kısaltmanın cümleye genişletilmesini ister.",
+      "properties": {
+        "type": {
+          "const": "expand",
+          "default": "expand",
+          "title": "Type",
+          "type": "string"
+        },
+        "abbreviation": {
+          "description": "Kullanıcının girdiği kısaltma",
+          "minLength": 1,
+          "title": "Abbreviation",
+          "type": "string"
+        },
+        "scheme": {
+          "default": "S1",
+          "description": "Kısaltma şeması kimliği",
+          "title": "Scheme",
+          "type": "string"
+        },
+        "context": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Karşı tarafın son cümlesi, varsa",
+          "title": "Context"
+        },
+        "top_k": {
+          "default": 5,
+          "maximum": 10,
+          "minimum": 1,
+          "title": "Top K",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "abbreviation"
+      ],
+      "title": "ClientExpand",
+      "type": "object"
+    },
+    "ClientSpeak": {
+      "additionalProperties": false,
+      "description": "Seçilen cümlenin seslendirilmesini bildirir (kayıt ve ölçüm için).",
+      "properties": {
+        "type": {
+          "const": "speak",
+          "default": "speak",
+          "title": "Type",
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "title": "ClientSpeak",
+      "type": "object"
+    },
+    "ServerReady": {
+      "additionalProperties": false,
+      "description": "Bağlantı hazır; sunucunun etkin yapılandırmasını bildirir.",
+      "properties": {
+        "type": {
+          "const": "ready",
+          "default": "ready",
+          "title": "Type",
+          "type": "string"
+        },
+        "session_id": {
+          "title": "Session Id",
+          "type": "string"
+        },
+        "gaze_source": {
+          "title": "Gaze Source",
+          "type": "string"
+        },
+        "expander_provider": {
+          "title": "Expander Provider",
+          "type": "string"
+        },
+        "dwell_ms": {
+          "title": "Dwell Ms",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "session_id",
+        "gaze_source",
+        "expander_provider",
+        "dwell_ms"
+      ],
+      "title": "ServerReady",
+      "type": "object"
+    },
+    "ServerGaze": {
+      "additionalProperties": false,
+      "description": "Yumuşatılmış bakış konumu. Arayüz imleci bununla çizer.",
+      "properties": {
+        "type": {
+          "const": "gaze",
+          "default": "gaze",
+          "title": "Type",
+          "type": "string"
+        },
+        "x": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Y",
+          "type": "number"
+        },
+        "t": {
+          "description": "Örneğin zaman damgası, saniye",
+          "title": "T",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "t"
+      ],
+      "title": "ServerGaze",
+      "type": "object"
+    },
+    "ServerDwellProgress": {
+      "additionalProperties": false,
+      "description": "Bir hedefin üstünde biriken dwell oranı. Arayüz halkayı bununla doldurur.",
+      "properties": {
+        "type": {
+          "const": "dwell_progress",
+          "default": "dwell_progress",
+          "title": "Type",
+          "type": "string"
+        },
+        "target_id": {
+          "title": "Target Id",
+          "type": "string"
+        },
+        "progress": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Progress",
+          "type": "number"
+        }
+      },
+      "required": [
+        "target_id",
+        "progress"
+      ],
+      "title": "ServerDwellProgress",
+      "type": "object"
+    },
+    "ServerSelection": {
+      "additionalProperties": false,
+      "description": "Dwell tamamlandı, hedef seçildi.",
+      "properties": {
+        "type": {
+          "const": "selection",
+          "default": "selection",
+          "title": "Type",
+          "type": "string"
+        },
+        "target_id": {
+          "title": "Target Id",
+          "type": "string"
+        },
+        "dwell_ms": {
+          "description": "Seçimin gerçekte ne kadar sürdüğü",
+          "title": "Dwell Ms",
+          "type": "number"
+        }
+      },
+      "required": [
+        "target_id",
+        "dwell_ms"
+      ],
+      "title": "ServerSelection",
+      "type": "object"
+    },
+    "ServerCalibrationResult": {
+      "additionalProperties": false,
+      "description": "Kalibrasyon sonucu ve doğrulama hatası.",
+      "properties": {
+        "type": {
+          "const": "calibration_result",
+          "default": "calibration_result",
+          "title": "Type",
+          "type": "string"
+        },
+        "ok": {
+          "title": "Ok",
+          "type": "boolean"
+        },
+        "sample_count": {
+          "title": "Sample Count",
+          "type": "integer"
+        },
+        "mean_error_px": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mean Error Px"
+        },
+        "mean_error_deg": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mean Error Deg"
+        },
+        "message": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Message"
+        }
+      },
+      "required": [
+        "ok",
+        "sample_count"
+      ],
+      "title": "ServerCalibrationResult",
+      "type": "object"
+    },
+    "ServerCandidates": {
+      "additionalProperties": false,
+      "description": "Kısaltmaya karşılık üretilen aday cümleler.",
+      "properties": {
+        "type": {
+          "const": "candidates",
+          "default": "candidates",
+          "title": "Type",
+          "type": "string"
+        },
+        "abbreviation": {
+          "title": "Abbreviation",
+          "type": "string"
+        },
+        "scheme": {
+          "title": "Scheme",
+          "type": "string"
+        },
+        "candidates": {
+          "items": {
+            "$ref": "#/$defs/Candidate"
+          },
+          "title": "Candidates",
+          "type": "array"
+        },
+        "latency_ms": {
+          "title": "Latency Ms",
+          "type": "number"
+        }
+      },
+      "required": [
+        "abbreviation",
+        "scheme",
+        "candidates",
+        "latency_ms"
+      ],
+      "title": "ServerCandidates",
+      "type": "object"
+    },
+    "ServerError": {
+      "additionalProperties": false,
+      "description": "İşlenemeyen istek. Bağlantı açık kalır.",
+      "properties": {
+        "type": {
+          "const": "error",
+          "default": "error",
+          "title": "Type",
+          "type": "string"
+        },
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "detail": {
+          "title": "Detail",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "detail"
+      ],
+      "title": "ServerError",
+      "type": "object"
+    }
+  }
+}

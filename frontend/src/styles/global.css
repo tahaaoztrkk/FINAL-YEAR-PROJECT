@@ -1,0 +1,312 @@
+/*
+ * Erişilebilirlik kuralları burada sabitlenmiştir:
+ *  - en az 32 px yazı
+ *  - siyah zemin üstü beyaz, yüksek kontrast
+ *  - tek renge bağlı bilgi yok (her durum ayrıca metinle de belirtilir)
+ *  - 300 ms üstü animasyon ve yanıp sönme yok
+ * Bunları değiştirmeden önce docs/architecture.md içindeki gerekçeyi okuyun.
+ */
+
+:root {
+  --bg: #07090d;
+  --surface: #12161f;
+  --surface-hover: #1b2130;
+  --text: #f4f6fa;
+  --text-dim: #9aa4b8;
+  --accent: #4c8dff;
+  --accent-soft: rgba(76, 141, 255, 0.18);
+  --ok: #3ecf8e;
+  --warn: #ffb547;
+  --error: #ff6b6b;
+  --radius: 14px;
+  --gap: 10px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-size: 20px;
+  overflow: hidden;
+}
+
+button {
+  font-family: inherit;
+  color: inherit;
+}
+
+.app {
+  position: relative;
+  height: 100%;
+  padding: 10px;
+}
+
+/* --- Durum çubuğu ------------------------------------------------------ */
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 15px;
+  color: var(--text-dim);
+  height: 32px;
+}
+
+.status__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--warn);
+}
+
+.status__dot--open {
+  background: var(--ok);
+}
+
+.status__dot--closed {
+  background: var(--error);
+}
+
+.status__error {
+  color: var(--error);
+}
+
+.status__scheme {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status__scheme select {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid #2a3142;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 15px;
+}
+
+/* --- Kısaltma alanı ---------------------------------------------------- */
+
+.composer {
+  padding: 6px 4px;
+}
+
+.composer__label {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.composer__value {
+  margin: 2px 0;
+  font-size: 40px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  min-height: 48px;
+}
+
+.composer__hint {
+  margin: 0;
+  font-size: 16px;
+  color: var(--text-dim);
+}
+
+/* --- Aday listesi ------------------------------------------------------ */
+
+.candidates {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.candidates--empty p {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 18px;
+}
+
+.candidate {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 10px 16px;
+  background: var(--surface);
+  border: 2px solid transparent;
+  border-radius: var(--radius);
+  font-size: 24px;
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.candidate--active {
+  border-color: var(--accent);
+  background: var(--surface-hover);
+}
+
+.candidate__index {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.candidate__progress {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 4px;
+  background: var(--accent);
+  transition: width 100ms linear;
+}
+
+.candidates__latency {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-dim);
+  text-align: right;
+}
+
+/* --- Klavye ızgarası --------------------------------------------------- */
+
+.keyboard {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.tile {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  background: var(--surface);
+  border: 2px solid #232a3a;
+  border-radius: var(--radius);
+  cursor: pointer;
+  pointer-events: auto;
+  /* Göz takibi arayüzlerinde uzun animasyon hata kaynağı: 150 ms üstü yok. */
+  transition: background 150ms ease, border-color 150ms ease;
+}
+
+.tile:hover {
+  background: var(--surface-hover);
+}
+
+.tile--active {
+  border-color: var(--accent);
+  background: var(--surface-hover);
+}
+
+.tile--action {
+  background: #171c27;
+  border-color: #2c3446;
+}
+
+.tile__label {
+  font-size: 34px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.tile--group .tile__label {
+  font-size: 30px;
+  letter-spacing: 0.18em;
+}
+
+.tile--action .tile__label {
+  font-size: 24px;
+  color: var(--text-dim);
+}
+
+/* --- Dwell halkası ----------------------------------------------------- */
+
+.dwell-ring {
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  transform: rotate(-90deg);
+}
+
+.dwell-ring__track {
+  fill: none;
+  stroke: #2a3142;
+  stroke-width: 5;
+}
+
+.dwell-ring__fill {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 5;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 80ms linear;
+}
+
+/* --- Bakış imleci ------------------------------------------------------ */
+
+.gaze-cursor {
+  position: fixed;
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.75;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* --- Geçmiş ve not ----------------------------------------------------- */
+
+.history {
+  position: absolute;
+  right: 10px;
+  top: 120px;
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 5;
+}
+
+.history button {
+  background: var(--surface);
+  border: 1px solid #232a3a;
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 15px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.devnote {
+  position: absolute;
+  left: 10px;
+  bottom: 4px;
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-dim);
+}

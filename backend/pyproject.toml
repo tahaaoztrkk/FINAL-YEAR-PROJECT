@@ -1,0 +1,64 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gaze-aac"
+version = "0.1.0"
+description = "Göz takibiyle Türkçe iletişim sistemi"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "pydantic>=2.9",
+    "pydantic-settings>=2.6",
+    "numpy>=1.26",
+    "scikit-learn>=1.5",
+    "websockets>=13.0",
+]
+
+[project.optional-dependencies]
+# Göz takibi hattı. MediaPipe yalnızca kamera ucunda gerekir;
+# simülasyon ve testler bu paket olmadan da çalışır.
+gaze = [
+    "mediapipe>=0.10.14",
+    "opencv-python>=4.10",
+]
+# Yerel dil modeli. Colab/Kaggle dışında kurmak zorunda değilsiniz.
+llm = [
+    "transformers>=4.45",
+    "torch>=2.4",
+    "accelerate>=1.0",
+    "bitsandbytes>=0.44; platform_system != 'Darwin'",
+]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+    "httpx>=0.27",
+    "ruff>=0.7",
+    "mypy>=1.13",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "SIM", "RUF"]
+ignore = ["RUF001", "RUF002", "RUF003"]  # Türkçe metinlerdeki belirsiz karakterler
+
+[tool.mypy]
+python_version = "3.10"
+packages = ["gaze_aac"]
+strict = true
+warn_unused_ignores = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+addopts = "-q"

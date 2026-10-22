@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+dist/
+.vite/
+*.local
+
+# Ortam
+.env
+.env.*
+!.env.example
+
+# Veri ve modeller (buyuk dosyalar repoya girmez)
+data/raw/*
+data/processed/*
+!data/**/.gitkeep
+models/
+*.onnx
+*.gguf
+*.safetensors
+outputs/
+runs/
+
+# Deney ciktilari
+results/*.csv
+!results/.gitkeep
+
+# Editor / OS
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+.idea/
+.DS_Store
+Thumbs.db

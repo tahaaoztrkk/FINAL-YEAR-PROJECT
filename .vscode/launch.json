@@ -1,0 +1,40 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Backend (uvicorn)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": ["gaze_aac.main:app", "--reload", "--port", "8000"],
+      "cwd": "${workspaceFolder}/backend",
+      "console": "integratedTerminal",
+      "justMyCode": false
+    },
+    {
+      "name": "Simülasyon",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "gaze_aac.evaluation.simulate",
+      "args": ["--providers", "mock", "--schemes", "S1", "S2", "S3", "S4"],
+      "cwd": "${workspaceFolder}/backend",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Testler",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["-v"],
+      "cwd": "${workspaceFolder}/backend",
+      "console": "integratedTerminal"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Tam sistem",
+      "configurations": ["Backend (uvicorn)"],
+      "preLaunchTask": "frontend: dev"
+    }
+  ]
+}
