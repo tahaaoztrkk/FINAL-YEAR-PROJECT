@@ -11,7 +11,7 @@ tiplerini yeniden üretir, bu belgeyi günceller.
 ## Bağlantı
 
 ```
-ws://127.0.0.1:8000/ws
+ws://127.0.0.1:8010/ws
 ```
 
 Geliştirmede Vite vekili üzerinden `ws://localhost:5173/ws` de çalışır.

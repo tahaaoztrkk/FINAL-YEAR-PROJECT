@@ -44,10 +44,10 @@ python -m venv .venv
 .venv\Scripts\activate        # Windows
 pip install -e ".[dev]"
 copy .env.example .env
-uvicorn gaze_aac.main:app --reload
+uvicorn gaze_aac.main:app --reload --port 8010
 ```
 
-`http://127.0.0.1:8000/docs` adresinde API dokümanı açılır.
+`http://127.0.0.1:8010/docs` adresinde API dokümanı açılır.
 
 **Frontend**
 
