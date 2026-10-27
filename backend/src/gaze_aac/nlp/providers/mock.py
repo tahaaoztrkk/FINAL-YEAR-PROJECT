@@ -77,7 +77,9 @@ class MockProvider:
         prefix: list[Candidate] = []
 
         for sentence in self._sentences:
-            produced = scheme.abbreviate(sentence)
+            # İki taraf da normalleştirilir: S4 etiketleri büyük harfle üretilir,
+            # ``wanted`` ise küçültülmüş gelir.
+            produced = normalize_abbreviation(scheme.abbreviate(sentence))
             if produced == wanted:
                 exact.append(Candidate(text=sentence, score=1.0))
             elif produced.startswith(wanted):

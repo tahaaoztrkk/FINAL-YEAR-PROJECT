@@ -12,6 +12,7 @@ Geri kontrol (back-check) burada, sağlayıcıdan bağımsız olarak uygulanır:
 from __future__ import annotations
 
 import time
+from pathlib import Path
 from typing import Protocol, runtime_checkable
 
 from ..schemas.expansion import Candidate, ExpansionRequest, ExpansionResult
@@ -70,8 +71,27 @@ class ExpansionService:
         )
 
 
-def build_provider(provider_name: str, settings: object) -> ExpansionProvider:
+def default_corpus_path(settings: object) -> Path | None:
+    """Derlem tabanlı sağlayıcıların okuyacağı dosya.
+
+    İşlenmiş derlem varsa o, yoksa repodaki ham derlem kullanılır; böylece
+    ``build_corpus`` hiç çalıştırılmamış bir klonda da ``ngram`` aday üretir.
+    """
+    for name in ("corpus_path", "source_corpus_path"):
+        path = getattr(settings, name, None)
+        if isinstance(path, Path) and path.exists():
+            return path
+    return None
+
+
+def build_provider(
+    provider_name: str, settings: object, corpus_path: Path | None = None
+) -> ExpansionProvider:
     """Ayarlara göre sağlayıcı örneği üretir.
+
+    ``corpus_path`` yalnızca derlem tabanlı sağlayıcılar (mock, ngram) için
+    anlamlıdır. Simülasyon buraya eğitim kümesini verir: değerlendirme
+    cümlelerini gören bir n-gram modelinin sonucu ölçüm değil ezberdir.
 
     İçe aktarmalar işlev içinde yapılır: ``torch`` ve ``transformers`` ağır
     paketlerdir, ``mock`` sağlayıcıyla çalışan bir geliştiricinin bunları
@@ -83,12 +103,12 @@ def build_provider(provider_name: str, settings: object) -> ExpansionProvider:
     if provider_name == "mock":
         from .providers.mock import MockProvider
 
-        return MockProvider()
+        return MockProvider(corpus_path or default_corpus_path(settings))
 
     if provider_name == "ngram":
         from .providers.ngram import NGramProvider
 
-        return NGramProvider()
+        return NGramProvider(corpus_path or default_corpus_path(settings))
 
     if provider_name == "hf_local":
         from .providers.hf_local import HuggingFaceProvider

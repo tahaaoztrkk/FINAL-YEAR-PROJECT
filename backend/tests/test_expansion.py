@@ -2,17 +2,21 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
+from gaze_aac.config import Settings
 from gaze_aac.evaluation.metrics import (
     keystroke_savings_rate,
     mean_reciprocal_rank,
     top_k_accuracy,
 )
 from gaze_aac.evaluation.simulate import SimulationCase, run_condition
-from gaze_aac.nlp.expander import ExpansionService, back_check
+from gaze_aac.nlp.expander import ExpansionService, back_check, build_provider, default_corpus_path
 from gaze_aac.nlp.providers.mock import MockProvider
 from gaze_aac.nlp.providers.ngram import NGramProvider
+from gaze_aac.nlp.schemes import get_scheme
 from gaze_aac.schemas.expansion import Candidate, ExpansionRequest
 
 
@@ -68,6 +72,52 @@ class TestNGramProvider:
     async def test_empty_model_returns_nothing(self) -> None:
         provider = NGramProvider()
         assert await provider.expand(ExpansionRequest(abbreviation="s i")) == []
+
+    async def test_known_sentence_keeps_original_spelling(self) -> None:
+        """Derlemdeki cümle noktalaması ve Türkçe büyük harfiyle döner."""
+        provider = NGramProvider()
+        provider.fit(["İlacımın saati geldi.", "Su istiyorum."])
+
+        result = await provider.expand(ExpansionRequest(abbreviation="i s g", scheme="S1"))
+        assert result[0].text == "İlacımın saati geldi."
+
+    async def test_s4_tags_match_lowercase_input(self) -> None:
+        """S4 etiketleri büyük harfle üretilir, kullanıcıdan küçük harfle gelir."""
+        provider = NGramProvider()
+        provider.fit(["Gelmeyeceğim."])
+        abbreviation = get_scheme("S4").abbreviate("Gelmeyeceğim.").lower()
+
+        result = await provider.expand(ExpansionRequest(abbreviation=abbreviation, scheme="S4"))
+        assert result and result[0].text == "Gelmeyeceğim."
+
+    async def test_spelled_out_word_is_used_as_is(self) -> None:
+        """Açık yazılan kelime, derlemde olmasa da adayın içine girer."""
+        provider = NGramProvider()
+        provider.fit(["Su istiyorum."])
+
+        result = await provider.expand(ExpansionRequest(abbreviation="çay i", scheme="S1"))
+        assert result and result[0].text == "Çay istiyorum"
+
+
+class TestBuildProvider:
+    def test_ngram_loads_repo_corpus_by_default(self, tmp_path: Path) -> None:
+        corpus = tmp_path / "corpus" / "aac_sentences.jsonl"
+        corpus.parent.mkdir()
+        corpus.write_text('{"text": "Su istiyorum."}\n', encoding="utf-8")
+        settings = Settings(data_dir=tmp_path)
+
+        provider = build_provider("ngram", settings)
+        assert isinstance(provider, NGramProvider)
+        assert default_corpus_path(settings) == corpus
+
+
+class TestMockProvider:
+    async def test_s4_matches_lowercase_input(self) -> None:
+        provider = MockProvider()
+        abbreviation = get_scheme("S4").abbreviate("Su istiyorum.").lower()
+
+        result = await provider.expand(ExpansionRequest(abbreviation=abbreviation, scheme="S4"))
+        assert any(c.text == "Su istiyorum." for c in result)
 
 
 class TestMetrics:

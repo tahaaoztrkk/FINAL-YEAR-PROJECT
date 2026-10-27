@@ -1,11 +1,12 @@
 """Derlemi hazırlayıp eğitim çiftlerini üreten komut.
 
-    python -m gaze_aac.data.build_corpus --seed-only
     python -m gaze_aac.data.build_corpus
+    python -m gaze_aac.data.build_corpus --seed-only
 
-İlk komut çekirdek cümleleri ``data/raw/seed_sentences.jsonl`` dosyasına
-yazar; ekip bunu elle genişletir ve bir API modeliyle çeşitlendirir. İkinci
-komut ham derlemi temizler, böler ve eğitim çiftlerini üretir.
+Ham derlem ``data/corpus/aac_sentences.jsonl`` dosyasında, repoda tutulur;
+ekip yeni cümleleri bu dosyaya PR ile ekler. İlk komut onu temizler, böler
+ve eğitim çiftlerini üretir. ``--seed-only`` yalnızca aşağıdaki küçük
+çekirdeği ``data/raw/seed_sentences.jsonl`` dosyasına yazar.
 
 Cümle üretimini bilerek otomatikleştirmedik: doğal olmayan Türkçe cümleler
 veri setini sessizce bozar ve dört kişinin 750'şer cümleyi elden geçirmesi,
@@ -89,18 +90,20 @@ def main() -> None:
     args = parser.parse_args()
 
     settings = get_settings()
-    raw_path = args.raw or settings.data_dir / "raw" / "seed_sentences.jsonl"
 
     if args.seed_only:
-        count = write_seed(raw_path)
-        print(f"{count} çekirdek cümle yazıldı: {raw_path}")
-        print("Bu dosyayı genişletip tekrar çalıştırın (--seed-only olmadan).")
+        seed_path = args.raw or settings.data_dir / "raw" / "seed_sentences.jsonl"
+        count = write_seed(seed_path)
+        print(f"{count} çekirdek cümle yazıldı: {seed_path}")
+        print(f"Genişletip --raw {seed_path} ile tekrar çalıştırın.")
         return
+
+    raw_path = args.raw or settings.source_corpus_path
 
     if not raw_path.exists():
         raise SystemExit(
             f"Ham derlem yok: {raw_path}\n"
-            "Önce çekirdeği üretin: python -m gaze_aac.data.build_corpus --seed-only"
+            "Repodaki data/corpus/aac_sentences.jsonl dosyası eksik ya da --raw yolu yanlış."
         )
 
     corpus = Corpus.load(raw_path)

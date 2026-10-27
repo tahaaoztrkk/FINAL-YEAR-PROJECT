@@ -71,32 +71,44 @@ sözleşme tiplerini üretme.
 
 ## Veri hattı
 
-```bash
-cd backend
-python -m gaze_aac.data.build_corpus --seed-only
+Ham derlem repoda tutulur: `data/corpus/aac_sentences.jsonl`. Her satır bir
+cümle ve kategorisi:
+
+```json
+{"text": "Su istiyorum.", "category": "temel_ihtiyac"}
 ```
 
-Bu komut `data/raw/seed_sentences.jsonl` dosyasına 30 çekirdek cümle yazar.
-Ekip bunu ~3.000 cümleye genişletir: her kategori için 40–50 örnek yazılır,
-bir API modelinden çeşitlendirme istenir, sonra dört kişi 750'şer cümleyi
-elden geçirir.
+Şu an 6 kategoride 300 taslak cümle var. Hedef ~3.000: yeni cümleleri bu
+dosyaya ekleyip PR açın, böylece her ekleme gözden geçirilir. Doğal olmayan
+Türkçe cümleler sonuçları sessizce bozar; emin olmadığınız cümleyi eklemeyin.
 
-Derlem hazır olunca:
+Derlemi işlemek için:
 
 ```bash
+cd backend
 python -m gaze_aac.data.build_corpus
 ```
 
-Tekrarları atar, %80/%10/%10 böler, eğitim çiftlerini üretir.
-**Test kümesini Ocak'a kadar açmayın.**
+Tekrarları atar, %80/%10/%10 böler, eğitim çiftlerini `data/processed/`
+altına yazar. **Test kümesini Ocak'a kadar açmayın.**
 
 ## Simülasyon
 
 ```bash
-python -m gaze_aac.evaluation.simulate --providers mock --schemes S1 S2 S3 S4
+python -m gaze_aac.evaluation.simulate --providers mock ngram --schemes S1 S2 S3 S4
 ```
 
-Sonuç `results/simulation.csv` dosyasına yazılır. Rapora giden tablo budur.
+Sağlayıcılar yalnızca eğitim kümesini görür, ölçüm doğrulama kümesinde
+yapılır (`--corpus` ve `--train` ile değiştirilebilir). Sonuç
+`results/simulation.csv` dosyasına yazılır. Rapora giden tablo budur.
+
+`mock` sağlayıcısı yalnızca derlemdeki cümleleri bulabildiği için doğrulama
+kümesinde %0 çıkar; bu beklenen sonuçtur. Karşılaştırmanın asıl tabanı
+`ngram`'dır.
+
+Demoda n-gram modelini denemek için backend `.env` dosyasında
+`EXPANDER_PROVIDER=ngram` yapın. Demo, simülasyondan farklı olarak
+derlemin tamamını kullanır.
 
 ## Kamera moduna geçiş
 

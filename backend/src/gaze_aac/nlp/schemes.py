@@ -35,6 +35,18 @@ def turkish_lower(text: str) -> str:
     return text.translate(_LOWER_MAP).lower()
 
 
+def turkish_capitalize(text: str) -> str:
+    """İlk harfi Türkçe kurallarına göre büyütür: i -> İ, ı -> I.
+
+    ``str.capitalize`` hem "istiyorum"u "Istiyorum" yapar hem de kalan
+    harfleri küçültür.
+    """
+    if not text:
+        return text
+    first = {"i": "İ", "ı": "I"}.get(text[0], text[0].upper())
+    return first + text[1:]
+
+
 def tokenize(sentence: str) -> list[str]:
     """Cümleyi kelimelere ayırır; noktalama ve rakamlar atılır."""
     normalized = unicodedata.normalize("NFC", sentence)

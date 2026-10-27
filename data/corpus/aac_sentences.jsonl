@@ -1,0 +1,300 @@
+{"text": "Su istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Acıktım.", "category": "temel_ihtiyac"}
+{"text": "Tuvalete gitmem lazım.", "category": "temel_ihtiyac"}
+{"text": "Ağzım kurudu.", "category": "temel_ihtiyac"}
+{"text": "Biraz daha su alabilir miyim?", "category": "temel_ihtiyac"}
+{"text": "Çay içmek istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Susadım.", "category": "temel_ihtiyac"}
+{"text": "Yemek ne zaman gelecek?", "category": "temel_ihtiyac"}
+{"text": "Yemeği şimdi istemiyorum.", "category": "temel_ihtiyac"}
+{"text": "Biraz çorba içebilir miyim?", "category": "temel_ihtiyac"}
+{"text": "Pipetle içmek istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Bardağı biraz daha yaklaştırır mısın?", "category": "temel_ihtiyac"}
+{"text": "Meyve suyu istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Kahve içebilir miyim?", "category": "temel_ihtiyac"}
+{"text": "Ilık su istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Soğuk bir şey içmek istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Doydum, teşekkürler.", "category": "temel_ihtiyac"}
+{"text": "Biraz daha yemek istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Yemek çok sıcak.", "category": "temel_ihtiyac"}
+{"text": "Yemek tuzsuz olmuş.", "category": "temel_ihtiyac"}
+{"text": "Ağzımı siler misin?", "category": "temel_ihtiyac"}
+{"text": "Dişlerimi fırçalamak istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Yüzümü yıkamak istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Banyo yapmak istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Saçımı tarar mısın?", "category": "temel_ihtiyac"}
+{"text": "Elimi yıkamak istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Bezimi değiştirir misin?", "category": "temel_ihtiyac"}
+{"text": "Tuvalete şimdi gitmem gerekiyor.", "category": "temel_ihtiyac"}
+{"text": "Sürgü getirir misin?", "category": "temel_ihtiyac"}
+{"text": "Uyumak istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Biraz dinlenmek istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Uykum geldi.", "category": "temel_ihtiyac"}
+{"text": "Uyuyamıyorum.", "category": "temel_ihtiyac"}
+{"text": "Işığı kapatır mısın?", "category": "temel_ihtiyac"}
+{"text": "Işığı açar mısın?", "category": "temel_ihtiyac"}
+{"text": "Perdeyi kapatır mısın?", "category": "temel_ihtiyac"}
+{"text": "Pencereyi açar mısın?", "category": "temel_ihtiyac"}
+{"text": "Oda çok sıcak.", "category": "temel_ihtiyac"}
+{"text": "Oda çok soğuk.", "category": "temel_ihtiyac"}
+{"text": "Televizyonu açar mısın?", "category": "temel_ihtiyac"}
+{"text": "Televizyonu kapatır mısın?", "category": "temel_ihtiyac"}
+{"text": "Sesi biraz kısar mısın?", "category": "temel_ihtiyac"}
+{"text": "Sesi biraz açar mısın?", "category": "temel_ihtiyac"}
+{"text": "Biraz müzik dinlemek istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Telefonumu verir misin?", "category": "temel_ihtiyac"}
+{"text": "Kitabımı getirir misin?", "category": "temel_ihtiyac"}
+{"text": "Gazete okumak istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Dışarı çıkmak istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Biraz temiz hava almak istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Kumandayı uzatır mısın?", "category": "temel_ihtiyac"}
+{"text": "Başım ağrıyor.", "category": "agri_saglik"}
+{"text": "Nefes almakta zorlanıyorum.", "category": "agri_saglik"}
+{"text": "Sırtım çok ağrıyor.", "category": "agri_saglik"}
+{"text": "İlacımın saati geldi.", "category": "agri_saglik"}
+{"text": "Doktoru çağırır mısın?", "category": "agri_saglik"}
+{"text": "Acım var.", "category": "agri_saglik"}
+{"text": "Midem bulanıyor.", "category": "agri_saglik"}
+{"text": "Karnım ağrıyor.", "category": "agri_saglik"}
+{"text": "Göğsüm sıkışıyor.", "category": "agri_saglik"}
+{"text": "Boğazım ağrıyor.", "category": "agri_saglik"}
+{"text": "Başım dönüyor.", "category": "agri_saglik"}
+{"text": "Ateşim var gibi.", "category": "agri_saglik"}
+{"text": "Çok terledim.", "category": "agri_saglik"}
+{"text": "Bacağım uyuştu.", "category": "agri_saglik"}
+{"text": "Kolum ağrıyor.", "category": "agri_saglik"}
+{"text": "Elim uyuşuyor.", "category": "agri_saglik"}
+{"text": "Ağrım geçmedi.", "category": "agri_saglik"}
+{"text": "Ağrım biraz azaldı.", "category": "agri_saglik"}
+{"text": "İlacımı aldım mı?", "category": "agri_saglik"}
+{"text": "İlacımı henüz almadım.", "category": "agri_saglik"}
+{"text": "Bu ilacı içmek istemiyorum.", "category": "agri_saglik"}
+{"text": "Hemşireyi çağırır mısın?", "category": "agri_saglik"}
+{"text": "Öksürüğüm var.", "category": "agri_saglik"}
+{"text": "Balgam söküyorum.", "category": "agri_saglik"}
+{"text": "Gözüm yanıyor.", "category": "agri_saglik"}
+{"text": "Kulağım ağrıyor.", "category": "agri_saglik"}
+{"text": "Dişim ağrıyor.", "category": "agri_saglik"}
+{"text": "Kaşınıyorum.", "category": "agri_saglik"}
+{"text": "Sırtım kaşınıyor.", "category": "agri_saglik"}
+{"text": "Yaram acıyor.", "category": "agri_saglik"}
+{"text": "Kendimi kötü hissediyorum.", "category": "agri_saglik"}
+{"text": "Kusacak gibiyim.", "category": "agri_saglik"}
+{"text": "Nefesim daralıyor.", "category": "agri_saglik"}
+{"text": "Oksijenimi kontrol eder misin?", "category": "agri_saglik"}
+{"text": "Tansiyonumu ölçer misin?", "category": "agri_saglik"}
+{"text": "Ateşimi ölçer misin?", "category": "agri_saglik"}
+{"text": "Ağrı kesici alabilir miyim?", "category": "agri_saglik"}
+{"text": "Ağrım çok şiddetli.", "category": "agri_saglik"}
+{"text": "Bugün ağrım yok.", "category": "agri_saglik"}
+{"text": "Gece hiç uyuyamadım.", "category": "agri_saglik"}
+{"text": "Doktor ne dedi?", "category": "agri_saglik"}
+{"text": "Tahlil sonuçları çıktı mı?", "category": "agri_saglik"}
+{"text": "Yarın hastaneye gitmek istemiyorum.", "category": "agri_saglik"}
+{"text": "Fizik tedaviye gitmek istemiyorum.", "category": "agri_saglik"}
+{"text": "Bugün fizik tedavi var mı?", "category": "agri_saglik"}
+{"text": "Kas kramplarım var.", "category": "agri_saglik"}
+{"text": "Bacaklarım çok ağır.", "category": "agri_saglik"}
+{"text": "Boynum tutuldu.", "category": "agri_saglik"}
+{"text": "Yutkunmakta zorlanıyorum.", "category": "agri_saglik"}
+{"text": "Doktorla konuşmak istiyorum.", "category": "agri_saglik"}
+{"text": "Pozisyonumu değiştirir misin?", "category": "pozisyon_bakim"}
+{"text": "Yatağımı yukarı kaldırır mısın?", "category": "pozisyon_bakim"}
+{"text": "Üşüyorum, battaniye alır mısın?", "category": "pozisyon_bakim"}
+{"text": "Gözlüğümü takar mısın?", "category": "pozisyon_bakim"}
+{"text": "Yastığımı düzeltir misin?", "category": "pozisyon_bakim"}
+{"text": "Yatağı biraz indirir misin?", "category": "pozisyon_bakim"}
+{"text": "Beni sağ tarafıma çevirir misin?", "category": "pozisyon_bakim"}
+{"text": "Beni sol tarafıma çevirir misin?", "category": "pozisyon_bakim"}
+{"text": "Sırt üstü yatmak istiyorum.", "category": "pozisyon_bakim"}
+{"text": "Oturmak istiyorum.", "category": "pozisyon_bakim"}
+{"text": "Tekerlekli sandalyeye geçmek istiyorum.", "category": "pozisyon_bakim"}
+{"text": "Yatağa dönmek istiyorum.", "category": "pozisyon_bakim"}
+{"text": "Başımı biraz kaldırır mısın?", "category": "pozisyon_bakim"}
+{"text": "Ayaklarımın altına yastık koyar mısın?", "category": "pozisyon_bakim"}
+{"text": "Battaniyeyi alır mısın?", "category": "pozisyon_bakim"}
+{"text": "Çok sıcakladım.", "category": "pozisyon_bakim"}
+{"text": "Çorabımı çıkarır mısın?", "category": "pozisyon_bakim"}
+{"text": "Çorap giydirir misin?", "category": "pozisyon_bakim"}
+{"text": "Üstümü değiştirmek istiyorum.", "category": "pozisyon_bakim"}
+{"text": "Hırkamı giydirir misin?", "category": "pozisyon_bakim"}
+{"text": "Kolumu düzeltir misin?", "category": "pozisyon_bakim"}
+{"text": "Bacağımı biraz oynatır mısın?", "category": "pozisyon_bakim"}
+{"text": "Elimi yukarı koyar mısın?", "category": "pozisyon_bakim"}
+{"text": "Kafamı sağa çevirir misin?", "category": "pozisyon_bakim"}
+{"text": "Gözlüğümü çıkarır mısın?", "category": "pozisyon_bakim"}
+{"text": "Gözlüğümü siler misin?", "category": "pozisyon_bakim"}
+{"text": "Saçım gözüme giriyor.", "category": "pozisyon_bakim"}
+{"text": "Burnumu siler misin?", "category": "pozisyon_bakim"}
+{"text": "Yüzümü kurular mısın?", "category": "pozisyon_bakim"}
+{"text": "Krem sürer misin?", "category": "pozisyon_bakim"}
+{"text": "Dudaklarım kurudu.", "category": "pozisyon_bakim"}
+{"text": "Tırnaklarımı keser misin?", "category": "pozisyon_bakim"}
+{"text": "Tıraş olmak istiyorum.", "category": "pozisyon_bakim"}
+{"text": "Çarşafı değiştirir misin?", "category": "pozisyon_bakim"}
+{"text": "Yatak ıslandı.", "category": "pozisyon_bakim"}
+{"text": "Sandalyem rahat değil.", "category": "pozisyon_bakim"}
+{"text": "Biraz öne eğilmek istiyorum.", "category": "pozisyon_bakim"}
+{"text": "Beni biraz yukarı çeker misin?", "category": "pozisyon_bakim"}
+{"text": "Kayıyorum, beni tutar mısın?", "category": "pozisyon_bakim"}
+{"text": "Ekranı biraz yaklaştırır mısın?", "category": "pozisyon_bakim"}
+{"text": "Ekranı biraz uzaklaştırır mısın?", "category": "pozisyon_bakim"}
+{"text": "Ekran çok parlak.", "category": "pozisyon_bakim"}
+{"text": "Kamera beni görmüyor.", "category": "pozisyon_bakim"}
+{"text": "Cihazı şarj eder misin?", "category": "pozisyon_bakim"}
+{"text": "Kalibrasyonu yeniden yapalım.", "category": "pozisyon_bakim"}
+{"text": "Masayı yaklaştırır mısın?", "category": "pozisyon_bakim"}
+{"text": "Kapıyı kapatır mısın?", "category": "pozisyon_bakim"}
+{"text": "Kapıyı açık bırakır mısın?", "category": "pozisyon_bakim"}
+{"text": "Beni pencerenin yanına götürür müsün?", "category": "pozisyon_bakim"}
+{"text": "Bahçeye çıkmak istiyorum.", "category": "pozisyon_bakim"}
+{"text": "Bugün kendimi iyi hissediyorum.", "category": "duygu"}
+{"text": "Çok yorgunum.", "category": "duygu"}
+{"text": "Seni özledim.", "category": "duygu"}
+{"text": "Canım sıkılıyor.", "category": "duygu"}
+{"text": "Mutluyum.", "category": "duygu"}
+{"text": "Üzgünüm.", "category": "duygu"}
+{"text": "Korkuyorum.", "category": "duygu"}
+{"text": "Endişeliyim.", "category": "duygu"}
+{"text": "Biraz yalnız kalmak istiyorum.", "category": "duygu"}
+{"text": "Yalnız kalmak istemiyorum.", "category": "duygu"}
+{"text": "Yanımda kalır mısın?", "category": "duygu"}
+{"text": "Bana kızgın mısın?", "category": "duygu"}
+{"text": "Sana kızgın değilim.", "category": "duygu"}
+{"text": "Kendimi çaresiz hissediyorum.", "category": "duygu"}
+{"text": "Bugün moralim bozuk.", "category": "duygu"}
+{"text": "Bugün moralim çok iyi.", "category": "duygu"}
+{"text": "Seni seviyorum.", "category": "duygu"}
+{"text": "Seninle gurur duyuyorum.", "category": "duygu"}
+{"text": "Beni anladığın için teşekkürler.", "category": "duygu"}
+{"text": "Beni dinlediğin için sağ ol.", "category": "duygu"}
+{"text": "Sinirlendim.", "category": "duygu"}
+{"text": "Sabırsızlanıyorum.", "category": "duygu"}
+{"text": "Heyecanlıyım.", "category": "duygu"}
+{"text": "Çok sevindim.", "category": "duygu"}
+{"text": "Buna çok üzüldüm.", "category": "duygu"}
+{"text": "Hiç umudum yok.", "category": "duygu"}
+{"text": "Umutluyum.", "category": "duygu"}
+{"text": "Rahatladım.", "category": "duygu"}
+{"text": "Huzursuzum.", "category": "duygu"}
+{"text": "Kendimi güvende hissediyorum.", "category": "duygu"}
+{"text": "Kendimi güvende hissetmiyorum.", "category": "duygu"}
+{"text": "Ağlamak istiyorum.", "category": "duygu"}
+{"text": "Gülmek iyi geldi.", "category": "duygu"}
+{"text": "Bana sarılır mısın?", "category": "duygu"}
+{"text": "Elimi tutar mısın?", "category": "duygu"}
+{"text": "Benimle biraz konuşur musun?", "category": "duygu"}
+{"text": "Konuşmak istemiyorum.", "category": "duygu"}
+{"text": "Bugün kimseyi görmek istemiyorum.", "category": "duygu"}
+{"text": "Arkadaşlarımı özledim.", "category": "duygu"}
+{"text": "Evimi özledim.", "category": "duygu"}
+{"text": "Annemi çok özledim.", "category": "duygu"}
+{"text": "Babamı merak ediyorum.", "category": "duygu"}
+{"text": "Çocuklarımı görmek istiyorum.", "category": "duygu"}
+{"text": "Sıkıldım, bir şey yapalım.", "category": "duygu"}
+{"text": "Bugün çok güzel bir gündü.", "category": "duygu"}
+{"text": "Dün gece kâbus gördüm.", "category": "duygu"}
+{"text": "Kendimi yük gibi hissediyorum.", "category": "duygu"}
+{"text": "Yardımın için minnettarım.", "category": "duygu"}
+{"text": "Bunu duymak beni mutlu etti.", "category": "duygu"}
+{"text": "Beni yanlış anladın.", "category": "duygu"}
+{"text": "Ne zaman geleceksin?", "category": "soru"}
+{"text": "Saat kaç?", "category": "soru"}
+{"text": "Bugün kim gelecek?", "category": "soru"}
+{"text": "Hava nasıl?", "category": "soru"}
+{"text": "Yarın ne yapacağız?", "category": "soru"}
+{"text": "Bugün günlerden ne?", "category": "soru"}
+{"text": "Bugün ayın kaçı?", "category": "soru"}
+{"text": "Neredesin?", "category": "soru"}
+{"text": "Nereye gidiyorsun?", "category": "soru"}
+{"text": "Ne zaman döneceksin?", "category": "soru"}
+{"text": "Ne yiyeceğiz?", "category": "soru"}
+{"text": "Akşam yemeğinde ne var?", "category": "soru"}
+{"text": "Annem aradı mı?", "category": "soru"}
+{"text": "Kimse aradı mı?", "category": "soru"}
+{"text": "Mesajım var mı?", "category": "soru"}
+{"text": "Doktor ne zaman gelecek?", "category": "soru"}
+{"text": "Hemşire nerede?", "category": "soru"}
+{"text": "Ziyaretçi gelecek mi?", "category": "soru"}
+{"text": "Bu akşam kim kalacak?", "category": "soru"}
+{"text": "Yarın kim gelecek?", "category": "soru"}
+{"text": "Dışarısı soğuk mu?", "category": "soru"}
+{"text": "Yağmur yağıyor mu?", "category": "soru"}
+{"text": "Maç kaç kaç bitti?", "category": "soru"}
+{"text": "Haberlerde ne var?", "category": "soru"}
+{"text": "Bunu nereden aldın?", "category": "soru"}
+{"text": "Ne düşünüyorsun?", "category": "soru"}
+{"text": "Nasılsın?", "category": "soru"}
+{"text": "İşler nasıl gidiyor?", "category": "soru"}
+{"text": "Okul nasıl geçti?", "category": "soru"}
+{"text": "Çocuklar nasıl?", "category": "soru"}
+{"text": "Neden geç kaldın?", "category": "soru"}
+{"text": "Neden ağlıyorsun?", "category": "soru"}
+{"text": "Ne oldu?", "category": "soru"}
+{"text": "Bir sorun mu var?", "category": "soru"}
+{"text": "Bana yardım eder misin?", "category": "soru"}
+{"text": "Bunu bana okur musun?", "category": "soru"}
+{"text": "Biraz daha yavaş konuşur musun?", "category": "soru"}
+{"text": "Tekrar söyler misin?", "category": "soru"}
+{"text": "Beni duyuyor musun?", "category": "soru"}
+{"text": "Ne demek istedin?", "category": "soru"}
+{"text": "Bu ne kadar sürecek?", "category": "soru"}
+{"text": "Ne zaman eve gideceğiz?", "category": "soru"}
+{"text": "Hastaneden ne zaman çıkacağım?", "category": "soru"}
+{"text": "Ameliyat ne zaman?", "category": "soru"}
+{"text": "Sonuçlar iyi mi?", "category": "soru"}
+{"text": "Faturayı ödedin mi?", "category": "soru"}
+{"text": "Kedim nasıl?", "category": "soru"}
+{"text": "Bahçedeki çiçekler açtı mı?", "category": "soru"}
+{"text": "Bayramda kim gelecek?", "category": "soru"}
+{"text": "Beni yarın da ziyaret eder misin?", "category": "soru"}
+{"text": "Teşekkür ederim.", "category": "sosyal"}
+{"text": "Evet, lütfen.", "category": "sosyal"}
+{"text": "Hayır, istemiyorum.", "category": "sosyal"}
+{"text": "Günaydın.", "category": "sosyal"}
+{"text": "İyi geceler.", "category": "sosyal"}
+{"text": "Merhaba.", "category": "sosyal"}
+{"text": "Hoş geldin.", "category": "sosyal"}
+{"text": "Güle güle.", "category": "sosyal"}
+{"text": "Görüşürüz.", "category": "sosyal"}
+{"text": "Kendine iyi bak.", "category": "sosyal"}
+{"text": "Rica ederim.", "category": "sosyal"}
+{"text": "Özür dilerim.", "category": "sosyal"}
+{"text": "Kusura bakma.", "category": "sosyal"}
+{"text": "Bir dakika bekler misin?", "category": "sosyal"}
+{"text": "Henüz bitirmedim.", "category": "sosyal"}
+{"text": "Bitirdim.", "category": "sosyal"}
+{"text": "Evet.", "category": "sosyal"}
+{"text": "Hayır.", "category": "sosyal"}
+{"text": "Belki.", "category": "sosyal"}
+{"text": "Bilmiyorum.", "category": "sosyal"}
+{"text": "Emin değilim.", "category": "sosyal"}
+{"text": "Anladım.", "category": "sosyal"}
+{"text": "Anlamadım.", "category": "sosyal"}
+{"text": "Tamam.", "category": "sosyal"}
+{"text": "Olur.", "category": "sosyal"}
+{"text": "Olmaz.", "category": "sosyal"}
+{"text": "Aynen öyle.", "category": "sosyal"}
+{"text": "Hiç önemli değil.", "category": "sosyal"}
+{"text": "Geçmiş olsun.", "category": "sosyal"}
+{"text": "Doğum günün kutlu olsun.", "category": "sosyal"}
+{"text": "Bayramın kutlu olsun.", "category": "sosyal"}
+{"text": "Afiyet olsun.", "category": "sosyal"}
+{"text": "Eline sağlık.", "category": "sosyal"}
+{"text": "Çok güzel olmuş.", "category": "sosyal"}
+{"text": "Harika bir haber.", "category": "sosyal"}
+{"text": "Tebrik ederim.", "category": "sosyal"}
+{"text": "Başın sağ olsun.", "category": "sosyal"}
+{"text": "Selamımı söyle.", "category": "sosyal"}
+{"text": "Annemle konuşmak istiyorum.", "category": "sosyal"}
+{"text": "Kızımı aramak istiyorum.", "category": "sosyal"}
+{"text": "Oğluma mesaj yazmak istiyorum.", "category": "sosyal"}
+{"text": "Telefonu hoparlöre alır mısın?", "category": "sosyal"}
+{"text": "Görüntülü arayalım.", "category": "sosyal"}
+{"text": "Şaka yapıyorum.", "category": "sosyal"}
+{"text": "Çok komiksin.", "category": "sosyal"}
+{"text": "Bunu sonra konuşalım.", "category": "sosyal"}
+{"text": "Benim adıma teşekkür eder misin?", "category": "sosyal"}
+{"text": "Beni ziyarete geldiğin için teşekkürler.", "category": "sosyal"}
+{"text": "Yine gel.", "category": "sosyal"}
+{"text": "Seni görmek çok güzel.", "category": "sosyal"}
