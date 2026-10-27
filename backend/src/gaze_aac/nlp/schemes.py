@@ -68,6 +68,19 @@ class AbbreviationScheme(ABC):
         """Cümlenin tamamının kısaltması, kelimeler boşlukla ayrılmış."""
         return " ".join(self.abbreviate_word(w) for w in tokenize(sentence))
 
+    def abbreviate_revealing(self, sentence: str, revealed: int) -> str:
+        """İlk ``revealed`` kelimesi açık yazılmış kısaltma: ``"su i"``.
+
+        Doğru cümle listede çıkmayınca kullanıcı baştan birer kelime açık
+        yazar. Simülasyonun sonraki turları ve eğitim verisi bu biçimi aynı
+        yerden alır, yoksa model hiç görmediği bir girdiyle ölçülür.
+        """
+        words = tokenize(sentence)
+        return " ".join(
+            word if index < revealed else self.abbreviate_word(word)
+            for index, word in enumerate(words)
+        )
+
     def matches(self, sentence: str, abbreviation: str) -> bool:
         """Verilen cümle bu kısaltmaya uyuyor mu.
 
@@ -77,9 +90,18 @@ class AbbreviationScheme(ABC):
         İki taraf da normalleştirilir. S4'ün ek etiketleri büyük harfle
         üretilir ama kullanıcıdan küçük harfle gelebilir; tek tarafı
         normalleştirmek her S4 adayını sessizce geçersiz sayar.
+
+        Açık yazılmış kelime de uyar: "su i" girdisinde "Su istiyorum."
+        geçerlidir. Bu olmadan kullanıcı kelime yazdığı anda bütün adaylar
+        geçersiz sayılıp arayüzden gizlenir.
         """
-        return normalize_abbreviation(self.abbreviate(sentence)) == normalize_abbreviation(
-            abbreviation
+        words = tokenize(sentence)
+        pieces = normalize_abbreviation(abbreviation).split()
+        if len(words) != len(pieces):
+            return False
+        return all(
+            piece in (word, normalize_abbreviation(self.abbreviate_word(word)))
+            for word, piece in zip(words, pieces, strict=True)
         )
 
     def keystrokes(self, sentence: str) -> int:
@@ -94,6 +116,20 @@ class AbbreviationScheme(ABC):
 def normalize_abbreviation(abbreviation: str) -> str:
     """Kısaltmayı karşılaştırmaya hazır hale getirir."""
     return " ".join(turkish_lower(abbreviation).split())
+
+
+def canonical_abbreviation(abbreviation: str) -> str:
+    """Dil modeline giden tek biçim: harfler küçük, S4 etiketleri büyük.
+
+    Eğitim çiftleri kısaltmayı ``abbreviate`` ile üretir (``h-DAT``), arayüz
+    ve simülasyon ise küçültüp gönderir (``h-dat``). İstem iki yoldan farklı
+    çıkarsa ince ayarlı model, eğitimde hiç görmediği bir girdiyle karşılaşır.
+    """
+    pieces = []
+    for piece in normalize_abbreviation(abbreviation).split():
+        head, dash, tag = piece.partition("-")
+        pieces.append(head + dash + tag.upper())
+    return " ".join(pieces)
 
 
 class InitialScheme(AbbreviationScheme):

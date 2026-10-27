@@ -7,12 +7,13 @@ sık hatadır. Bu yüzden tek bir yerde tutulur.
 
 from __future__ import annotations
 
-from .schemes import SUFFIX_TAGS, get_scheme
+from .schemes import SUFFIX_TAGS, canonical_abbreviation, get_scheme
 
 SYSTEM_PROMPT = (
     "Sen bir Türkçe iletişim yardımcısısın. Kullanıcı konuşamıyor ve gözüyle "
     "yalnızca kısaltma yazabiliyor. Verilen kısaltmayı, kuralına uyan doğal bir "
-    "Türkçe cümleye çevir. Sadece cümleyi yaz, açıklama ekleme."
+    "Türkçe cümleye çevir. Kısaltmada açık yazılmış kelime varsa cümlede onu aynen "
+    "kullan. Sadece cümleyi yaz, açıklama ekleme."
 )
 
 _SCHEME_RULES = {
@@ -47,6 +48,9 @@ def build_prompt(
             artırır; literatürde tek konuşma turu doğruluğu iki katından
             fazlasına çıkarıyor.
         examples: Az atışlı istem için (kısaltma, cümle) çiftleri.
+
+    Kısaltma ``canonical_abbreviation`` ile tek biçime getirilir: arayüzden
+    ``h-dat``, eğitim verisinden ``h-DAT`` gelse de istem aynı çıkar.
     """
     parts = [SYSTEM_PROMPT, "", f"Kural: {scheme_rule(scheme)}"]
 
@@ -58,13 +62,13 @@ def build_prompt(
         parts.append("")
         parts.append("Örnekler:")
         for abbr, sentence in examples:
-            parts.append(f"Kısaltma: {abbr}\nCümle: {sentence}")
+            parts.append(f"Kısaltma: {canonical_abbreviation(abbr)}\nCümle: {sentence}")
 
     parts.append("")
     if context:
         parts.append(f"Bağlam: {context}")
     parts.append(f"Şema: {scheme.upper()}")
-    parts.append(f"Kısaltma: {abbreviation}")
+    parts.append(f"Kısaltma: {canonical_abbreviation(abbreviation)}")
     parts.append("Cümle:")
 
     return "\n".join(parts)
@@ -75,8 +79,9 @@ def build_training_record(
 ) -> dict[str, str]:
     """İnce ayar için tek bir eğitim kaydı.
 
-    Çıktı biçimi ``{"prompt": ..., "completion": ...}`` olduğundan TRL'nin
-    ``SFTTrainer`` sınıfına doğrudan verilebilir.
+    Çıktı biçimi ``{"prompt": ..., "completion": ...}``. ``finetune`` modülü
+    kaybı yalnızca tamamlama üstünden hesaplar; aynı biçim TRL'nin
+    ``SFTTrainer`` sınıfına da doğrudan verilebilir.
     """
     return {
         "prompt": build_prompt(abbreviation, scheme=scheme, context=context),

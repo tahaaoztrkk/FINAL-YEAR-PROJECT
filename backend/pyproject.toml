@@ -24,12 +24,15 @@ gaze = [
     "mediapipe>=0.10.14",
     "opencv-python>=4.10",
 ]
-# Yerel dil modeli. Colab/Kaggle dışında kurmak zorunda değilsiniz.
+# Yerel dil modeli ve QLoRA ince ayarı. Colab/Kaggle dışında kurmak zorunda
+# değilsiniz. peft hem eğitimde hem adaptörü yüklerken gerekir; Unsloth
+# isteğe bağlıdır ve kendi sürümlerini sabitlediği için ayrıca kurulur.
 llm = [
     "transformers>=4.45",
     "torch>=2.4",
     "accelerate>=1.0",
     "bitsandbytes>=0.44; platform_system != 'Darwin'",
+    "peft>=0.13",
 ]
 dev = [
     "pytest>=8.3",

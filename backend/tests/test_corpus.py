@@ -8,8 +8,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from gaze_aac.config import Settings
-from gaze_aac.data.corpus import Corpus, CorpusEntry
+from gaze_aac.data.corpus import Corpus, CorpusEntry, build_training_pairs
+from gaze_aac.nlp.prompts import build_prompt
+from gaze_aac.nlp.schemes import get_scheme
 
 
 def _corpus_with_groups() -> Corpus:
@@ -84,3 +88,48 @@ class TestRepoCorpus:
                 if not entry.note:
                     kept[entry.group] += 1
         assert all(count == 1 for count in kept.values()), kept
+
+
+class TestTrainingPairs:
+    corpus = Corpus(
+        [
+            CorpusEntry(text="Yarın hastaneye gitmek istemiyorum."),
+            CorpusEntry(text="Susadım."),
+        ]
+    )
+
+    def test_one_plain_record_per_sentence_and_scheme(self) -> None:
+        records = build_training_pairs(self.corpus, reveal_share=0.0)
+        assert len(records) == 2 * 4
+        assert all(record["revealed"] == 0 for record in records)
+
+    def test_revealed_records_mirror_the_simulation(self) -> None:
+        records = build_training_pairs(self.corpus, reveal_share=1.0)
+        mixed = [record for record in records if record["revealed"]]
+
+        # Tek kelimelik cümlede açılacak kelime yok: yalnızca dört şemanın
+        # her biri için uzun cümleden birer kayıt.
+        assert len(mixed) == 4
+        for record in mixed:
+            revealed = int(record["revealed"])
+            assert 1 <= revealed <= 3
+            scheme = get_scheme(str(record["scheme"]))
+            expected = scheme.abbreviate_revealing(str(record["sentence"]), revealed)
+            assert record["abbreviation"] == expected
+            assert record["prompt"] == build_prompt(expected, scheme=scheme.id)
+
+    def test_same_seed_same_records(self) -> None:
+        first = build_training_pairs(self.corpus, reveal_share=0.5, seed=3)
+        second = build_training_pairs(self.corpus, reveal_share=0.5, seed=3)
+        assert first == second
+
+    def test_share_out_of_range(self) -> None:
+        with pytest.raises(ValueError):
+            build_training_pairs(self.corpus, reveal_share=1.5)
+
+    def test_prompt_is_the_same_for_lowercase_s4_input(self) -> None:
+        """Eğitim verisi etiketleri büyük, arayüz küçük harfle gönderir."""
+        abbreviation = get_scheme("S4").abbreviate("Yarın hastaneye gitmek istemiyorum.")
+        assert build_prompt(abbreviation.lower(), scheme="S4") == build_prompt(
+            abbreviation, scheme="S4"
+        )

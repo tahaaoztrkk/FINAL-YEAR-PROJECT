@@ -87,6 +87,12 @@ def main() -> None:
     parser.add_argument("--seed-only", action="store_true", help="Yalnızca çekirdek cümleleri yaz")
     parser.add_argument("--raw", type=Path, default=None, help="Ham derlem (JSONL)")
     parser.add_argument("--min-sentences", type=int, default=0)
+    parser.add_argument(
+        "--reveal-share",
+        type=float,
+        default=0.25,
+        help="İlk kelimeleri açık yazılmış ek eğitim kaydı oranı (0 kapatır)",
+    )
     args = parser.parse_args()
 
     settings = get_settings()
@@ -123,16 +129,17 @@ def main() -> None:
         )
 
     train, val, test = corpus.split()
-    processed = settings.data_dir / "processed"
     corpus.save(settings.corpus_path)
-    train.save(processed / "train.jsonl")
-    val.save(processed / "val.jsonl")
-    test.save(processed / "test.jsonl")
+    train.save(settings.train_path)
+    val.save(settings.val_path)
+    test.save(settings.test_path)
     print(f"\nBölündü: eğitim={len(train)} doğrulama={len(val)} test={len(test)}")
 
-    pairs = build_training_pairs(train)
+    pairs = build_training_pairs(train, reveal_share=args.reveal_share)
     write_pairs(pairs, settings.pairs_path)
+    mixed = sum(1 for pair in pairs if pair["revealed"])
     print(f"{len(pairs)} eğitim çifti yazıldı: {settings.pairs_path}")
+    print(f"  {mixed} tanesinde ilk kelimeler açık yazılmış (ör. 'su i')")
     print("\nTest kümesini Ocak'a kadar açmayın.")
 
 

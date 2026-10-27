@@ -23,7 +23,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from ..nlp.prompts import build_training_record
-from ..nlp.schemes import all_schemes, get_scheme
+from ..nlp.schemes import all_schemes, get_scheme, tokenize
 
 CATEGORIES: tuple[str, ...] = (
     "temel_ihtiyac",
@@ -33,6 +33,12 @@ CATEGORIES: tuple[str, ...] = (
     "soru",
     "sosyal",
 )
+
+# Simülasyonda kullanıcı en fazla dört kelimeyi açık yazar (beş tur).
+MAX_REVEALED_WORDS = 4
+
+# Eğitim kaydı: istem, tamamlama ve denetim için kısaltma bilgileri.
+TrainingRecord = dict[str, str | int]
 
 
 @dataclass
@@ -159,35 +165,63 @@ class Corpus:
         return len(self.entries)
 
 
-def build_training_pairs(corpus: Corpus, schemes: list[str] | None = None) -> list[dict[str, str]]:
+def build_training_pairs(
+    corpus: Corpus,
+    schemes: list[str] | None = None,
+    reveal_share: float = 0.25,
+    seed: int = 42,
+) -> list[TrainingRecord]:
     """Derlemden ince ayar kayıtları üretir.
 
     Her cümle her şema için bir kayıt doğurur: 3.000 cümle x 4 şema = 12.000
     örnek. Şema etiketi istemin içinde olduğu için tek model dört şemayı da
     öğrenir; bu, karşılaştırmayı aynı ağırlıklar üstünde yaptığı için ayrı
     model eğitmekten hem ucuz hem adildir.
+
+    Kayıtların ``reveal_share`` kadarına bir kayıt daha eklenir: ilk birkaç
+    kelimesi açık yazılmış kısaltma ("su i"). Doğru cümle listede çıkmayınca
+    kullanıcı böyle devam eder ve simülasyon bunu ölçer; model bu biçimi
+    eğitimde hiç görmezse sonraki turlarda ne yapacağını bilemez.
+    ``revealed`` alanı açık yazılan kelime sayısıdır, saf kısaltmada 0'dır.
     """
+    if not 0.0 <= reveal_share <= 1.0:
+        raise ValueError("reveal_share 0 ile 1 arasında olmalı")
+
     scheme_ids = schemes or [s.id for s in all_schemes()]
-    records: list[dict[str, str]] = []
+    rng = random.Random(seed)
+    records: list[TrainingRecord] = []
 
     for entry in corpus.entries:
+        word_count = len(tokenize(entry.text))
         for scheme_id in scheme_ids:
             handler = get_scheme(scheme_id)
             abbreviation = handler.abbreviate(entry.text)
             if not abbreviation.strip():
                 continue
-            record = build_training_record(
-                abbreviation, entry.text, scheme_id, context=entry.context
-            )
-            record["scheme"] = scheme_id
-            record["abbreviation"] = abbreviation
-            record["sentence"] = entry.text
-            records.append(record)
+            records.append(_training_record(entry, scheme_id, abbreviation, revealed=0))
+
+            if word_count > 1 and rng.random() < reveal_share:
+                revealed = rng.randint(1, min(word_count - 1, MAX_REVEALED_WORDS))
+                mixed = handler.abbreviate_revealing(entry.text, revealed)
+                records.append(_training_record(entry, scheme_id, mixed, revealed=revealed))
 
     return records
 
 
-def write_pairs(records: list[dict[str, str]], path: Path) -> None:
+def _training_record(
+    entry: CorpusEntry, scheme_id: str, abbreviation: str, revealed: int
+) -> TrainingRecord:
+    record: TrainingRecord = {
+        **build_training_record(abbreviation, entry.text, scheme_id, context=entry.context)
+    }
+    record["scheme"] = scheme_id
+    record["abbreviation"] = abbreviation
+    record["sentence"] = entry.text
+    record["revealed"] = revealed
+    return record
+
+
+def write_pairs(records: list[TrainingRecord], path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as handle:
         for record in records:
