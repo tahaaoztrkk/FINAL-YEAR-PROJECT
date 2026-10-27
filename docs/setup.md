@@ -38,10 +38,10 @@ Doğrulayın:
 
 ```bash
 pytest
-uvicorn gaze_aac.main:app --reload
+uvicorn gaze_aac.main:app --reload --port 8010
 ```
 
-`http://127.0.0.1:8000/docs` açılmalı ve `/health` uç noktası `"status": "ok"`
+`http://127.0.0.1:8010/docs` açılmalı ve `/health` uç noktası `"status": "ok"`
 dönmeli.
 
 ### Frontend
@@ -136,8 +136,8 @@ kapalı olduğuna bakın:
 netsh interface ipv4 show excludedportrange protocol=tcp
 ```
 
-Listedeki aralıklara düşmeyen bir port seçin (ör. 8010) ve iki yerde
-ayarlayın:
+Projenin varsayılanı bu yüzden 8010. O da kapalıysa listedeki aralıklara
+düşmeyen bir port seçin ve iki yerde ayarlayın:
 
 ```powershell
 uvicorn gaze_aac.main:app --reload --port 8010
@@ -159,8 +159,8 @@ deneyin.
 `Python: Select Interpreter` → `backend/.venv` içindekini seçin.
 
 **Arayüz bağlanamıyor** — backend'in ayakta olduğundan emin olun. Vite
-vekili `127.0.0.1:8000` adresine bakar; backend başka portta ise
-`vite.config.ts` içindeki hedefi güncelleyin.
+vekili `frontend/.env` içindeki `BACKEND_PORT` portuna bakar (varsayılan
+8010); uvicorn'un aynı portla başlatıldığını kontrol edin.
 
 **`npm install` çok yavaş** — kurumsal ağlarda olur. `npm config set
 registry https://registry.npmjs.org/` deneyin.

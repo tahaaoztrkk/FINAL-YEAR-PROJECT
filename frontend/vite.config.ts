@@ -7,7 +7,7 @@ export default defineConfig(({ mode }) => {
   // veya WSL tarafından rezerve edilir (WinError 10013); o durumda tek
   // yapılacak şey frontend/.env içinde BACKEND_PORT değerini değiştirmek.
   const env = loadEnv(mode, process.cwd(), '');
-  const backendPort = env.BACKEND_PORT ?? '8000';
+  const backendPort = env.BACKEND_PORT ?? '8010';
   const frontendPort = Number(env.FRONTEND_PORT ?? '5173');
 
   return {
