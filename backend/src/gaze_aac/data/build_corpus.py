@@ -113,6 +113,10 @@ def main() -> None:
     for category, count in sorted(corpus.category_counts().items()):
         print(f"  {category:<20} {count:>5}")
 
+    marked = [entry for entry in corpus.entries if entry.note]
+    if marked:
+        print(f"\n{len(marked)} cümle notlu (ör. 'çıkarılacak'), gözden geçirilmeyi bekliyor")
+
     if args.min_sentences and len(corpus) < args.min_sentences:
         raise SystemExit(
             f"En az {args.min_sentences} cümle bekleniyordu, {len(corpus)} var. Derlemi genişletin."

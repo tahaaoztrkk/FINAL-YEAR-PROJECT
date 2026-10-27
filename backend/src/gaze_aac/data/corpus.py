@@ -2,11 +2,16 @@
 
 Derlem JSONL biçimindedir: her satır bir kayıt.
 
-    {"text": "Su istiyorum.", "category": "temel_ihtiyac", "context": "Bir şey ister misin?"}
+    {"text": "Su istiyorum.", "category": "temel_ihtiyac", "group": "su_istemek"}
 
 Kategori alanı, veri dengesini kontrol etmek ve raporda dağılımı göstermek
 için gerekli. Bağlam alanı isteğe bağlıdır; bağlamlı/bağlamsız karşılaştırma
 bu alanın varlığına dayanır.
+
+Grup alanı aynı anlamı farklı söyleyen cümleleri bağlar ("Su istiyorum." ve
+"Susadım."). İkisi de derlemde kalır, çünkü kullanıcılar aynı ihtiyacı farklı
+söyler; ama bölmede birlikte hareket ederler. Grubun ilki dışındakiler
+``"note": "çıkarılacak"`` ile işaretlidir: ekip gözden geçirince silinecekler.
 """
 
 from __future__ import annotations
@@ -37,13 +42,24 @@ class CorpusEntry:
     text: str
     category: str = ""
     context: str | None = None
+    group: str = ""
+    note: str = ""
+
+    @property
+    def split_key(self) -> str:
+        """Bölmede birlikte kalması gereken cümlelerin ortak anahtarı."""
+        return f"group:{self.group}" if self.group else f"text:{self.text.casefold()}"
 
     def to_json(self) -> str:
         payload: dict[str, str] = {"text": self.text}
         if self.category:
             payload["category"] = self.category
+        if self.group:
+            payload["group"] = self.group
         if self.context:
             payload["context"] = self.context
+        if self.note:
+            payload["note"] = self.note
         return json.dumps(payload, ensure_ascii=False)
 
 
@@ -73,6 +89,8 @@ class Corpus:
                         text=text.strip(),
                         category=str(record.get("category", "")),
                         context=record.get("context"),
+                        group=str(record.get("group", "")),
+                        note=str(record.get("note", "")),
                     )
                 )
         return cls(entries=entries)
@@ -109,23 +127,33 @@ class Corpus:
     ) -> tuple[Corpus, Corpus, Corpus]:
         """Eğitim / doğrulama / test olarak böler.
 
-        Bölme cümle düzeyinde yapılır ve tohum sabittir: aynı bölme her
-        koşuda aynı çıkar, yoksa koşular arası karşılaştırma anlamsızlaşır.
+        Bölme anlam grubu düzeyinde yapılır: "Su istiyorum." eğitime,
+        "Susadım." doğrulamaya düşerse model ezberden kazanmış gibi görünür.
+        Grubu olmayan cümle kendi başına bir gruptur. Tohum sabittir: aynı
+        bölme her koşuda aynı çıkar, yoksa koşular arası karşılaştırma
+        anlamsızlaşır.
         """
         if not 0 < train < 1 or not 0 <= val < 1 or train + val >= 1:
             raise ValueError("Oranlar 0–1 arasında olmalı ve toplamı 1'den küçük kalmalı")
 
-        shuffled = list(self.entries)
-        random.Random(seed).shuffle(shuffled)
+        groups: dict[str, list[CorpusEntry]] = {}
+        for entry in self.entries:
+            groups.setdefault(entry.split_key, []).append(entry)
+        ordered = list(groups.values())
+        random.Random(seed).shuffle(ordered)
 
-        n = len(shuffled)
-        train_end = int(n * train)
-        val_end = train_end + int(n * val)
-        return (
-            Corpus(shuffled[:train_end]),
-            Corpus(shuffled[train_end:val_end]),
-            Corpus(shuffled[val_end:]),
-        )
+        n = len(self.entries)
+        train_target = int(n * train)
+        val_target = int(n * val)
+        parts: tuple[list[CorpusEntry], list[CorpusEntry], list[CorpusEntry]] = ([], [], [])
+        for members in ordered:
+            if len(parts[0]) < train_target:
+                parts[0].extend(members)
+            elif len(parts[1]) < val_target:
+                parts[1].extend(members)
+            else:
+                parts[2].extend(members)
+        return Corpus(parts[0]), Corpus(parts[1]), Corpus(parts[2])
 
     def __len__(self) -> int:
         return len(self.entries)
