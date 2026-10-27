@@ -37,6 +37,11 @@ class DwellDetector:
             yerden devam eder.
         refractory_ms: Bir seçimden sonra yeni seçimin engellendiği süre.
             Kullanıcının bakışını çekmesine zaman tanır, çift seçimi önler.
+
+    Süreye ek olarak bir çıkış kilidi vardır: seçimden sonra bakış seçilen
+    hedefin dikdörtgeninden çıkmadan yeni seçim yapılmaz. Kilit konuma
+    bağlıdır, kimliğe değil; düzen değişip aynı hücreye başka tuş gelse de
+    kıpırdamayan bakış onu seçmez.
     """
 
     dwell_ms: int = 700
@@ -49,9 +54,14 @@ class DwellDetector:
     _last_t: float | None = field(default=None, repr=False)
     _away_ms: float = field(default=0.0, repr=False)
     _refractory_left_ms: float = field(default=0.0, repr=False)
+    _exit_lock: GazeTarget | None = field(default=None, repr=False)
 
     def set_targets(self, targets: list[GazeTarget]) -> None:
-        """Ekran düzeni değiştiğinde çağrılır; biriken ilerleme sıfırlanır."""
+        """Ekran düzeni değiştiğinde çağrılır; biriken ilerleme sıfırlanır.
+
+        Çıkış kilidi korunur: düzen çoğunlukla bir seçimin sonucu olarak
+        değişir ve kilit tam da o anda zincirleme seçimi engeller.
+        """
         self._targets = list(targets)
         self.reset_progress()
 
@@ -64,6 +74,16 @@ class DwellDetector:
         self.reset_progress()
         self._last_t = None
         self._refractory_left_ms = 0.0
+        self._exit_lock = None
+
+    def lock(self, target_id: str) -> None:
+        """Dwell dışında yapılan seçimi (tıklama) dwell'e bildirir.
+
+        Tıklanan tuşa çıkış kilidi konur; yoksa imleç tuşun üstünde kaldığı
+        için dwell aynı hücreyi bir de kendisi seçer.
+        """
+        self.reset_progress()
+        self._exit_lock = next((t for t in self._targets if t.id == target_id), None)
 
     def _hit_test(self, x: float, y: float) -> GazeTarget | None:
         # Üst üste binen hedeflerde en küçüğü kazanır: iç içe düzenlerde
@@ -91,6 +111,11 @@ class DwellDetector:
             self._refractory_left_ms = max(0.0, self._refractory_left_ms - dt_ms)
             return DwellEvent(target_id=None, progress=0.0, selected=False)
 
+        if self._exit_lock is not None:
+            if self._exit_lock.contains(x, y):
+                return DwellEvent(target_id=None, progress=0.0, selected=False)
+            self._exit_lock = None
+
         hit = self._hit_test(x, y)
 
         if hit is None:
@@ -116,6 +141,7 @@ class DwellDetector:
             selected_id = hit.id
             self.reset_progress()
             self._refractory_left_ms = float(self.refractory_ms)
+            self._exit_lock = hit
             return DwellEvent(
                 target_id=selected_id, progress=1.0, selected=True, elapsed_ms=elapsed
             )

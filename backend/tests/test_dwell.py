@@ -172,3 +172,18 @@ class TestGazeTarget:
         cx, cy = TARGET.center
         assert abs(cx - 0.25) < 1e-9
         assert abs(cy - 0.25) < 1e-9
+
+
+class TestManualLock:
+    def test_click_locks_target_against_dwell(self) -> None:
+        """Tıklanan tuşun üstünde duran imleç, tuşu dwell ile bir daha seçmez."""
+        detector = _detector(dwell_ms=200)
+        detector.update(0.2, 0.2, 0.0)
+        detector.lock("k1")
+
+        for step in range(1, 10):
+            assert not detector.update(0.2, 0.2, step * 0.25).selected
+
+        detector.update(0.7, 0.2, 2.6)  # başka hedefe geç: kilit açılır
+        detector.update(0.2, 0.2, 2.7)
+        assert detector.update(0.2, 0.2, 3.0).selected

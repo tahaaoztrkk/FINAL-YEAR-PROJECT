@@ -88,6 +88,7 @@ async def _handle_message(
         return
 
     if isinstance(message, ClientSelect):
+        session.dwell.lock(message.target_id)
         await _send(websocket, ServerSelection(target_id=message.target_id, dwell_ms=0.0))
         return
 

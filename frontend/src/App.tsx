@@ -155,15 +155,12 @@ export default function App() {
     [send, speakAndReset],
   );
 
+  // Tıklama doğrudan işlenmez, sunucuya gönderilir: sunucu dwell'e kilit
+  // koyar ve seçimi geri yollar. Böylece tıklama ile dwell aynı tuşu iki
+  // kez seçmez ve her seçim tek yoldan (handleSelection) geçer.
   const handleTileClick = useCallback(
-    (targetId: string) => {
-      if (targetId === 'action:expand') {
-        handleExpand();
-        return;
-      }
-      handleSelection(targetId);
-    },
-    [handleExpand, handleSelection],
+    (targetId: string) => send({ type: 'select', target_id: targetId }),
+    [send],
   );
 
   return (
@@ -187,6 +184,11 @@ export default function App() {
         dwellTargetId={state.dwellTargetId}
         dwellProgress={state.dwellProgress}
         latencyMs={state.lastLatencyMs}
+        noResult={
+          validCandidates.length === 0 &&
+          abbreviation.trim() !== '' &&
+          state.candidatesFor === abbreviation.trim()
+        }
         onSelect={handleSpeak}
       />
 

@@ -25,6 +25,8 @@ export interface SessionState {
   dwellTargetId: string | null;
   dwellProgress: number;
   candidates: Candidate[];
+  /** Son aday listesinin ait olduğu kısaltma; boş sonucu "istenmedi"den ayırır. */
+  candidatesFor: string | null;
   lastLatencyMs: number | null;
   calibrationErrorDeg: number | null;
   lastError: string | null;
@@ -40,6 +42,7 @@ const INITIAL: SessionState = {
   dwellTargetId: null,
   dwellProgress: 0,
   candidates: [],
+  candidatesFor: null,
   lastLatencyMs: null,
   calibrationErrorDeg: null,
   lastError: null,
@@ -100,6 +103,7 @@ export function useGazeSession(
             setState((prev) => ({
               ...prev,
               candidates: message.candidates,
+              candidatesFor: message.abbreviation,
               lastLatencyMs: message.latency_ms,
             }));
             break;
