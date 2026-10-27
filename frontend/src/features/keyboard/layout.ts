@@ -25,8 +25,7 @@ export const LETTER_GROUPS: readonly string[][] = [
   ['j', 'k', 'l', 'm'],
   ['n', 'o', 'ö', 'p'],
   ['r', 's', 'ş', 't'],
-  ['u', 'ü', 'v', 'y'],
-  ['z'],
+  ['u', 'ü', 'v', 'y', 'z'],
 ];
 
 /** Ek sınıfı etiketleri (S4 şeması için). */
@@ -92,6 +91,15 @@ export function buildTargets(mode: KeyboardMode, activeGroup: number | null): Ga
         label: group.join(' '),
         kind: 'group',
       });
+    });
+    // Boşluk yalnızca grup ekranında: kelime bir harf seçildikten sonra
+    // bittiği için kullanıcı her zaman bu ekrana dönmüş olur. Genişletici
+    // kelime sınırı olmadan çalışmaz ('si' aday üretmez, 's i' üretir).
+    targets.push({
+      id: 'action:space',
+      ...cellRect(LETTER_GROUPS.length),
+      label: 'Boşluk',
+      kind: 'action',
     });
   } else if (mode === 'letters' && activeGroup !== null) {
     const letters = LETTER_GROUPS[activeGroup] ?? [];

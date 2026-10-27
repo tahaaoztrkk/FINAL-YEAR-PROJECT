@@ -13,6 +13,8 @@ interface Props {
   dwellTargetId: string | null;
   dwellProgress: number;
   latencyMs: number | null;
+  /** Genişletme yapıldı ama geçerli aday çıkmadı. */
+  noResult: boolean;
   onSelect: (text: string) => void;
 }
 
@@ -21,6 +23,7 @@ export function CandidateList({
   dwellTargetId,
   dwellProgress,
   latencyMs,
+  noResult,
   onSelect,
 }: Props) {
   const visible = candidates.filter((candidate) => candidate.valid);
@@ -28,7 +31,11 @@ export function CandidateList({
   if (visible.length === 0) {
     return (
       <div className="candidates candidates--empty">
-        <p>Harf seçin, ardından “Tamamla” deyin.</p>
+        <p>
+          {noResult
+            ? 'Bu kısaltma için aday bulunamadı. Kelimeler arasına Boşluk koymayı deneyin.'
+            : 'Harf seçin, ardından “Tamamla” deyin.'}
+        </p>
       </div>
     );
   }
