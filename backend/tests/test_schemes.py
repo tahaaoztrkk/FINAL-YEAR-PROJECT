@@ -17,6 +17,7 @@ from gaze_aac.nlp.schemes import (
     get_scheme,
     guess_suffix_tag,
     tokenize,
+    turkish_capitalize,
     turkish_lower,
 )
 
@@ -31,6 +32,15 @@ class TestTurkishLower:
 
     def test_other_turkish_letters(self) -> None:
         assert turkish_lower("ÇĞÖŞÜ") == "çğöşü"
+
+
+class TestTurkishCapitalize:
+    def test_dotted_and_dotless_i(self) -> None:
+        assert turkish_capitalize("istiyorum") == "İstiyorum"
+        assert turkish_capitalize("ılık") == "Ilık"
+
+    def test_rest_is_unchanged(self) -> None:
+        assert turkish_capitalize("su İstiyorum") == "Su İstiyorum"
 
 
 class TestTokenize:

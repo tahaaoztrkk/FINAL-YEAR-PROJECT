@@ -69,8 +69,21 @@ class Settings(BaseSettings):
     data_dir: Path = _BACKEND_ROOT.parent / "data"
 
     @property
+    def source_corpus_path(self) -> Path:
+        """Elle derlenen ham cümleler. Repoda tutulur, ekip PR ile genişletir."""
+        return self.data_dir / "corpus" / "aac_sentences.jsonl"
+
+    @property
     def corpus_path(self) -> Path:
         return self.data_dir / "processed" / "aac_corpus.jsonl"
+
+    @property
+    def train_path(self) -> Path:
+        return self.data_dir / "processed" / "train.jsonl"
+
+    @property
+    def val_path(self) -> Path:
+        return self.data_dir / "processed" / "val.jsonl"
 
     @property
     def pairs_path(self) -> Path:

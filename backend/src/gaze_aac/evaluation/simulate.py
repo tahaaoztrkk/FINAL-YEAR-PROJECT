@@ -187,7 +187,12 @@ def main() -> None:
     from ..nlp.expander import build_provider
 
     parser = argparse.ArgumentParser(description="Kısaltma şemalarını karşılaştır")
-    parser.add_argument("--corpus", type=Path, default=None, help="JSONL test derlemi")
+    parser.add_argument(
+        "--corpus", type=Path, default=None, help="Değerlendirme cümleleri (varsayılan: val)"
+    )
+    parser.add_argument(
+        "--train", type=Path, default=None, help="Sağlayıcıların öğreneceği cümleler"
+    )
     parser.add_argument("--out", type=Path, default=Path("results/simulation.csv"))
     parser.add_argument("--providers", nargs="+", default=["mock"])
     parser.add_argument("--schemes", nargs="+", default=["S1", "S2", "S3", "S4"])
@@ -196,14 +201,21 @@ def main() -> None:
     args = parser.parse_args()
 
     settings = get_settings()
-    corpus = args.corpus or settings.corpus_path
-    if not corpus.exists():
-        raise SystemExit(
-            f"Derlem bulunamadı: {corpus}\nÖnce üretin: python -m gaze_aac.data.build_corpus"
-        )
+    # Test kümesi Ocak'a kadar kapalı: geliştirme sırasında doğrulama kümesi
+    # ölçülür, sağlayıcılar yalnızca eğitim kümesini görür.
+    corpus = args.corpus or settings.val_path
+    train = args.train or settings.train_path
+    for path in (corpus, train):
+        if not path.exists():
+            raise SystemExit(
+                f"Derlem bulunamadı: {path}\nÖnce üretin: python -m gaze_aac.data.build_corpus"
+            )
 
     cases = load_cases(corpus, limit=args.limit)
-    services = {name: ExpansionService(build_provider(name, settings)) for name in args.providers}
+    services = {
+        name: ExpansionService(build_provider(name, settings, corpus_path=train))
+        for name in args.providers
+    }
 
     results = asyncio.run(run_grid(cases, services, args.schemes, top_k=args.top_k))
     write_csv(results, args.out)
