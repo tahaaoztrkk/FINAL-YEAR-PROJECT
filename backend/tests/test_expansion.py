@@ -12,8 +12,14 @@ from gaze_aac.evaluation.metrics import (
     mean_reciprocal_rank,
     top_k_accuracy,
 )
-from gaze_aac.evaluation.simulate import SimulationCase, run_condition
+from gaze_aac.evaluation.simulate import (
+    SimulationCase,
+    context_options_for,
+    run_condition,
+    simulate_case,
+)
 from gaze_aac.nlp.expander import ExpansionService, back_check, build_provider, default_corpus_path
+from gaze_aac.nlp.providers.hf_local import HuggingFaceProvider
 from gaze_aac.nlp.providers.mock import MockProvider
 from gaze_aac.nlp.providers.ngram import NGramProvider
 from gaze_aac.nlp.schemes import get_scheme
@@ -32,6 +38,12 @@ class TestBackCheck:
         request = ExpansionRequest(abbreviation="s i", scheme="S1")
         checked = back_check([Candidate(text="Su içmek istiyorum.")], request)
         assert not checked[0].valid
+
+    def test_spelled_out_word_keeps_candidate_valid(self) -> None:
+        """Arayüz geçersiz adayı gizler; açık yazılan kelime adayı düşürmemeli."""
+        request = ExpansionRequest(abbreviation="su i", scheme="S1")
+        checked = back_check([Candidate(text="Su istiyorum.")], request)
+        assert checked[0].valid
 
 
 class TestExpansionService:
@@ -97,6 +109,14 @@ class TestNGramProvider:
 
         result = await provider.expand(ExpansionRequest(abbreviation="çay i", scheme="S1"))
         assert result and result[0].text == "Çay istiyorum"
+
+
+class TestHuggingFaceProviderName:
+    """Model yüklenmez; ad yalnızca sonuç tablosundaki satırı belirler."""
+
+    def test_zero_shot_and_fine_tuned_are_separate_rows(self) -> None:
+        assert HuggingFaceProvider("model").name == "hf_local"
+        assert HuggingFaceProvider("model", adapter_path="adaptor").name == "hf_local+lora"
 
 
 class TestBuildProvider:
@@ -173,3 +193,51 @@ class TestSimulation:
             "mrr",
             "gecikme_ms",
         }
+
+
+class _FoundAfterReveal:
+    """Hedef cümleyi yalnızca en az bir kelime açık yazılınca bulan sağlayıcı."""
+
+    name = "test"
+
+    def __init__(self, sentence: str) -> None:
+        self.sentence = sentence
+
+    async def expand(self, request: ExpansionRequest) -> list[Candidate]:
+        plain = get_scheme(request.scheme).abbreviate(self.sentence).lower()
+        if request.abbreviation == plain:
+            return []
+        return [Candidate(text=self.sentence)]
+
+
+class TestRevealCost:
+    sentence = "Yarın hastaneye gitmek istemiyorum."
+
+    @pytest.mark.parametrize("scheme_id", ["S1", "S2", "S3", "S4"])
+    async def test_revealed_word_costs_its_letters_minus_its_abbreviation(
+        self, scheme_id: str
+    ) -> None:
+        """'Yarın' açık yazılınca 5 harf girilir, kısaltmasının seçimleri düşer.
+
+        Eskiden kısaltma her şemada 1 seçim sayılıyordu; bu S2-S4'ü haksız
+        yere cezalandırıyordu.
+        """
+        scheme = get_scheme(scheme_id)
+        service = ExpansionService(_FoundAfterReveal(self.sentence))
+
+        selections, rank, _ = await simulate_case(
+            SimulationCase(text=self.sentence), service, scheme_id, top_k=5, use_context=False
+        )
+
+        assert rank == 0
+        expected_extra = len("yarın") - scheme.keystrokes("yarın")
+        assert selections == scheme.keystrokes(self.sentence) + expected_extra + 1
+
+
+class TestContextOptions:
+    def test_without_context_only_one_condition(self) -> None:
+        assert context_options_for([SimulationCase(text="Su istiyorum.")]) == (False,)
+
+    def test_with_context_both_conditions(self) -> None:
+        cases = [SimulationCase(text="Evet.", context="Su ister misin?")]
+        assert context_options_for(cases) == (False, True)

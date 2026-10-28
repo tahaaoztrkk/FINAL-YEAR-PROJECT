@@ -86,8 +86,18 @@ class Settings(BaseSettings):
         return self.data_dir / "processed" / "val.jsonl"
 
     @property
+    def test_path(self) -> Path:
+        """Ocak'a kadar kapalı. Yalnızca sızıntı denetiminde okunur."""
+        return self.data_dir / "processed" / "test.jsonl"
+
+    @property
     def pairs_path(self) -> Path:
         return self.data_dir / "processed" / "training_pairs.jsonl"
+
+    @property
+    def adapter_dir(self) -> Path:
+        """İnce ayar çıktısının varsayılan yeri. ``models/`` repoya girmez."""
+        return self.data_dir.parent / "models" / "turkish-gemma-qlora"
 
 
 @lru_cache

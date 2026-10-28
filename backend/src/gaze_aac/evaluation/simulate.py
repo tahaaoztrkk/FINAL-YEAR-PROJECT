@@ -19,7 +19,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from ..nlp.expander import ExpansionService
-from ..nlp.schemes import get_scheme, normalize_abbreviation
+from ..nlp.schemes import get_scheme, normalize_abbreviation, tokenize
 from ..schemas.expansion import ExpansionRequest
 from .metrics import SimulationStats, character_count
 
@@ -34,8 +34,6 @@ class SimulationCase:
 
 def _normalize_for_match(text: str) -> str:
     """Karşılaştırma için cümleyi sadeleştirir: noktalama ve büyük harf yok sayılır."""
-    from ..nlp.schemes import tokenize
-
     return " ".join(tokenize(text))
 
 
@@ -53,9 +51,8 @@ async def simulate_case(
         (yapılan seçim sayısı, doğru adayın sırası veya None, toplam gecikme ms)
     """
     scheme = get_scheme(scheme_id)
-    full_abbreviation = scheme.abbreviate(case.text)
-    pieces = full_abbreviation.split()
-    target = _normalize_for_match(case.text)
+    words = tokenize(case.text)
+    target = " ".join(words)
 
     base_selections = scheme.keystrokes(case.text)
     total_latency = 0.0
@@ -63,17 +60,14 @@ async def simulate_case(
     # Tur 1: tam kısaltma. Sonraki turlarda kullanıcı cümlenin başından
     # itibaren birer kelime açık yazar (çıkmaz sokak olmaması ilkesi).
     for round_index in range(max_rounds):
-        if round_index == 0:
-            abbreviation = full_abbreviation
-            extra_selections = 0
-        else:
-            words = target.split()
-            if round_index > len(words):
-                break
-            revealed = words[:round_index]
-            rest = pieces[round_index:]
-            abbreviation = " ".join([*revealed, *rest])
-            extra_selections = sum(len(w) for w in revealed) - round_index
+        if round_index > len(words):
+            break
+        revealed = words[:round_index]
+        abbreviation = scheme.abbreviate_revealing(case.text, round_index)
+        # Açık yazılan kelime harf harf girilir, kısaltması artık girilmez.
+        # Kısaltmanın maliyeti şemaya göre değişir (S1'de 1, S2'de 2 seçim,
+        # S4'te harf + etiketler); hep 1 saymak S2–S4'ü haksız yere cezalandırır.
+        extra_selections = sum(len(w) for w in revealed) - scheme.keystrokes(" ".join(revealed))
 
         request = ExpansionRequest(
             abbreviation=normalize_abbreviation(abbreviation),
@@ -131,7 +125,7 @@ async def run_grid(
     tek CSV üretir; rapora giden tablo budur.
     """
     results: list[SimulationStats] = []
-    for provider_name, service in services.items():
+    for service in services.values():
         for scheme_id in scheme_ids:
             for use_context in context_options:
                 started = time.perf_counter()
@@ -139,12 +133,17 @@ async def run_grid(
                 results.append(stats)
                 elapsed = time.perf_counter() - started
                 print(
-                    f"[{provider_name:>18}] {scheme_id} "
+                    f"[{service.provider_name:>18}] {scheme_id} "
                     f"bağlam={'var' if use_context else 'yok':>3} "
                     f"KSR={stats.ksr:5.1f}%  ilk1={stats.top1:5.1f}%  "
                     f"ilk5={stats.top5:5.1f}%  ({elapsed:.1f} sn)"
                 )
     return results
+
+
+def context_options_for(cases: list[SimulationCase]) -> tuple[bool, ...]:
+    """Koşulacak bağlam seçenekleri: bağlamlı cümle yoksa yalnızca bağlamsız."""
+    return (False, True) if any(case.context for case in cases) else (False,)
 
 
 def write_csv(results: list[SimulationStats], path: Path) -> None:
@@ -198,9 +197,19 @@ def main() -> None:
     parser.add_argument("--schemes", nargs="+", default=["S1", "S2", "S3", "S4"])
     parser.add_argument("--top-k", type=int, default=5)
     parser.add_argument("--limit", type=int, default=None)
+    parser.add_argument(
+        "--adapter",
+        type=Path,
+        default=None,
+        help="hf_local için LoRA adaptörü (verilmezse HF_ADAPTER_PATH, o da boşsa sıfır atış)",
+    )
     args = parser.parse_args()
 
     settings = get_settings()
+    if args.adapter is not None:
+        if not args.adapter.exists():
+            raise SystemExit(f"Adaptör bulunamadı: {args.adapter}")
+        settings = settings.model_copy(update={"hf_adapter_path": str(args.adapter)})
     # Test kümesi Ocak'a kadar kapalı: geliştirme sırasında doğrulama kümesi
     # ölçülür, sağlayıcılar yalnızca eğitim kümesini görür.
     corpus = args.corpus or settings.val_path
@@ -217,7 +226,15 @@ def main() -> None:
         for name in args.providers
     }
 
-    results = asyncio.run(run_grid(cases, services, args.schemes, top_k=args.top_k))
+    # Bağlamı olmayan cümlelerde "bağlam var" koşulu aynı istemi ikinci kez
+    # koşar: tabloya bilgi katmaz, büyük modelde süreyi ikiye katlar.
+    context_options = context_options_for(cases)
+    if context_options == (False,):
+        print("Değerlendirme cümlelerinde bağlam yok, yalnızca bağlamsız koşullar koşuluyor.")
+
+    results = asyncio.run(
+        run_grid(cases, services, args.schemes, context_options=context_options, top_k=args.top_k)
+    )
     write_csv(results, args.out)
     print(f"\n{len(results)} koşul yazıldı: {args.out}")
 

@@ -33,6 +33,8 @@ class HuggingFaceProvider:
         self.model_id = model_id
         self.load_in_4bit = load_in_4bit
         self.adapter_path = adapter_path
+        # Sonuç tablosunda sıfır atış ile ince ayarlı model ayrı satır olmalı.
+        self.name = "hf_local+lora" if adapter_path else "hf_local"
         self.max_new_tokens = max_new_tokens
         self._model: Any = None
         self._tokenizer: Any = None
