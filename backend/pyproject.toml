@@ -14,6 +14,8 @@ dependencies = [
     "pydantic-settings>=2.6",
     "numpy>=1.26",
     "scikit-learn>=1.5",
+    # Kullanıcı testinin istatistiği (Shapiro-Wilk, Wilcoxon, t testi).
+    "scipy>=1.11",
     "websockets>=13.0",
 ]
 

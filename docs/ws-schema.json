@@ -119,6 +119,69 @@
       ],
       "title": "Candidate",
       "type": "object"
+    },
+    "StudyBlock": {
+      "additionalProperties": false,
+      "description": "Bir koşulun cümleleri: önce alıştırma, sonra ölçülen set.",
+      "properties": {
+        "condition": {
+          "description": "A: harf harf, B: kısaltma ve aday listesi",
+          "enum": [
+            "A",
+            "B"
+          ],
+          "title": "Condition",
+          "type": "string"
+        },
+        "scheme": {
+          "description": "B koşulunda kullanılan kısaltma şeması",
+          "title": "Scheme",
+          "type": "string"
+        },
+        "trials": {
+          "items": {
+            "$ref": "#/$defs/StudyTrial"
+          },
+          "title": "Trials",
+          "type": "array"
+        }
+      },
+      "required": [
+        "condition",
+        "scheme",
+        "trials"
+      ],
+      "title": "StudyBlock",
+      "type": "object"
+    },
+    "StudyTrial": {
+      "additionalProperties": false,
+      "description": "Katılımcının yazacağı tek hedef cümle.",
+      "properties": {
+        "index": {
+          "description": "Blok içindeki sıra",
+          "minimum": 0,
+          "title": "Index",
+          "type": "integer"
+        },
+        "text": {
+          "description": "Hedef cümle",
+          "title": "Text",
+          "type": "string"
+        },
+        "practice": {
+          "description": "Alıştırma cümlesi mi; analize girmez",
+          "title": "Practice",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "index",
+        "text",
+        "practice"
+      ],
+      "title": "StudyTrial",
+      "type": "object"
     }
   },
   "messages": {
@@ -154,7 +217,7 @@
             }
           ],
           "default": null,
-          "description": "Deney oturumlarında katılımcı kodu (ör. P07)",
+          "description": "Deney oturumlarında katılımcı kodu (ör. K07)",
           "title": "Participant Id"
         }
       },
@@ -353,6 +416,115 @@
         "text"
       ],
       "title": "ClientSpeak",
+      "type": "object"
+    },
+    "ClientStudyStart": {
+      "additionalProperties": false,
+      "description": "Kullanıcı testini başlatır. Sunucu planı kurar ve kaydı açar.\n\nBağlantı koparsa istemci yeniden gönderir; kayıt yeni dosyada sürer.",
+      "properties": {
+        "type": {
+          "const": "study_start",
+          "default": "study_start",
+          "title": "Type",
+          "type": "string"
+        },
+        "participant_id": {
+          "description": "Katılımcı kodu (ör. K07)",
+          "maxLength": 8,
+          "minLength": 1,
+          "title": "Participant Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "participant_id"
+      ],
+      "title": "ClientStudyStart",
+      "type": "object"
+    },
+    "ClientTrialStart": {
+      "additionalProperties": false,
+      "description": "Hedef cümle ekranda; ölçüm ilk seçimle başlar.",
+      "properties": {
+        "type": {
+          "const": "trial_start",
+          "default": "trial_start",
+          "title": "Type",
+          "type": "string"
+        },
+        "block_index": {
+          "minimum": 0,
+          "title": "Block Index",
+          "type": "integer"
+        },
+        "trial_index": {
+          "minimum": 0,
+          "title": "Trial Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "block_index",
+        "trial_index"
+      ],
+      "title": "ClientTrialStart",
+      "type": "object"
+    },
+    "ClientTrialEnd": {
+      "additionalProperties": false,
+      "description": "Cümle doğru söylendi ya da deneyi yürüten kişi atladı.",
+      "properties": {
+        "type": {
+          "const": "trial_end",
+          "default": "trial_end",
+          "title": "Type",
+          "type": "string"
+        },
+        "block_index": {
+          "minimum": 0,
+          "title": "Block Index",
+          "type": "integer"
+        },
+        "trial_index": {
+          "minimum": 0,
+          "title": "Trial Index",
+          "type": "integer"
+        },
+        "outcome": {
+          "enum": [
+            "done",
+            "skipped"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "output": {
+          "default": "",
+          "description": "Katılımcının son ürettiği metin",
+          "title": "Output",
+          "type": "string"
+        }
+      },
+      "required": [
+        "block_index",
+        "trial_index",
+        "outcome"
+      ],
+      "title": "ClientTrialEnd",
+      "type": "object"
+    },
+    "ClientStudyEnd": {
+      "additionalProperties": false,
+      "description": "Son blok bitti; kayıt kapanır.",
+      "properties": {
+        "type": {
+          "const": "study_end",
+          "default": "study_end",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "title": "ClientStudyEnd",
       "type": "object"
     },
     "ServerReady": {
@@ -581,6 +753,42 @@
         "latency_ms"
       ],
       "title": "ServerCandidates",
+      "type": "object"
+    },
+    "ServerStudyPlan": {
+      "additionalProperties": false,
+      "description": "Katılımcının deney planı: koşul sırası ve her bloğun cümleleri.",
+      "properties": {
+        "type": {
+          "const": "study_plan",
+          "default": "study_plan",
+          "title": "Type",
+          "type": "string"
+        },
+        "participant_id": {
+          "description": "Tek biçime getirilmiş kod (k7 -> K07)",
+          "title": "Participant Id",
+          "type": "string"
+        },
+        "order": {
+          "description": "Koşul sırası, AB ya da BA",
+          "title": "Order",
+          "type": "string"
+        },
+        "blocks": {
+          "items": {
+            "$ref": "#/$defs/StudyBlock"
+          },
+          "title": "Blocks",
+          "type": "array"
+        }
+      },
+      "required": [
+        "participant_id",
+        "order",
+        "blocks"
+      ],
+      "title": "ServerStudyPlan",
       "type": "object"
     },
     "ServerError": {

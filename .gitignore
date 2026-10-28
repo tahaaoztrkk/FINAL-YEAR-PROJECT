@@ -24,6 +24,8 @@ dist/
 # Veri ve modeller (buyuk dosyalar repoya girmez)
 data/raw/*
 data/processed/*
+# Kullanıcı testi kayıtları kişisel veridir (KVKK): deney bilgisayarında kalır.
+data/sessions/
 !data/**/.gitkeep
 models/
 *.onnx

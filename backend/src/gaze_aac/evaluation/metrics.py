@@ -29,6 +29,33 @@ def character_count(sentence: str) -> int:
     return sum(len(word) for word in tokenize(sentence))
 
 
+def letter_by_letter_selections(sentence: str) -> int:
+    """Arayüzde cümleyi harf harf yazıp seslendirmenin en az seçim sayısı.
+
+    Her harf iki seçimdir (önce grup, sonra harf), kelime aralarında birer
+    Boşluk, sonunda bir Seslendir. Kullanıcı testindeki KSR'nin paydası budur;
+    simülasyon ise harf başına bir seçim sayar (``character_count``), bu
+    yüzden iki KSR doğrudan karşılaştırılmaz.
+    """
+    words = tokenize(sentence)
+    if not words:
+        return 0
+    return 2 * sum(len(word) for word in words) + (len(words) - 1) + 1
+
+
+def words_per_minute(sentence: str, seconds: float) -> float:
+    """Dakikada kelime: (karakter - 1) / saniye x 60 / 5.
+
+    Karakter, noktalamasız cümlenin boşluk dahil uzunluğu. Beş karakter bir
+    kelime sayılır; ilk karakterin süresi ölçülmediği için bir eksiltilir
+    (MacKenzie'nin metin girişi tanımı).
+    """
+    if seconds <= 0:
+        return 0.0
+    length = len(" ".join(tokenize(sentence)))
+    return max(length - 1, 0) / seconds * 60.0 / 5.0
+
+
 def top_k_accuracy(ranks: list[int | None], k: int) -> float:
     """İlk k doğruluk, yüzde.
 

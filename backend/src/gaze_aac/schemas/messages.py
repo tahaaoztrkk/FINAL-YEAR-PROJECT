@@ -19,6 +19,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from .expansion import Candidate
 from .gaze import GazePoint, GazeTarget
+from .study import StudyBlock, StudyTrial
 
 
 class _Message(BaseModel):
@@ -39,7 +40,7 @@ class ClientHello(_Message):
     screen_width: int = Field(gt=0, description="Ekran genişliği, piksel")
     screen_height: int = Field(gt=0, description="Ekran yüksekliği, piksel")
     participant_id: str | None = Field(
-        default=None, description="Deney oturumlarında katılımcı kodu (ör. P07)"
+        default=None, description="Deney oturumlarında katılımcı kodu (ör. K07)"
     )
 
 
@@ -105,6 +106,40 @@ class ClientSpeak(_Message):
     text: str
 
 
+class ClientStudyStart(_Message):
+    """Kullanıcı testini başlatır. Sunucu planı kurar ve kaydı açar.
+
+    Bağlantı koparsa istemci yeniden gönderir; kayıt yeni dosyada sürer.
+    """
+
+    type: Literal["study_start"] = "study_start"
+    participant_id: str = Field(min_length=1, max_length=8, description="Katılımcı kodu (ör. K07)")
+
+
+class ClientTrialStart(_Message):
+    """Hedef cümle ekranda; ölçüm ilk seçimle başlar."""
+
+    type: Literal["trial_start"] = "trial_start"
+    block_index: int = Field(ge=0)
+    trial_index: int = Field(ge=0)
+
+
+class ClientTrialEnd(_Message):
+    """Cümle doğru söylendi ya da deneyi yürüten kişi atladı."""
+
+    type: Literal["trial_end"] = "trial_end"
+    block_index: int = Field(ge=0)
+    trial_index: int = Field(ge=0)
+    outcome: Literal["done", "skipped"]
+    output: str = Field(default="", description="Katılımcının son ürettiği metin")
+
+
+class ClientStudyEnd(_Message):
+    """Son blok bitti; kayıt kapanır."""
+
+    type: Literal["study_end"] = "study_end"
+
+
 ClientMessage = Annotated[
     ClientHello
     | ClientGazeSample
@@ -113,7 +148,11 @@ ClientMessage = Annotated[
     | ClientTargets
     | ClientSelect
     | ClientExpand
-    | ClientSpeak,
+    | ClientSpeak
+    | ClientStudyStart
+    | ClientTrialStart
+    | ClientTrialEnd
+    | ClientStudyEnd,
     Field(discriminator="type"),
 ]
 
@@ -179,6 +218,15 @@ class ServerCandidates(_Message):
     latency_ms: float
 
 
+class ServerStudyPlan(_Message):
+    """Katılımcının deney planı: koşul sırası ve her bloğun cümleleri."""
+
+    type: Literal["study_plan"] = "study_plan"
+    participant_id: str = Field(description="Tek biçime getirilmiş kod (k7 -> K07)")
+    order: str = Field(description="Koşul sırası, AB ya da BA")
+    blocks: list[StudyBlock]
+
+
 class ServerError(_Message):
     """İşlenemeyen istek. Bağlantı açık kalır."""
 
@@ -194,6 +242,7 @@ ServerMessage = Annotated[
     | ServerSelection
     | ServerCalibrationResult
     | ServerCandidates
+    | ServerStudyPlan
     | ServerError,
     Field(discriminator="type"),
 ]
@@ -209,7 +258,11 @@ __all__ = [
     "ClientMessage",
     "ClientSelect",
     "ClientSpeak",
+    "ClientStudyEnd",
+    "ClientStudyStart",
     "ClientTargets",
+    "ClientTrialEnd",
+    "ClientTrialStart",
     "GazePoint",
     "GazeTarget",
     "ServerCalibrationResult",
@@ -220,4 +273,7 @@ __all__ = [
     "ServerMessage",
     "ServerReady",
     "ServerSelection",
+    "ServerStudyPlan",
+    "StudyBlock",
+    "StudyTrial",
 ]

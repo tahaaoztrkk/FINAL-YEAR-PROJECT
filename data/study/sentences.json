@@ -1,0 +1,34 @@
+{
+  "aciklama": "Kullanıcı testi cümleleri. Derleme EKLENMEZ: model bu cümleleri eğitimde görürse B koşulu ezber ölçer. Değiştirirseniz iki set eşit uzunlukta ve benzer zorlukta kalmalı; testten sonra değiştirilmez.",
+  "scheme": "S1",
+  "practice": {
+    "A": ["Kolay gelsin.", "Kahve içelim mi?"],
+    "B": ["İyi akşamlar.", "Sana bir şey sorabilir miyim?"]
+  },
+  "sets": [
+    [
+      "Bugün biraz erken yatmak istiyorum.",
+      "Telefonumu şarja takar mısın?",
+      "Annemi aramak istiyorum.",
+      "Perdeyi biraz aralar mısın?",
+      "Ayaklarım çok üşüyor.",
+      "Bu akşam ne yiyeceğiz?",
+      "Radyoyu kapatır mısın?",
+      "Dün gece hiç uyuyamadım.",
+      "Kardeşim bugün gelecek mi?",
+      "Bana biraz kitap okur musun?"
+    ],
+    [
+      "Yarın sabah doktora gitmek istiyorum.",
+      "Gözlüğümü bulamıyorum.",
+      "Babamla konuşmak istiyorum.",
+      "Kapıyı biraz kapatır mısın?",
+      "Ellerim çok soğuk.",
+      "Öğle yemeği ne zaman?",
+      "Televizyonun sesini açar mısın?",
+      "Bu gece rahat uyudum.",
+      "Arkadaşım yarın gelecek mi?",
+      "Bana biraz müzik açar mısın?"
+    ]
+  ]
+}

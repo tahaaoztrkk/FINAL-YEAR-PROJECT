@@ -43,6 +43,9 @@ export const GRID_ROWS = 3;
 
 /** Izgaranın ekranda kapladığı alan (normalize). Üstteki üçte bir metin için. */
 const GRID_AREA = { x: 0.02, y: 0.36, width: 0.96, height: 0.62 } as const;
+
+/** Izgaranın üst kenarı. Üstteki alan (durum, kısaltma, adaylar) bunun altına taşmaz. */
+export const GRID_TOP = GRID_AREA.y;
 const GAP = 0.008;
 
 export type KeyboardMode = 'groups' | 'letters' | 'suffixes';
@@ -73,6 +76,14 @@ function cellRect(index: number): { x: number; y: number; width: number; height:
   };
 }
 
+export interface BuildOptions {
+  /**
+   * 'Tamamla' tuşu. Kullanıcı testinin A koşulunda (harf harf) kapatılır;
+   * hücresi boş kalır, diğer eylemler yerinden kaymaz.
+   */
+  expand?: boolean;
+}
+
 /**
  * Geçerli moda göre ekrandaki hedefleri üretir.
  *
@@ -80,7 +91,11 @@ function cellRect(index: number): { x: number; y: number; width: number; height:
  * için kullanılır; iki listenin ayrışması, seçimin görsel olarak başka
  * yerde görünmesine yol açar.
  */
-export function buildTargets(mode: KeyboardMode, activeGroup: number | null): GazeTarget[] {
+export function buildTargets(
+  mode: KeyboardMode,
+  activeGroup: number | null,
+  { expand = true }: BuildOptions = {},
+): GazeTarget[] {
   const targets: GazeTarget[] = [];
 
   if (mode === 'groups') {
@@ -126,6 +141,7 @@ export function buildTargets(mode: KeyboardMode, activeGroup: number | null): Ga
   // ezberler ve aramak için ekranı taramak zorunda kalmaz.
   const actionStart = (GRID_ROWS - 1) * GRID_COLUMNS;
   ACTIONS.forEach((action, index) => {
+    if (!expand && action.id === 'action:expand') return;
     targets.push({
       id: action.id,
       ...cellRect(actionStart + index),
@@ -135,18 +151,4 @@ export function buildTargets(mode: KeyboardMode, activeGroup: number | null): Ga
   });
 
   return targets;
-}
-
-/** Aday cümleler için hedefler. Ekranın üst bandında yer alır. */
-export function buildCandidateTargets(count: number): GazeTarget[] {
-  const height = 0.055;
-  return Array.from({ length: count }, (_, index) => ({
-    id: `candidate:${index}`,
-    x: 0.02,
-    y: 0.08 + index * (height + 0.006),
-    width: 0.96,
-    height,
-    label: '',
-    kind: 'candidate' as const,
-  }));
 }
