@@ -33,6 +33,10 @@ CLIENT_MODELS = [
     m.ClientSelect,
     m.ClientExpand,
     m.ClientSpeak,
+    m.ClientStudyStart,
+    m.ClientTrialStart,
+    m.ClientTrialEnd,
+    m.ClientStudyEnd,
 ]
 SERVER_MODELS = [
     m.ServerReady,
@@ -41,6 +45,7 @@ SERVER_MODELS = [
     m.ServerSelection,
     m.ServerCalibrationResult,
     m.ServerCandidates,
+    m.ServerStudyPlan,
     m.ServerError,
 ]
 

@@ -37,6 +37,25 @@ export interface Candidate {
   valid: boolean;
 }
 
+export type StudyCondition = 'A' | 'B';
+
+export interface StudyTrial {
+  /** Blok içindeki sıra */
+  index: number;
+  /** Hedef cümle */
+  text: string;
+  /** Alıştırma cümlesi mi; analize girmez */
+  practice: boolean;
+}
+
+export interface StudyBlock {
+  /** A: harf harf, B: kısaltma ve aday listesi */
+  condition: StudyCondition;
+  /** B koşulunda kullanılan kısaltma şeması */
+  scheme: string;
+  trials: StudyTrial[];
+}
+
 // --- İstemci -> Sunucu ----------------------------------------------------
 
 export interface ClientHello {
@@ -85,6 +104,31 @@ export interface ClientSpeak {
   text: string;
 }
 
+export interface ClientStudyStart {
+  type: 'study_start';
+  /** Katılımcı kodu (ör. K07) */
+  participant_id: string;
+}
+
+export interface ClientTrialStart {
+  type: 'trial_start';
+  block_index: number;
+  trial_index: number;
+}
+
+export interface ClientTrialEnd {
+  type: 'trial_end';
+  block_index: number;
+  trial_index: number;
+  outcome: 'done' | 'skipped';
+  /** Katılımcının son ürettiği metin */
+  output: string;
+}
+
+export interface ClientStudyEnd {
+  type: 'study_end';
+}
+
 export type ClientMessage =
   | ClientHello
   | ClientGazeSample
@@ -93,7 +137,11 @@ export type ClientMessage =
   | ClientTargets
   | ClientSelect
   | ClientExpand
-  | ClientSpeak;
+  | ClientSpeak
+  | ClientStudyStart
+  | ClientTrialStart
+  | ClientTrialEnd
+  | ClientStudyEnd;
 
 // --- Sunucu -> İstemci ----------------------------------------------------
 
@@ -141,6 +189,15 @@ export interface ServerCandidates {
   latency_ms: number;
 }
 
+export interface ServerStudyPlan {
+  type: 'study_plan';
+  /** Tek biçime getirilmiş kod (k7 -> K07) */
+  participant_id: string;
+  /** Koşul sırası, AB ya da BA */
+  order: string;
+  blocks: StudyBlock[];
+}
+
 export interface ServerError {
   type: 'error';
   code: string;
@@ -154,4 +211,5 @@ export type ServerMessage =
   | ServerSelection
   | ServerCalibrationResult
   | ServerCandidates
+  | ServerStudyPlan
   | ServerError;

@@ -52,6 +52,20 @@ button {
   padding: 10px;
 }
 
+/* --- Üst alan ---------------------------------------------------------- */
+
+/*
+ * Durum çubuğu, hedef cümle, kısaltma ve adaylar ızgaranın üstündeki alana
+ * sığmak zorunda: taşarlarsa adaylar ızgaranın ilk satırının altına girer.
+ * Yükseklik App içinde ızgaranın üst kenarından verilir; adaylar yer
+ * azaldıkça küçülür.
+ */
+.top {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
 /* --- Durum çubuğu ------------------------------------------------------ */
 
 .status {
@@ -82,6 +96,33 @@ button {
   color: var(--error);
 }
 
+.study-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+}
+
+.study-controls input,
+.study-controls button {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid #2a3142;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 15px;
+  font-family: inherit;
+}
+
+.study-controls input {
+  width: 64px;
+  text-transform: uppercase;
+}
+
+.study-controls button {
+  cursor: pointer;
+}
+
 .status__scheme {
   margin-left: auto;
   display: flex;
@@ -96,6 +137,79 @@ button {
   border-radius: 8px;
   padding: 4px 8px;
   font-size: 15px;
+}
+
+/* --- Hedef cümle (kullanıcı testi) ------------------------------------- */
+
+.study-target {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 4px;
+  border-bottom: 2px solid var(--accent-soft);
+}
+
+.study-target__meta {
+  flex: none;
+  font-size: 14px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.study-target__text {
+  font-size: 30px;
+  font-weight: 600;
+}
+
+/* Renk tek başına bilgi taşımaz: uyarı metni de yazılır. */
+.study-target--mismatch {
+  border-bottom-color: var(--warn);
+}
+
+.study-target__hint {
+  font-size: 16px;
+  color: var(--warn);
+}
+
+.study-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: rgba(7, 9, 13, 0.94);
+  text-align: center;
+}
+
+.study-overlay h2 {
+  margin: 0;
+  font-size: 40px;
+}
+
+.study-overlay p {
+  margin: 0;
+  font-size: 24px;
+  color: var(--text-dim);
+}
+
+.study-overlay__break {
+  color: var(--warn) !important;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.study-overlay button {
+  margin-top: 12px;
+  padding: 14px 28px;
+  font-size: 24px;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
 }
 
 /* --- Kısaltma alanı ---------------------------------------------------- */
@@ -129,10 +243,11 @@ button {
 /* --- Aday listesi ------------------------------------------------------ */
 
 .candidates {
+  flex: 1 1 auto;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin-bottom: 8px;
 }
 
 .candidates--empty p {
@@ -143,11 +258,13 @@ button {
 
 .candidate {
   position: relative;
+  flex: 0 1 56px;
+  min-height: 0;
   display: flex;
   align-items: center;
   gap: 14px;
   width: 100%;
-  padding: 10px 16px;
+  padding: 0 16px;
   background: var(--surface);
   border: 2px solid transparent;
   border-radius: var(--radius);
@@ -185,6 +302,7 @@ button {
 }
 
 .candidates__latency {
+  flex: none;
   margin: 0;
   font-size: 13px;
   color: var(--text-dim);

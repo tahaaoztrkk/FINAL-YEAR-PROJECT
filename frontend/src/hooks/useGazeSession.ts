@@ -13,6 +13,7 @@ import type {
   ClientMessage,
   GazeTarget,
   ServerMessage,
+  ServerStudyPlan,
 } from '@/types/messages';
 
 export interface SessionState {
@@ -29,6 +30,8 @@ export interface SessionState {
   candidatesFor: string | null;
   lastLatencyMs: number | null;
   calibrationErrorDeg: number | null;
+  /** Kullanıcı testi planı; `study_start` sonrası gelir. */
+  studyPlan: ServerStudyPlan | null;
   lastError: string | null;
 }
 
@@ -45,6 +48,7 @@ const INITIAL: SessionState = {
   candidatesFor: null,
   lastLatencyMs: null,
   calibrationErrorDeg: null,
+  studyPlan: null,
   lastError: null,
 };
 
@@ -54,6 +58,8 @@ export interface UseGazeSessionResult {
   sendTargets: (targets: GazeTarget[]) => void;
   sendGaze: (x: number, y: number, t: number, confidence?: number) => void;
   requestExpansion: (abbreviation: string, scheme: string, context?: string) => void;
+  /** Söylenen cümleden sonra eski adaylar ekranda kalmasın. */
+  clearCandidates: () => void;
 }
 
 export function useGazeSession(
@@ -70,6 +76,12 @@ export function useGazeSession(
   useEffect(() => {
     const socket = new GazeSocket({
       onStateChange: (connection) => setState((prev) => ({ ...prev, connection })),
+      onOpen: () =>
+        socket.send({
+          type: 'hello',
+          screen_width: window.innerWidth,
+          screen_height: window.innerHeight,
+        }),
       onMessage: (message: ServerMessage) => {
         switch (message.type) {
           case 'ready':
@@ -116,6 +128,10 @@ export function useGazeSession(
             }));
             break;
 
+          case 'study_plan':
+            setState((prev) => ({ ...prev, studyPlan: message, lastError: null }));
+            break;
+
           case 'error':
             setState((prev) => ({ ...prev, lastError: message.detail }));
             break;
@@ -125,11 +141,6 @@ export function useGazeSession(
 
     socketRef.current = socket;
     socket.connect();
-    socket.send({
-      type: 'hello',
-      screen_width: window.innerWidth,
-      screen_height: window.innerHeight,
-    });
 
     return () => {
       socket.close();
@@ -164,5 +175,10 @@ export function useGazeSession(
     [send],
   );
 
-  return { state, send, sendTargets, sendGaze, requestExpansion };
+  const clearCandidates = useCallback(
+    () => setState((prev) => ({ ...prev, candidates: [], candidatesFor: null })),
+    [],
+  );
+
+  return { state, send, sendTargets, sendGaze, requestExpansion, clearCandidates };
 }

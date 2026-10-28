@@ -19,6 +19,8 @@ from ..gaze.calibration import CalibrationError, GazeMapper
 from ..gaze.dwell import DwellDetector, DwellEvent
 from ..gaze.filters import GazeSmoother
 from ..schemas.gaze import CalibrationReport, CalibrationSample, GazeTarget
+from ..schemas.study import StudyBlock
+from ..study.recorder import SessionRecorder
 from ..utils.logging import get_logger
 
 logger = get_logger(__name__)
@@ -38,6 +40,14 @@ class GazeSession:
     smoother: GazeSmoother = field(init=False)
     dwell: DwellDetector = field(init=False)
     calibration_samples: list[CalibrationSample] = field(default_factory=list)
+
+    # Kullanıcı testi. Kayıt yalnızca ``study_start`` ile açılır; serbest
+    # kullanımda hiçbir şey diske yazılmaz.
+    recorder: SessionRecorder | None = None
+    study_plan: list[StudyBlock] = field(default_factory=list)
+    # Son genişletmenin geçerli adayları, arayüzdeki sırayla. Söylenen
+    # cümlenin listede kaçıncı olduğu buradan bulunur.
+    last_candidates: list[str] = field(default_factory=list)
 
     def __post_init__(self) -> None:
         self.smoother = GazeSmoother(window=self.settings.smoothing_window)
@@ -106,6 +116,25 @@ class GazeSession:
     @property
     def is_calibrated(self) -> bool:
         return self.mapper.is_fitted
+
+    # -- Deney kaydı ------------------------------------------------------
+
+    def log(self, event: str, **fields: object) -> None:
+        """Kayıt açıksa olayı yazar, değilse hiçbir şey yapmaz."""
+        if self.recorder is not None:
+            self.recorder.record(event, **fields)
+
+    def stop_recording(self) -> None:
+        if self.recorder is not None:
+            self.recorder.close()
+            self.recorder = None
+
+    def candidate_rank(self, text: str) -> int | None:
+        """Söylenen cümle son aday listesinde kaçıncıydı (0 tabanlı); yoksa ``None``."""
+        try:
+            return self.last_candidates.index(text)
+        except ValueError:
+            return None
 
 
 class SessionRegistry:

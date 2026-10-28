@@ -31,13 +31,30 @@ export interface GazeTarget {
   kind?: string;
 }
 
+export interface StudyBlock {
+  /** A: harf harf, B: kısaltma ve aday listesi */
+  condition: string;
+  /** B koşulunda kullanılan kısaltma şeması */
+  scheme: string;
+  trials: StudyTrial[];
+}
+
+export interface StudyTrial {
+  /** Blok içindeki sıra */
+  index: number;
+  /** Hedef cümle */
+  text: string;
+  /** Alıştırma cümlesi mi; analize girmez */
+  practice: boolean;
+}
+
 export interface ClientHello {
   type?: "hello";
   /** Ekran genişliği, piksel */
   screen_width: number;
   /** Ekran yüksekliği, piksel */
   screen_height: number;
-  /** Deney oturumlarında katılımcı kodu (ör. P07) */
+  /** Deney oturumlarında katılımcı kodu (ör. K07) */
   participant_id?: string | null;
 }
 
@@ -86,6 +103,31 @@ export interface ClientSpeak {
   text: string;
 }
 
+export interface ClientStudyStart {
+  type?: "study_start";
+  /** Katılımcı kodu (ör. K07) */
+  participant_id: string;
+}
+
+export interface ClientTrialStart {
+  type?: "trial_start";
+  block_index: number;
+  trial_index: number;
+}
+
+export interface ClientTrialEnd {
+  type?: "trial_end";
+  block_index: number;
+  trial_index: number;
+  outcome: string;
+  /** Katılımcının son ürettiği metin */
+  output?: string;
+}
+
+export interface ClientStudyEnd {
+  type?: "study_end";
+}
+
 export interface ServerReady {
   type?: "ready";
   session_id: string;
@@ -132,6 +174,15 @@ export interface ServerCandidates {
   latency_ms: number;
 }
 
+export interface ServerStudyPlan {
+  type?: "study_plan";
+  /** Tek biçime getirilmiş kod (k7 -> K07) */
+  participant_id: string;
+  /** Koşul sırası, AB ya da BA */
+  order: string;
+  blocks: StudyBlock[];
+}
+
 export interface ServerError {
   type?: "error";
   code: string;
@@ -146,7 +197,11 @@ export type ClientMessage =
   | ClientTargets
   | ClientSelect
   | ClientExpand
-  | ClientSpeak;
+  | ClientSpeak
+  | ClientStudyStart
+  | ClientTrialStart
+  | ClientTrialEnd
+  | ClientStudyEnd;
 
 export type ServerMessage =
   | ServerReady
@@ -155,4 +210,5 @@ export type ServerMessage =
   | ServerSelection
   | ServerCalibrationResult
   | ServerCandidates
+  | ServerStudyPlan
   | ServerError;

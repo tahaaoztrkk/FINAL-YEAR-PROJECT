@@ -14,6 +14,12 @@ export interface GazeSocketOptions {
   url?: string;
   onMessage: (message: ServerMessage) => void;
   onStateChange?: (state: ConnectionState) => void;
+  /**
+   * Her açılışta, kuyruk boşaltılmadan önce çağrılır. Sunucu oturumu her
+   * bağlantıda sıfırdan kurar; `hello` gibi oturumu tanıtan mesajlar burada
+   * yeniden gönderilir, yoksa yeniden bağlanan oturum ekran boyutunu bilmez.
+   */
+  onOpen?: () => void;
   maxRetryDelayMs?: number;
 }
 
@@ -48,6 +54,7 @@ export class GazeSocket {
     socket.onopen = () => {
       this.retryCount = 0;
       this.options.onStateChange?.('open');
+      this.options.onOpen?.();
       // Kuyrukta bekleyen mesajları sırayla gönder.
       const pending = this.queue;
       this.queue = [];

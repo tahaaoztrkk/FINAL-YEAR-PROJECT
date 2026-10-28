@@ -130,6 +130,107 @@ Demoda n-gram modelini denemek için backend `.env` dosyasında
 `EXPANDER_PROVIDER=ngram` yapın. Demo, simülasyondan farklı olarak
 derlemin tamamını kullanır.
 
+## Kullanıcı testi
+
+Deney arayüzü uygulamanın içindedir, `?deney` adresiyle açılır:
+
+```
+http://localhost:5173/?deney
+```
+
+Durum çubuğuna katılımcı kodunu yazıp **Deneyi başlat** deyin. Kodlar
+`K01`, `K02`… biçimindedir. Tek numaralılar harf harf yazmayla (A),
+çift numaralılar kısaltmayla (B) başlar; sıra ve cümleler sunucuda koddan
+çıkar, elle seçilmez. Her blok iki alıştırma cümlesiyle açılır, ardından 10
+ölçülen cümle gelir. Bloklar arasında mola ekranı çıkar, sonraki blok
+**Bloğu başlat** ile açılır. Yeni katılımcıdan önce sayfayı yenileyin.
+
+- Katılımcı hedef cümleyi doğru seslendirince cümle kendiliğinden biter;
+  noktalama ve büyük harf yok sayılır. Yanlış cümle söylenirse yazılan
+  silinmez, katılımcı düzeltip yeniden seslendirir; yanlış çıktı kayda
+  geçer.
+- **Atla** cümleyi bitirmeden geçer. Atlanan cümle ortalamalara girmez,
+  ayrıca sayılır.
+- A koşulunda aday listesi ve Tamamla yoktur; Seslendir yazılanı okur.
+  B koşulunda şema `data/study/sentences.json` içindeki `scheme` alanından
+  gelir ve seçici kilitlenir. Aday çıkmazsa katılımcı kelimeleri açık
+  yazabilir; Seslendir o zaman da yazılanı okur.
+- Bağlantı koparsa arayüz yeniden bağlanır ve deney kaldığı yerden sürer.
+  Yarım kalan cümle baştan başlar.
+
+**Sağlayıcı.** Deney cümleleri derlemde yoktur (bir test bunu denetler);
+model onları eğitimde görseydi B koşulu ezber ölçerdi. Bu yüzden `mock` ve
+`ngram` bu cümleleri üretemez ve asıl test ince ayarlı modelle koşulur
+(`EXPANDER_PROVIDER=hf_local`, `HF_ADAPTER_PATH`). `mock` ile prova
+yapılabilir: B'de kelimeleri açık yazıp seslendirin. Analiz, `mock` ile
+alınmış bir kayıt görürse uyarır.
+
+**Prova oturumlarında** K dışında bir harf kullanın (`P01`). Analiz
+varsayılan olarak yalnızca K ile başlayan kodları okur.
+
+Deney cümlelerini derleme eklemeyin ve testler başladıktan sonra
+değiştirmeyin. Her kayıt cümle dosyasının özetini taşır; analiz farklı özet
+görürse uyarır.
+
+### Kayıt
+
+Her bağlantı `data/sessions/<kod>/<tarih-saat>_<oturum>.jsonl` dosyasına
+yazılır. Satırlar şunları içerir:
+
+- deney ayarları (sağlayıcı, dwell süresi, şema, cümle dosyasının özeti)
+- cümle başı ve sonu
+- her seçim (dwell ya da tıklama)
+- genişletme istekleri ve bütün adaylar (geçersizler de)
+- seslendirmeler ve söylenen cümlenin aday sırası
+- bakış konumu ve kalibrasyon sonuçları
+
+Kayıt KVKK taahhüdüyle sınırlıdır. Kamera görüntüsü ve 478 noktalı yüz ağı
+yazılmaz. Kalibrasyon için yalnızca öznitelik vektörü yazılır; 32 sayıdan
+uzun bir vektör gelirse hiç yazılmaz. `data/sessions/` repoya girmez:
+kayıtlar deney bilgisayarında kalır, dışarıya yalnızca analiz tabloları
+çıkar.
+
+### Analiz
+
+```bash
+python -m gaze_aac.evaluation.study
+```
+
+Komut `data/sessions/analiz/` altına üç tablo yazar:
+
+| Dosya | İçerik |
+| --- | --- |
+| `cumleler.csv` | Her cümle, alıştırma ve atlananlar dahil |
+| `katilimci_kosul.csv` | Katılımcı × koşul ortalamaları, B için ilk-1 ve ilk-5 |
+| `karsilastirma.csv` | A–B karşılaştırması: ortalamalar, Shapiro-Wilk, test, p, Cohen d_z |
+
+Anket yanıtlarını `data/sessions/anket.csv`, demografiyi
+`data/sessions/katilimcilar.csv` olarak koyarsanız onlar da özetlenir. Boş
+şablonlar `data/study/` içindedir; doldurulmuş hali kişisel veri olduğu için
+`data/sessions/` altında durur.
+
+Cümle başına ölçüler:
+
+| Ölçü | Tanım |
+| --- | --- |
+| `sure_s` | İlk seçimden doğru seslendirmeye kadar geçen süre. Hedefi okuma süresi girmez. |
+| `wpm` | (karakter − 1) / saniye × 60 / 5. Karakter, noktalamasız hedefin boşluk dahil uzunluğu. |
+| `ksr` | 1 − seçim / harf harf en az seçim, yüzde |
+| `duzeltme` | Sil + Geri seçimleri |
+| `yanlis_cikti` | Hedefle eşleşmeyen seslendirme |
+| `aday_sirasi` | B'de söylenen cümlenin aday listesindeki yeri (1 = ilk aday); aday seçilmeden yazıldıysa boş |
+
+İstatistik etik kurul belgesindeki plana uyar. Farkların normalliği
+Shapiro-Wilk ile sınanır; uyarsa eşleştirilmiş t testi, uymazsa Wilcoxon
+işaretli sıralar testi seçilir. Etki büyüklüğü Cohen d_z'dir. Tabloda iki
+testin p değeri de durur.
+
+**KSR burada simülasyondan farklı tanımlıdır.** Kullanıcı testinde payda,
+cümleyi aynı arayüzde harf harf yazmanın en az seçim sayısıdır: her harf
+iki seçim (grup ve harf), kelime aralarında birer Boşluk, sonunda bir
+Seslendir. Hatasız harf harf yazım bu yüzden %0 verir. Simülasyon ise harf
+başına bir seçim sayar. İki KSR'yi aynı tabloda karşılaştırmayın.
+
 ## Kamera moduna geçiş
 
 Sadece göz takibi üstünde çalışan kişinin yapması gerekir:

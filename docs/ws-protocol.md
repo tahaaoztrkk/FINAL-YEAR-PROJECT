@@ -42,6 +42,21 @@ istemci                          sunucu
    |------------ speak ------------>|   (ölçüm kaydı)
 ```
 
+Kullanıcı testinde (`?deney`) bu akışın çevresine deney mesajları eklenir:
+
+```
+istemci                          sunucu
+   |                                |
+   |--------- study_start --------->|   kayıt açılır
+   |<--------- study_plan ----------|   koşul sırası ve cümleler
+   |                                |
+   |--------- trial_start --------->|   hedef cümle ekranda
+   |   ... selection / expand / speak (hepsi kayda geçer) ...
+   |---------- trial_end ---------->|   doğru söylendi ya da atlandı
+   |                                |
+   |---------- study_end ---------->|   kayıt kapanır
+```
+
 ## İstemci mesajları
 
 | type | Ne zaman | Alanlar |
@@ -53,7 +68,11 @@ istemci                          sunucu
 | `calibration_sample` | Kalibrasyon sırasında her örnekte | `target_x`, `target_y`, `features[]` |
 | `calibration_fit` | Örnek toplama bitince | — |
 | `expand` | Kullanıcı "Tamamla" seçince | `abbreviation`, `scheme`, `context?`, `top_k` |
-| `speak` | Aday seçilip seslendirilince | `text` |
+| `speak` | Her seslendirmede (aday ya da yazılan metin) | `text` |
+| `study_start` | Deneyi yürüten kişi kodu girince; yeniden bağlanınca tekrar | `participant_id` |
+| `trial_start` | Hedef cümle ekrana gelince | `block_index`, `trial_index` |
+| `trial_end` | Hedef doğru söylenince ya da atlanınca | `block_index`, `trial_index`, `outcome` (`done` \| `skipped`), `output` |
+| `study_end` | Son blok bitince | — |
 
 Koordinatlar 0–1 arasında normalizedir. Piksel dönüşümünü arayüz yapar;
 böylece farklı çözünürlükler arasında taşınabilir kalır.
@@ -68,7 +87,12 @@ böylece farklı çözünürlükler arasında taşınabilir kalır.
 | `selection` | Dwell eşiği aşılınca | `target_id`, `dwell_ms` |
 | `calibration_result` | `calibration_fit` sonrası | `ok`, `sample_count`, `mean_error_px?`, `mean_error_deg?`, `message?` |
 | `candidates` | `expand` sonrası | `abbreviation`, `scheme`, `candidates[]`, `latency_ms` |
-| `error` | Mesaj doğrulanamazsa | `code`, `detail` |
+| `study_plan` | `study_start` sonrası | `participant_id`, `order` (`AB` \| `BA`), `blocks[]{condition, scheme, trials[]{index, text, practice}}` |
+| `error` | Mesaj doğrulanamazsa ya da deney isteği geçersizse | `code`, `detail` |
+
+Deney hataları `code` ile ayrılır: `invalid_participant` (kod K07 biçiminde
+değil), `study_materials_missing` / `study_materials_invalid` (cümle dosyası
+yok ya da bozuk), `study_not_started`, `unknown_trial`.
 
 ## Kurallar
 
@@ -84,6 +108,16 @@ edilmez.
 **Bakış örnekleri kuyruğa alınmaz.** Bağlantı kapalıyken gönderilen `gaze`
 mesajları atılır; biriken eski örnekler yeniden bağlanınca anlamsız bir
 imleç sıçramasına yol açar. Diğer mesajlar kuyruğa alınır.
+
+**Sunucu yeniden bağlanan istemciyi tanımaz.** Her bağlantı yeni oturumdur.
+İstemci her açılışta `hello` ve `targets` mesajlarını yeniden gönderir;
+deney sürüyorsa `study_start` ve yarım kalan cümlenin `trial_start`
+mesajını da. Kayıt yeni dosyada sürer.
+
+**Kayıt yalnızca deneyde tutulur.** `study_start` gelmeden hiçbir şey diske
+yazılmaz. Deneyde her mesaj `data/sessions/<kod>/` altına bir satır olur;
+kamera görüntüsü ve yüz ağı yazılmaz, 32 sayıdan uzun öznitelik vektörü
+kaydedilmez.
 
 **Adaylar geri kontrolden geçer.** Sunucu, üretilen her cümlenin kısaltmasını
 yeniden hesaplar ve girdiyle karşılaştırır. Eşleşmeyenler `valid: false`

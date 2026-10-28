@@ -95,6 +95,16 @@ class Settings(BaseSettings):
         return self.data_dir / "processed" / "training_pairs.jsonl"
 
     @property
+    def study_sentences_path(self) -> Path:
+        """Kullanıcı testi cümleleri. Repoda tutulur, derleme girmez."""
+        return self.data_dir / "study" / "sentences.json"
+
+    @property
+    def sessions_dir(self) -> Path:
+        """Deney kayıtları. Kişisel veri: deney bilgisayarında kalır, repoya girmez."""
+        return self.data_dir / "sessions"
+
+    @property
     def adapter_dir(self) -> Path:
         """İnce ayar çıktısının varsayılan yeri. ``models/`` repoya girmez."""
         return self.data_dir.parent / "models" / "turkish-gemma-qlora"

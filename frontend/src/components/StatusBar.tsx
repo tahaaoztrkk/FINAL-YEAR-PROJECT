@@ -6,12 +6,18 @@
  * edilirse oturum tekrarlanır.
  */
 
+import type { ReactNode } from 'react';
+
 import type { SessionState } from '@/hooks/useGazeSession';
 
 interface Props {
   state: SessionState;
   scheme: string;
   onSchemeChange: (scheme: string) => void;
+  /** Kullanıcı testinde şema plandan gelir, elle değiştirilemez. */
+  schemeLocked?: boolean;
+  /** Deney denetimleri. */
+  children?: ReactNode;
 }
 
 const SCHEMES = [
@@ -21,7 +27,7 @@ const SCHEMES = [
   { id: 'S4', label: 'S4 · ek işaretli' },
 ];
 
-export function StatusBar({ state, scheme, onSchemeChange }: Props) {
+export function StatusBar({ state, scheme, onSchemeChange, schemeLocked = false, children }: Props) {
   return (
     <header className="status">
       <span className={`status__dot status__dot--${state.connection}`} aria-hidden="true" />
@@ -34,9 +40,14 @@ export function StatusBar({ state, scheme, onSchemeChange }: Props) {
       {state.calibrationErrorDeg !== null && (
         <span className="status__item">hata: {state.calibrationErrorDeg.toFixed(2)}°</span>
       )}
+      {children}
       <label className="status__scheme">
         şema
-        <select value={scheme} onChange={(event) => onSchemeChange(event.target.value)}>
+        <select
+          value={scheme}
+          disabled={schemeLocked}
+          onChange={(event) => onSchemeChange(event.target.value)}
+        >
           {SCHEMES.map((option) => (
             <option key={option.id} value={option.id}>
               {option.label}
