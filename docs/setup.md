@@ -339,6 +339,11 @@ llama-server -m models\turkish-gemma-aac-Q4_K_M.gguf -ngl 99 -c 2048 --parallel 
 - `-c 2048`: beş yuvaya bölünür (~400 belirteç), en uzun S4 istemine yeter.
   8 GB kartta model ~5,5 GB tuttuğu için bağlamı büyütmeyin.
 
+**Tek tıkla başlatma.** Kurulum bir kez yapıldıktan sonra proje kökündeki
+`demo.bat` dosyasına çift tıklayın: model, backend (`EXPANDER_PROVIDER=llamacpp`
+ile) ve frontend üç ayrı pencerede açılır, 15 saniye sonra tarayıcı açılır.
+Kapatmak için üç pencereyi kapatın. Aşağıdaki adımlar elle başlatmak içindir.
+
 **3. Backend.** `backend/.env` içinde:
 
 ```

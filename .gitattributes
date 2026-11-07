@@ -1,0 +1,2 @@
+# Windows betikleri CRLF satir sonuyla kalmali.
+*.bat text eol=crlf
