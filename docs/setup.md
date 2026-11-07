@@ -80,10 +80,11 @@ cümle ve kategorisi:
 
 Aynı anlamı farklı söyleyen cümleler `"group"` alanıyla bağlanır
 (`"su_istemek"` gibi). Bölme grup bazında yapılır, yani bir grubun bütün
-cümleleri aynı kümeye düşer. Grubun ilki dışındakiler `"note": "çıkarılacak"`
-ile işaretli; gözden geçirince silin ya da notu kaldırıp tutun.
+cümleleri aynı kümeye düşer. Emin olmadığınız bir cümleyi
+`"note": "çıkarılacak"` ile işaretleyin; gözden geçirince silin ya da notu
+kaldırıp tutun.
 
-Şu an 6 kategoride 300 taslak cümle var. Hedef ~3.000: yeni cümleleri bu
+Şu an 6 kategoride 299 taslak cümle var. Hedef ~3.000: yeni cümleleri bu
 dosyaya ekleyip PR açın, böylece her ekleme gözden geçirilir. Doğal olmayan
 Türkçe cümleler sonuçları sessizce bozar; emin olmadığınız cümleyi eklemeyin.
 

@@ -78,16 +78,11 @@ class TestRepoCorpus:
         assert counts
         assert all(count >= 2 for count in counts.values()), counts
 
-    def test_each_group_keeps_one_unmarked_sentence(self) -> None:
-        """Her gruptan tam bir cümle kalır, diğerleri 'çıkarılacak' işaretlidir."""
+    def test_no_sentence_awaits_review(self) -> None:
+        """'çıkarılacak' notları 7 Kasım'da gözden geçirildi; derlemde not kalmaz."""
         corpus = Corpus.load(Settings().source_corpus_path)
-        kept: dict[str, int] = {}
-        for entry in corpus.entries:
-            if entry.group:
-                kept.setdefault(entry.group, 0)
-                if not entry.note:
-                    kept[entry.group] += 1
-        assert all(count == 1 for count in kept.values()), kept
+        noted = [entry.text for entry in corpus.entries if entry.note]
+        assert not noted, noted
 
 
 class TestTrainingPairs:
