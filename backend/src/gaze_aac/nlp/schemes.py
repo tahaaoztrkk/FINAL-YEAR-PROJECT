@@ -284,7 +284,7 @@ class SuffixTaggedScheme(AbbreviationScheme):
 
     def _tag(self, word: str) -> str:
         if self._tagger is not None and hasattr(self._tagger, "tag"):
-            return str(self._tagger.tag(word))  # type: ignore[attr-defined]
+            return str(self._tagger.tag(word))
         return guess_suffix_tag(word)
 
     def abbreviate_word(self, word: str) -> str:
