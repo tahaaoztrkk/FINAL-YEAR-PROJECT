@@ -1,12 +1,12 @@
 {"text": "Su istiyorum.", "category": "temel_ihtiyac", "group": "su_istemek"}
 {"text": "Acıktım.", "category": "temel_ihtiyac", "split": "test"}
-{"text": "Tuvalete gitmem lazım.", "category": "temel_ihtiyac"}
+{"text": "Tuvalete gitmem lazım.", "category": "temel_ihtiyac", "group": "tuvalet"}
 {"text": "Ağzım kurudu.", "category": "temel_ihtiyac"}
 {"text": "Biraz daha su alabilir miyim?", "category": "temel_ihtiyac"}
 {"text": "Çay içmek istiyorum.", "category": "temel_ihtiyac"}
 {"text": "Susadım.", "category": "temel_ihtiyac", "group": "su_istemek"}
 {"text": "Yemek ne zaman gelecek?", "category": "temel_ihtiyac"}
-{"text": "Yemeği şimdi istemiyorum.", "category": "temel_ihtiyac"}
+{"text": "Yemeği şimdi istemiyorum.", "category": "temel_ihtiyac", "group": "yemek_istememek"}
 {"text": "Biraz çorba içebilir miyim?", "category": "temel_ihtiyac"}
 {"text": "Pipetle içmek istiyorum.", "category": "temel_ihtiyac"}
 {"text": "Bardağı biraz daha yaklaştırır mısın?", "category": "temel_ihtiyac"}
@@ -21,24 +21,24 @@
 {"text": "Ağzımı siler misin?", "category": "temel_ihtiyac"}
 {"text": "Dişlerimi fırçalamak istiyorum.", "category": "temel_ihtiyac", "split": "val"}
 {"text": "Yüzümü yıkamak istiyorum.", "category": "temel_ihtiyac"}
-{"text": "Banyo yapmak istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Banyo yapmak istiyorum.", "category": "temel_ihtiyac", "group": "banyo"}
 {"text": "Saçımı tarar mısın?", "category": "temel_ihtiyac", "split": "val"}
 {"text": "Elimi yıkamak istiyorum.", "category": "temel_ihtiyac", "split": "val"}
-{"text": "Bezimi değiştirir misin?", "category": "temel_ihtiyac"}
+{"text": "Bezimi değiştirir misin?", "category": "temel_ihtiyac", "group": "bez"}
 {"text": "Sürgü getirir misin?", "category": "temel_ihtiyac", "split": "val"}
 {"text": "Uyumak istiyorum.", "category": "temel_ihtiyac", "group": "uyumak"}
-{"text": "Biraz dinlenmek istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Biraz dinlenmek istiyorum.", "category": "temel_ihtiyac", "group": "kestirmek"}
 {"text": "Uykum geldi.", "category": "temel_ihtiyac", "group": "uyumak"}
 {"text": "Uyuyamıyorum.", "category": "temel_ihtiyac", "group": "uyuyamamak"}
-{"text": "Işığı kapatır mısın?", "category": "temel_ihtiyac"}
+{"text": "Işığı kapatır mısın?", "category": "temel_ihtiyac", "group": "isik_kapatmak"}
 {"text": "Işığı açar mısın?", "category": "temel_ihtiyac", "split": "val"}
 {"text": "Perdeyi kapatır mısın?", "category": "temel_ihtiyac"}
 {"text": "Pencereyi açar mısın?", "category": "temel_ihtiyac"}
 {"text": "Oda çok sıcak.", "category": "temel_ihtiyac", "group": "sicak"}
-{"text": "Oda çok soğuk.", "category": "temel_ihtiyac"}
+{"text": "Oda çok soğuk.", "category": "temel_ihtiyac", "group": "soguk"}
 {"text": "Televizyonu açar mısın?", "category": "temel_ihtiyac"}
 {"text": "Televizyonu kapatır mısın?", "category": "temel_ihtiyac"}
-{"text": "Sesi biraz kısar mısın?", "category": "temel_ihtiyac"}
+{"text": "Sesi biraz kısar mısın?", "category": "temel_ihtiyac", "group": "ses_kismak"}
 {"text": "Sesi biraz açar mısın?", "category": "temel_ihtiyac", "split": "val"}
 {"text": "Biraz müzik dinlemek istiyorum.", "category": "temel_ihtiyac", "split": "val"}
 {"text": "Telefonumu verir misin?", "category": "temel_ihtiyac"}
@@ -86,7 +86,6 @@
 {"text": "Ağrı kesici alabilir miyim?", "category": "agri_saglik"}
 {"text": "Ağrım çok şiddetli.", "category": "agri_saglik", "group": "agri_var"}
 {"text": "Bugün ağrım yok.", "category": "agri_saglik"}
-{"text": "Gece hiç uyuyamadım.", "category": "agri_saglik", "group": "uyuyamamak"}
 {"text": "Doktor ne dedi?", "category": "agri_saglik"}
 {"text": "Tahlil sonuçları çıktı mı?", "category": "agri_saglik"}
 {"text": "Yarın hastaneye gitmek istemiyorum.", "category": "agri_saglik"}
@@ -115,7 +114,7 @@
 {"text": "Çok sıcakladım.", "category": "pozisyon_bakim", "group": "sicak"}
 {"text": "Çorabımı çıkarır mısın?", "category": "pozisyon_bakim"}
 {"text": "Çorap giydirir misin?", "category": "pozisyon_bakim", "split": "val"}
-{"text": "Üstümü değiştirmek istiyorum.", "category": "pozisyon_bakim"}
+{"text": "Üstümü değiştirmek istiyorum.", "category": "pozisyon_bakim", "group": "kiyafet"}
 {"text": "Hırkamı giydirir misin?", "category": "pozisyon_bakim"}
 {"text": "Kolumu düzeltir misin?", "category": "pozisyon_bakim", "split": "test"}
 {"text": "Bacağımı biraz oynatır mısın?", "category": "pozisyon_bakim", "split": "test"}
@@ -124,12 +123,12 @@
 {"text": "Gözlüğümü çıkarır mısın?", "category": "pozisyon_bakim"}
 {"text": "Gözlüğümü siler misin?", "category": "pozisyon_bakim"}
 {"text": "Saçım gözüme giriyor.", "category": "pozisyon_bakim", "split": "val"}
-{"text": "Burnumu siler misin?", "category": "pozisyon_bakim"}
+{"text": "Burnumu siler misin?", "category": "pozisyon_bakim", "group": "burun"}
 {"text": "Yüzümü kurular mısın?", "category": "pozisyon_bakim", "split": "test"}
-{"text": "Krem sürer misin?", "category": "pozisyon_bakim"}
-{"text": "Dudaklarım kurudu.", "category": "pozisyon_bakim"}
-{"text": "Tırnaklarımı keser misin?", "category": "pozisyon_bakim"}
-{"text": "Tıraş olmak istiyorum.", "category": "pozisyon_bakim"}
+{"text": "Krem sürer misin?", "category": "pozisyon_bakim", "group": "krem_surmek"}
+{"text": "Dudaklarım kurudu.", "category": "pozisyon_bakim", "group": "dudak_kurumasi"}
+{"text": "Tırnaklarımı keser misin?", "category": "pozisyon_bakim", "group": "tirnak"}
+{"text": "Tıraş olmak istiyorum.", "category": "pozisyon_bakim", "group": "tiras"}
 {"text": "Çarşafı değiştirir misin?", "category": "pozisyon_bakim"}
 {"text": "Yatak ıslandı.", "category": "pozisyon_bakim", "split": "test"}
 {"text": "Sandalyem rahat değil.", "category": "pozisyon_bakim"}
@@ -297,3 +296,379 @@
 {"text": "Beni ziyarete geldiğin için teşekkürler.", "category": "sosyal"}
 {"text": "Yine gel.", "category": "sosyal"}
 {"text": "Seni görmek çok güzel.", "category": "sosyal"}
+{"text": "Su içmek istiyorum.", "category": "temel_ihtiyac", "group": "su_istemek"}
+{"text": "Bir bardak su verir misin?", "category": "temel_ihtiyac", "group": "su_istemek"}
+{"text": "Boğazım kurudu, su verir misin?", "category": "temel_ihtiyac", "group": "su_istemek"}
+{"text": "Suyu pipetle verir misin?", "category": "temel_ihtiyac"}
+{"text": "Bardağım boşaldı.", "category": "temel_ihtiyac", "group": "bardak_bos"}
+{"text": "Bardağımı doldurur musun?", "category": "temel_ihtiyac", "group": "bardak_bos"}
+{"text": "Suyum bitti, biraz daha koyar mısın?", "category": "temel_ihtiyac", "group": "bardak_bos"}
+{"text": "Bir yudum alayım, sonra bekleyelim.", "category": "temel_ihtiyac"}
+{"text": "Bir yudum daha alabilir miyim?", "category": "temel_ihtiyac"}
+{"text": "Yavaş içir lütfen.", "category": "temel_ihtiyac", "group": "yavas_icirmek"}
+{"text": "Çok hızlı içemiyorum.", "category": "temel_ihtiyac", "group": "yavas_icirmek"}
+{"text": "Bardağı kendim tutamıyorum.", "category": "temel_ihtiyac"}
+{"text": "Bardağı ağzıma tutar mısın?", "category": "temel_ihtiyac"}
+{"text": "Su şişemi yanıma koyar mısın?", "category": "temel_ihtiyac"}
+{"text": "Ayran istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Evde ayran var mı?", "category": "temel_ihtiyac"}
+{"text": "Süt içmek istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Yatmadan önce sıcak süt alabilir miyim?", "category": "temel_ihtiyac"}
+{"text": "Ihlamur yapar mısın?", "category": "temel_ihtiyac"}
+{"text": "Bitki çayı içmek istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Çay demlendi mi?", "category": "temel_ihtiyac"}
+{"text": "Çayım soğudu.", "category": "temel_ihtiyac"}
+{"text": "Çayımı tazeler misin?", "category": "temel_ihtiyac"}
+{"text": "Çayım açık olsun.", "category": "temel_ihtiyac"}
+{"text": "Çayıma şeker koyma.", "category": "temel_ihtiyac"}
+{"text": "Çayıma bir şeker atar mısın?", "category": "temel_ihtiyac"}
+{"text": "Çayı ince belli bardakta istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Limonata istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Maden suyu var mı?", "category": "temel_ihtiyac"}
+{"text": "Portakal sıkar mısın?", "category": "temel_ihtiyac"}
+{"text": "Komposto yaptın mı?", "category": "temel_ihtiyac"}
+{"text": "Sıcak bir şey içmek istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Su içmeyi unuttum.", "category": "temel_ihtiyac"}
+{"text": "Bana sık sık su ver.", "category": "temel_ihtiyac"}
+{"text": "Gece başucuma su bırakır mısın?", "category": "temel_ihtiyac"}
+{"text": "Pipet bitmiş.", "category": "temel_ihtiyac"}
+{"text": "Pipeti biraz kısaltır mısın?", "category": "temel_ihtiyac"}
+{"text": "Bardağı biraz eğer misin?", "category": "temel_ihtiyac"}
+{"text": "Ağzımdan su aktı.", "category": "temel_ihtiyac"}
+{"text": "Boğazıma su kaçtı.", "category": "temel_ihtiyac"}
+{"text": "Kıvamlaştırıcıyı suya kattın mı?", "category": "temel_ihtiyac"}
+{"text": "Kahvaltı yapmak istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Kahvaltıda yumurta istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Haşlanmış yumurta yiyebilir miyim?", "category": "temel_ihtiyac"}
+{"text": "Peynir ve zeytin istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Kahvaltıda bal ve kaymak olsun.", "category": "temel_ihtiyac"}
+{"text": "Ekmeği küçük küçük böler misin?", "category": "temel_ihtiyac"}
+{"text": "Lokmaları küçük yapar mısın?", "category": "temel_ihtiyac", "group": "kucuk_lokma"}
+{"text": "Lokmalar çok büyük.", "category": "temel_ihtiyac", "group": "kucuk_lokma"}
+{"text": "Lokmayı yutamıyorum.", "category": "temel_ihtiyac"}
+{"text": "Çiğnemekte zorlanıyorum.", "category": "temel_ihtiyac"}
+{"text": "Yumuşak bir şey yemek istiyorum.", "category": "temel_ihtiyac", "group": "yumusak_yemek"}
+{"text": "Sert şeyleri yiyemiyorum.", "category": "temel_ihtiyac", "group": "yumusak_yemek"}
+{"text": "Püre yapar mısın?", "category": "temel_ihtiyac"}
+{"text": "Yoğurt istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Muhallebi yemek istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Canım tatlı bir şey çekti.", "category": "temel_ihtiyac", "group": "tatli_istemek"}
+{"text": "Tatlı yiyebilir miyim?", "category": "temel_ihtiyac", "group": "tatli_istemek"}
+{"text": "Canım meyve çekti.", "category": "temel_ihtiyac"}
+{"text": "Elma soyar mısın?", "category": "temel_ihtiyac"}
+{"text": "Muz istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Karpuz keser misin?", "category": "temel_ihtiyac"}
+{"text": "Mandalina soyar mısın?", "category": "temel_ihtiyac"}
+{"text": "Elmayı rendeler misin?", "category": "temel_ihtiyac"}
+{"text": "Bugün ne pişirdin?", "category": "temel_ihtiyac"}
+{"text": "Yemek saati geldi mi?", "category": "temel_ihtiyac"}
+{"text": "Yemeği biraz soğutur musun?", "category": "temel_ihtiyac"}
+{"text": "Yemeği ısıtır mısın?", "category": "temel_ihtiyac"}
+{"text": "Yemek soğumuş.", "category": "temel_ihtiyac"}
+{"text": "Yemek çok tuzlu olmuş.", "category": "temel_ihtiyac"}
+{"text": "Biraz tuz ekler misin?", "category": "temel_ihtiyac"}
+{"text": "Üstüne biraz limon sıkar mısın?", "category": "temel_ihtiyac"}
+{"text": "Bu yemeği sevmedim.", "category": "temel_ihtiyac"}
+{"text": "Bunu yemek istemiyorum.", "category": "temel_ihtiyac", "group": "yemek_istememek"}
+{"text": "Başka bir şey var mı?", "category": "temel_ihtiyac"}
+{"text": "Çorbayı kaşıkla verir misin?", "category": "temel_ihtiyac"}
+{"text": "Kaşığı ağzıma getirir misin?", "category": "temel_ihtiyac"}
+{"text": "Yavaş yedir lütfen.", "category": "temel_ihtiyac", "group": "yavas_yedirmek"}
+{"text": "Biraz bekle, yutayım.", "category": "temel_ihtiyac", "group": "yavas_yedirmek"}
+{"text": "Ağzımda lokma var, bekle.", "category": "temel_ihtiyac", "group": "yavas_yedirmek"}
+{"text": "Peçete verir misin?", "category": "temel_ihtiyac"}
+{"text": "Önlüğümü takar mısın?", "category": "temel_ihtiyac"}
+{"text": "Üstüme döktüm.", "category": "temel_ihtiyac"}
+{"text": "Pilav yemek istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Makarna yapar mısın?", "category": "temel_ihtiyac"}
+{"text": "Mercimek çorbası istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Börek yaptın mı?", "category": "temel_ihtiyac"}
+{"text": "Dondurma yiyebilir miyim?", "category": "temel_ihtiyac"}
+{"text": "Bir bisküvi alabilir miyim?", "category": "temel_ihtiyac"}
+{"text": "Ceviz kırar mısın?", "category": "temel_ihtiyac"}
+{"text": "Ekmeği kızartır mısın?", "category": "temel_ihtiyac"}
+{"text": "Tost yapar mısın?", "category": "temel_ihtiyac"}
+{"text": "Daha sonra yerim.", "category": "temel_ihtiyac"}
+{"text": "Ara öğün yiyebilir miyim?", "category": "temel_ihtiyac"}
+{"text": "Bunu yememe izin var mı?", "category": "temel_ihtiyac"}
+{"text": "Şekersiz olsun.", "category": "temel_ihtiyac"}
+{"text": "Az yağlı olsun.", "category": "temel_ihtiyac"}
+{"text": "Etin yanında sebze istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Köfte yemek istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Balık yiyelim mi?", "category": "temel_ihtiyac"}
+{"text": "Yemeği blenderdan geçirir misin?", "category": "temel_ihtiyac"}
+{"text": "Bu çok sert, yiyemem.", "category": "temel_ihtiyac"}
+{"text": "Yemekten sonra meyve istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Akşam hafif bir şey yiyelim.", "category": "temel_ihtiyac"}
+{"text": "Bugün dışarıdan yemek söyleyelim.", "category": "temel_ihtiyac"}
+{"text": "Pizza yemeyi çok özledim.", "category": "temel_ihtiyac"}
+{"text": "Yemeği masaya değil, yanıma koy.", "category": "temel_ihtiyac"}
+{"text": "Tabağı biraz yaklaştırır mısın?", "category": "temel_ihtiyac"}
+{"text": "Çatal yerine kaşık istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Ağzımı silmeyi unutma.", "category": "temel_ihtiyac"}
+{"text": "Tuvalete götürür müsün?", "category": "temel_ihtiyac", "group": "tuvalet"}
+{"text": "Tuvaletim geldi.", "category": "temel_ihtiyac", "group": "tuvalet"}
+{"text": "Lavaboya gitmem lazım.", "category": "temel_ihtiyac", "group": "tuvalet"}
+{"text": "Çok sıkıştım, tuvalete gidelim.", "category": "temel_ihtiyac", "group": "tuvalet"}
+{"text": "Tuvalette biraz yalnız kalmak istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Tuvaletten kalkmama yardım eder misin?", "category": "temel_ihtiyac"}
+{"text": "Klozete oturmama yardım eder misin?", "category": "temel_ihtiyac"}
+{"text": "İşim bitti, gelebilirsin.", "category": "temel_ihtiyac"}
+{"text": "Tuvalet kâğıdı bitmiş.", "category": "temel_ihtiyac"}
+{"text": "Islak mendil verir misin?", "category": "temel_ihtiyac"}
+{"text": "Altımı temizler misin?", "category": "temel_ihtiyac"}
+{"text": "Bezim doldu.", "category": "temel_ihtiyac", "group": "bez"}
+{"text": "Bez değiştirme zamanı geldi.", "category": "temel_ihtiyac", "group": "bez"}
+{"text": "Sondamı kontrol eder misin?", "category": "temel_ihtiyac"}
+{"text": "İdrar torbası dolmuş.", "category": "temel_ihtiyac"}
+{"text": "Tuvalete tekerlekli sandalyeyle gidelim.", "category": "temel_ihtiyac"}
+{"text": "Gece tuvalete kalkmam gerekebilir.", "category": "temel_ihtiyac"}
+{"text": "Tuvalet çok soğuk.", "category": "temel_ihtiyac"}
+{"text": "Tuvaletin kapısını kapat.", "category": "temel_ihtiyac"}
+{"text": "Duş almak istiyorum.", "category": "temel_ihtiyac", "group": "banyo"}
+{"text": "Yıkanmak istiyorum.", "category": "temel_ihtiyac", "group": "banyo"}
+{"text": "Banyo suyu çok sıcak.", "category": "temel_ihtiyac"}
+{"text": "Saçlarım kirlendi, yıkayalım mı?", "category": "temel_ihtiyac"}
+{"text": "Şampuanı gözüme kaçırma.", "category": "temel_ihtiyac"}
+{"text": "Sırtımı keseler misin?", "category": "temel_ihtiyac"}
+{"text": "Havluyu verir misin?", "category": "temel_ihtiyac"}
+{"text": "Bornozumu getirir misin?", "category": "temel_ihtiyac"}
+{"text": "Losyon sürer misin?", "category": "temel_ihtiyac", "group": "krem_surmek"}
+{"text": "Ellerim kurudu.", "category": "temel_ihtiyac"}
+{"text": "Dudaklarım çatladı.", "category": "temel_ihtiyac", "group": "dudak_kurumasi"}
+{"text": "Dudak kremi sürer misin?", "category": "temel_ihtiyac"}
+{"text": "Tırnaklarım uzamış.", "category": "temel_ihtiyac", "group": "tirnak"}
+{"text": "Sakalımı tıraş eder misin?", "category": "temel_ihtiyac", "group": "tiras"}
+{"text": "Sakalım uzadı.", "category": "temel_ihtiyac", "group": "tiras"}
+{"text": "Burnum akıyor, mendil verir misin?", "category": "temel_ihtiyac", "group": "burun"}
+{"text": "Gözümü siler misin?", "category": "temel_ihtiyac"}
+{"text": "Gözüme bir şey kaçtı.", "category": "temel_ihtiyac"}
+{"text": "Ağzımı çalkalamak istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Ağız bakımı yapar mısın?", "category": "temel_ihtiyac"}
+{"text": "Takma dişimi takar mısın?", "category": "temel_ihtiyac"}
+{"text": "Protezimi çıkarır mısın?", "category": "temel_ihtiyac"}
+{"text": "Kulaklarımı temizler misin?", "category": "temel_ihtiyac"}
+{"text": "Deodorant sürer misin?", "category": "temel_ihtiyac"}
+{"text": "Biraz parfüm sıkar mısın?", "category": "temel_ihtiyac"}
+{"text": "Temiz kıyafet giymek istiyorum.", "category": "temel_ihtiyac", "group": "kiyafet"}
+{"text": "Pijamamı giymek istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Kıyafetim kirlendi.", "category": "temel_ihtiyac", "group": "kiyafet"}
+{"text": "Saçlarım çok uzadı.", "category": "temel_ihtiyac"}
+{"text": "Biraz makyaj yapmak istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Ojemi sürer misin?", "category": "temel_ihtiyac"}
+{"text": "Banyoda düşmekten korkuyorum.", "category": "temel_ihtiyac"}
+{"text": "Banyoda sandalyeye oturayım.", "category": "temel_ihtiyac"}
+{"text": "Banyodan sonra üşüyorum.", "category": "temel_ihtiyac"}
+{"text": "Pişik olmuş, krem sürer misin?", "category": "temel_ihtiyac"}
+{"text": "Saç kurutma makinesini getirir misin?", "category": "temel_ihtiyac"}
+{"text": "Kolonya döker misin?", "category": "temel_ihtiyac"}
+{"text": "Ellerime kolonya sıkar mısın?", "category": "temel_ihtiyac"}
+{"text": "Aynayı tutar mısın?", "category": "temel_ihtiyac"}
+{"text": "Kendimi aynada görmek istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Kulağıma su kaçtı.", "category": "temel_ihtiyac"}
+{"text": "Tenime pudra sürer misin?", "category": "temel_ihtiyac"}
+{"text": "Gözlerim kapanıyor.", "category": "temel_ihtiyac", "group": "uyumak"}
+{"text": "Artık yatmak istiyorum.", "category": "temel_ihtiyac", "group": "uyumak"}
+{"text": "Gözüme uyku girmiyor.", "category": "temel_ihtiyac", "group": "uyuyamamak"}
+{"text": "Uykum kaçtı.", "category": "temel_ihtiyac", "group": "uyuyamamak"}
+{"text": "Biraz kestirmek istiyorum.", "category": "temel_ihtiyac", "group": "kestirmek"}
+{"text": "Öğlen biraz uzanacağım.", "category": "temel_ihtiyac", "group": "kestirmek"}
+{"text": "Beni bir saat sonra uyandırır mısın?", "category": "temel_ihtiyac"}
+{"text": "Sabah erken uyandır beni.", "category": "temel_ihtiyac"}
+{"text": "Beni uyandırma.", "category": "temel_ihtiyac"}
+{"text": "Şimdi kimse rahatsız etmesin.", "category": "temel_ihtiyac"}
+{"text": "Kapı açık kalsın.", "category": "temel_ihtiyac"}
+{"text": "Gece lambası açık kalsın.", "category": "temel_ihtiyac"}
+{"text": "Karanlıkta uyuyamıyorum.", "category": "temel_ihtiyac"}
+{"text": "Işık gözümü alıyor.", "category": "temel_ihtiyac"}
+{"text": "Ses yüzünden uyuyamıyorum.", "category": "temel_ihtiyac"}
+{"text": "Yatma saatim geldi.", "category": "temel_ihtiyac"}
+{"text": "Uyurken yanımda biri olsun.", "category": "temel_ihtiyac"}
+{"text": "Gece beni kontrol eder misin?", "category": "temel_ihtiyac"}
+{"text": "Gündüz uyumak istemiyorum.", "category": "temel_ihtiyac"}
+{"text": "Yorgunum ama uyuyamıyorum.", "category": "temel_ihtiyac"}
+{"text": "Uyku maskemi takar mısın?", "category": "temel_ihtiyac"}
+{"text": "Kulak tıkacımı verir misin?", "category": "temel_ihtiyac"}
+{"text": "Yastık çok yüksek, uyuyamıyorum.", "category": "temel_ihtiyac"}
+{"text": "Lambayı söndürür müsün?", "category": "temel_ihtiyac", "group": "isik_kapatmak"}
+{"text": "Işıklar çok parlak.", "category": "temel_ihtiyac"}
+{"text": "Perdeleri açar mısın?", "category": "temel_ihtiyac"}
+{"text": "Güneş gözüme geliyor.", "category": "temel_ihtiyac"}
+{"text": "Güneşi görmek istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Pencereyi kapatır mısın?", "category": "temel_ihtiyac"}
+{"text": "Cereyan yapıyor.", "category": "temel_ihtiyac"}
+{"text": "Pencere açıkken üşüyorum.", "category": "temel_ihtiyac"}
+{"text": "Odada bunaldım.", "category": "temel_ihtiyac", "group": "sicak"}
+{"text": "Oda buz gibi olmuş.", "category": "temel_ihtiyac", "group": "soguk"}
+{"text": "Kaloriferi kısar mısın?", "category": "temel_ihtiyac"}
+{"text": "Kaloriferi açar mısın?", "category": "temel_ihtiyac"}
+{"text": "Klimayı açar mısın?", "category": "temel_ihtiyac"}
+{"text": "Klimayı kapatır mısın?", "category": "temel_ihtiyac"}
+{"text": "Klima yüzüme geliyor.", "category": "temel_ihtiyac"}
+{"text": "Vantilatörü açar mısın?", "category": "temel_ihtiyac"}
+{"text": "Vantilatörü bana çevirme.", "category": "temel_ihtiyac"}
+{"text": "Isıtıcıyı yanıma getirir misin?", "category": "temel_ihtiyac"}
+{"text": "Dışarısı çok gürültülü.", "category": "temel_ihtiyac"}
+{"text": "Biraz sessizlik istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Odada kötü bir koku var.", "category": "temel_ihtiyac"}
+{"text": "Oda koku yapmış.", "category": "temel_ihtiyac"}
+{"text": "Odayı toplar mısın?", "category": "temel_ihtiyac"}
+{"text": "Odada çok eşya var.", "category": "temel_ihtiyac"}
+{"text": "Çiçekleri sulamayı unutma.", "category": "temel_ihtiyac"}
+{"text": "Çiçekleri pencerenin önüne koy.", "category": "temel_ihtiyac"}
+{"text": "Kanalı değiştirir misin?", "category": "temel_ihtiyac"}
+{"text": "Diziyi açar mısın?", "category": "temel_ihtiyac"}
+{"text": "Dizinin saati geldi.", "category": "temel_ihtiyac"}
+{"text": "Maçı açar mısın?", "category": "temel_ihtiyac"}
+{"text": "Film izlemek istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Bir belgesel izleyelim.", "category": "temel_ihtiyac"}
+{"text": "Altyazıyı açar mısın?", "category": "temel_ihtiyac"}
+{"text": "Televizyonu bana doğru çevirir misin?", "category": "temel_ihtiyac"}
+{"text": "Kumanda nerede?", "category": "temel_ihtiyac"}
+{"text": "Önceki kanala dön.", "category": "temel_ihtiyac"}
+{"text": "Reklamlar bitince haber ver.", "category": "temel_ihtiyac"}
+{"text": "Ses çok yüksek.", "category": "temel_ihtiyac", "group": "ses_kismak"}
+{"text": "Bu programı sevmiyorum.", "category": "temel_ihtiyac"}
+{"text": "Yarışmayı açar mısın?", "category": "temel_ihtiyac"}
+{"text": "Televizyon izlemekten sıkıldım.", "category": "temel_ihtiyac"}
+{"text": "Telefonu kulağıma tutar mısın?", "category": "temel_ihtiyac"}
+{"text": "Tableti verir misin?", "category": "temel_ihtiyac"}
+{"text": "Tableti bana doğru çevir.", "category": "temel_ihtiyac"}
+{"text": "İnternet çekmiyor.", "category": "temel_ihtiyac"}
+{"text": "Şarj aletini getirir misin?", "category": "temel_ihtiyac"}
+{"text": "Mesajlarıma bakar mısın?", "category": "temel_ihtiyac"}
+{"text": "Sayfayı çevirir misin?", "category": "temel_ihtiyac"}
+{"text": "Bulmaca çözmek istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Kalemimi verir misin?", "category": "temel_ihtiyac"}
+{"text": "Bir şey yazmak istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Fotoğraf albümünü getirir misin?", "category": "temel_ihtiyac"}
+{"text": "Eski fotoğraflara bakalım.", "category": "temel_ihtiyac"}
+{"text": "Satranç oynayalım mı?", "category": "temel_ihtiyac"}
+{"text": "Kart oynamak istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Yeni bir kitap almak istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Kitabın kaldığım yerini bulur musun?", "category": "temel_ihtiyac"}
+{"text": "Yazılar çok küçük.", "category": "temel_ihtiyac"}
+{"text": "Mendil verir misin?", "category": "temel_ihtiyac"}
+{"text": "Bunu masaya koyar mısın?", "category": "temel_ihtiyac"}
+{"text": "Bunu benden uzaklaştır.", "category": "temel_ihtiyac"}
+{"text": "Çantamı getirir misin?", "category": "temel_ihtiyac"}
+{"text": "Saatimi takar mısın?", "category": "temel_ihtiyac"}
+{"text": "Yüzüğümü takar mısın?", "category": "temel_ihtiyac"}
+{"text": "Tespihimi verir misin?", "category": "temel_ihtiyac"}
+{"text": "Eşyalarımı ulaşabileceğim yere koy.", "category": "temel_ihtiyac"}
+{"text": "Çağrı zilini yanıma koyar mısın?", "category": "temel_ihtiyac"}
+{"text": "Zil elimin altında olsun.", "category": "temel_ihtiyac"}
+{"text": "Terliklerimi getirir misin?", "category": "temel_ihtiyac"}
+{"text": "Hırkamı yanıma koy.", "category": "temel_ihtiyac"}
+{"text": "Şuradaki şeyi verir misin?", "category": "temel_ihtiyac"}
+{"text": "Onu biraz sağa koyar mısın?", "category": "temel_ihtiyac"}
+{"text": "Bunu yere düşürdüm.", "category": "temel_ihtiyac"}
+{"text": "Bunu kaldırır mısın?", "category": "temel_ihtiyac"}
+{"text": "Cihazın şarjı azaldı.", "category": "temel_ihtiyac"}
+{"text": "Anahtarlarım nerede?", "category": "temel_ihtiyac"}
+{"text": "Namaz kılmak istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Abdest almama yardım eder misin?", "category": "temel_ihtiyac"}
+{"text": "Kuran dinlemek istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Ezan okundu mu?", "category": "temel_ihtiyac"}
+{"text": "Seccademi serer misin?", "category": "temel_ihtiyac"}
+{"text": "Oruç tutmak istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Bugün ne yapacağımızı planlayalım.", "category": "temel_ihtiyac"}
+{"text": "Önce kahvaltı, sonra banyo.", "category": "temel_ihtiyac"}
+{"text": "Biraz sonra hatırlat.", "category": "temel_ihtiyac"}
+{"text": "Şimdi değil, sonra.", "category": "temel_ihtiyac"}
+{"text": "Acelem yok.", "category": "temel_ihtiyac"}
+{"text": "Biraz bekleyebilir misin?", "category": "temel_ihtiyac"}
+{"text": "Bana biraz zaman ver.", "category": "temel_ihtiyac"}
+{"text": "Hemen gelir misin?", "category": "temel_ihtiyac"}
+{"text": "Buraya gelir misin?", "category": "temel_ihtiyac"}
+{"text": "Yardıma ihtiyacım var.", "category": "temel_ihtiyac"}
+{"text": "Bir şeye ihtiyacım var.", "category": "temel_ihtiyac"}
+{"text": "Bir şey istiyorum ama söyleyemiyorum.", "category": "temel_ihtiyac"}
+{"text": "Ne istediğimi tahmin edebilir misin?", "category": "temel_ihtiyac"}
+{"text": "Bir şey daha istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Hepsi bu, teşekkürler.", "category": "temel_ihtiyac"}
+{"text": "Çay saati geldi.", "category": "temel_ihtiyac"}
+{"text": "Çayı biraz soğut, sonra ver.", "category": "temel_ihtiyac"}
+{"text": "Bir bardak daha çay alabilir miyim?", "category": "temel_ihtiyac"}
+{"text": "Kola içmek istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Sütü ısıtır mısın?", "category": "temel_ihtiyac"}
+{"text": "Su içerken başımı tutar mısın?", "category": "temel_ihtiyac"}
+{"text": "Suyu kaşıkla verir misin?", "category": "temel_ihtiyac"}
+{"text": "Gazoz var mı?", "category": "temel_ihtiyac"}
+{"text": "İçeceğime buz koyma.", "category": "temel_ihtiyac"}
+{"text": "Şerbet yapar mısın?", "category": "temel_ihtiyac"}
+{"text": "Bugün çorba var mı?", "category": "temel_ihtiyac"}
+{"text": "Sıcak bir çorba iyi gelir.", "category": "temel_ihtiyac"}
+{"text": "Ekmek istemiyorum.", "category": "temel_ihtiyac"}
+{"text": "Ekmeği çorbaya batırır mısın?", "category": "temel_ihtiyac"}
+{"text": "Simit alır mısın?", "category": "temel_ihtiyac"}
+{"text": "Poğaça istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Menemen yapar mısın?", "category": "temel_ihtiyac"}
+{"text": "Kahvaltı hazır mı?", "category": "temel_ihtiyac"}
+{"text": "Kahvaltıyı yatakta yapalım.", "category": "temel_ihtiyac"}
+{"text": "Masada yemek istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Hep birlikte yiyelim.", "category": "temel_ihtiyac"}
+{"text": "Fırında tavuk yapar mısın?", "category": "temel_ihtiyac"}
+{"text": "Kuru fasulye yemek istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Sarma yaptın mı?", "category": "temel_ihtiyac"}
+{"text": "Canım mantı çekti.", "category": "temel_ihtiyac"}
+{"text": "Turşu var mı?", "category": "temel_ihtiyac"}
+{"text": "Salata yapar mısın?", "category": "temel_ihtiyac"}
+{"text": "Salatayı ince doğrar mısın?", "category": "temel_ihtiyac"}
+{"text": "Meyveleri küçük keser misin?", "category": "temel_ihtiyac"}
+{"text": "Çekirdeksiz üzüm istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Kirazları yıkar mısın?", "category": "temel_ihtiyac"}
+{"text": "Kek yaptın mı?", "category": "temel_ihtiyac"}
+{"text": "Sütlaç istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Tadı biraz garip.", "category": "temel_ihtiyac"}
+{"text": "Bu bozulmuş olabilir.", "category": "temel_ihtiyac"}
+{"text": "Acı biber koyma.", "category": "temel_ihtiyac"}
+{"text": "Baharat koyma, bana dokunuyor.", "category": "temel_ihtiyac"}
+{"text": "Midem kaldırmıyor, hafif bir şey olsun.", "category": "temel_ihtiyac"}
+{"text": "Biraz yiyip bırakacağım.", "category": "temel_ihtiyac"}
+{"text": "Tuvalet sandalyesini getirir misin?", "category": "temel_ihtiyac"}
+{"text": "Kapıyı çalmadan girmeyin.", "category": "temel_ihtiyac"}
+{"text": "Ayaklarımı yıkar mısın?", "category": "temel_ihtiyac"}
+{"text": "Ayaklarıma krem sürer misin?", "category": "temel_ihtiyac"}
+{"text": "Sabunun kokusu çok ağır.", "category": "temel_ihtiyac"}
+{"text": "Islak havluyla siler misin?", "category": "temel_ihtiyac"}
+{"text": "Sırtımı siler misin?", "category": "temel_ihtiyac"}
+{"text": "Saçımı kestirmek istiyorum.", "category": "temel_ihtiyac", "group": "sac_kesmek"}
+{"text": "Saçımı kısa kestirmek istiyorum.", "category": "temel_ihtiyac", "group": "sac_kesmek"}
+{"text": "Berberi eve çağırır mısın?", "category": "temel_ihtiyac"}
+{"text": "Kaşlarımı alır mısın?", "category": "temel_ihtiyac"}
+{"text": "Bıyığımı düzeltir misin?", "category": "temel_ihtiyac"}
+{"text": "Tıraş bıçağı körelmiş.", "category": "temel_ihtiyac"}
+{"text": "Tıraş makinesini getirir misin?", "category": "temel_ihtiyac"}
+{"text": "Uyumadan önce biraz kitap okuyalım.", "category": "temel_ihtiyac"}
+{"text": "Bu akşam geç yatacağım.", "category": "temel_ihtiyac"}
+{"text": "Kediyi yanıma getirir misin?", "category": "temel_ihtiyac"}
+{"text": "Kedimi sevmek istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Kuşun kafesini örter misin?", "category": "temel_ihtiyac"}
+{"text": "Saksıları içeri alır mısın?", "category": "temel_ihtiyac"}
+{"text": "Ortalığı süpürür müsün?", "category": "temel_ihtiyac"}
+{"text": "Oda çok dağınık.", "category": "temel_ihtiyac"}
+{"text": "Masayı temizler misin?", "category": "temel_ihtiyac"}
+{"text": "Çöpü boşaltır mısın?", "category": "temel_ihtiyac"}
+{"text": "Hava çok nemli.", "category": "temel_ihtiyac"}
+{"text": "Odaya biraz oda spreyi sıkar mısın?", "category": "temel_ihtiyac"}
+{"text": "Saati göreceğim bir yere asar mısın?", "category": "temel_ihtiyac"}
+{"text": "Takvimi göreceğim yere koy.", "category": "temel_ihtiyac"}
+{"text": "Bir film önerir misin?", "category": "temel_ihtiyac"}
+{"text": "Bu filmi daha önce izledik.", "category": "temel_ihtiyac"}
+{"text": "Sesi kapat, sadece görüntü kalsın.", "category": "temel_ihtiyac"}
+{"text": "Kumandanın pili bitti.", "category": "temel_ihtiyac"}
+{"text": "Ekrana bakmaktan gözlerim yoruldu.", "category": "temel_ihtiyac"}
+{"text": "Biraz ara verelim.", "category": "temel_ihtiyac"}
+{"text": "Bilgisayarı açar mısın?", "category": "temel_ihtiyac"}
+{"text": "Bilgisayarda oyun oynamak istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Sesli kitap açar mısın?", "category": "temel_ihtiyac"}
+{"text": "Gazetedeki bulmacayı bana okur musun?", "category": "temel_ihtiyac"}
+{"text": "Markete gidecek misin?", "category": "temel_ihtiyac"}
+{"text": "Gelirken bana da bir şey al.", "category": "temel_ihtiyac"}
+{"text": "Alışveriş listesine süt ekle.", "category": "temel_ihtiyac"}
+{"text": "Ekmek almayı unutma.", "category": "temel_ihtiyac"}
+{"text": "Bana yeni bir pijama alır mısın?", "category": "temel_ihtiyac"}
+{"text": "Yeni çorap almamız lazım.", "category": "temel_ihtiyac"}
+{"text": "Cüzdanımı getirir misin?", "category": "temel_ihtiyac"}
+{"text": "Kimliğimi çantama koyar mısın?", "category": "temel_ihtiyac"}
