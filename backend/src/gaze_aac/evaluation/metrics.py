@@ -92,6 +92,9 @@ class SimulationStats:
     total_characters: int = 0
     ranks: list[int | None] = field(default_factory=list)
     latencies_ms: list[float] = field(default_factory=list)
+    # Tek tek model çağrılarının süresi. ``latencies_ms`` cümle başına toplamdır
+    # ve açık yazma turlarını da içerir; arayüzdeki bekleme bu değerdir.
+    request_latencies_ms: list[float] = field(default_factory=list)
 
     @property
     def ksr(self) -> float:
@@ -113,6 +116,15 @@ class SimulationStats:
     def mean_latency_ms(self) -> float:
         return sum(self.latencies_ms) / len(self.latencies_ms) if self.latencies_ms else 0.0
 
+    @property
+    def mean_request_latency_ms(self) -> float:
+        values = self.request_latencies_ms
+        return sum(values) / len(values) if values else 0.0
+
+    @property
+    def max_request_latency_ms(self) -> float:
+        return max(self.request_latencies_ms, default=0.0)
+
     def as_row(self) -> dict[str, float | str | int | bool]:
         """CSV satırı. Sütun adları rapordaki tablo başlıklarıyla aynı."""
         return {
@@ -125,6 +137,8 @@ class SimulationStats:
             "ilk5": round(self.top5, 2),
             "mrr": round(self.mrr, 4),
             "gecikme_ms": round(self.mean_latency_ms, 1),
+            "istek_ms": round(self.mean_request_latency_ms, 1),
+            "istek_ms_en_cok": round(self.max_request_latency_ms, 1),
         }
 
 

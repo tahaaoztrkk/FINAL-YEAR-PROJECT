@@ -14,6 +14,7 @@ from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 GazeSource = Literal["mouse", "webcam"]
+HfDecoding = Literal["beam_sample", "beam", "sample", "greedy"]
 ExpanderProvider = Literal["mock", "ngram", "hf_local", "openai_compatible"]
 
 _BACKEND_ROOT = Path(__file__).resolve().parents[2]
@@ -61,6 +62,11 @@ class Settings(BaseSettings):
     hf_model_id: str = "ytu-ce-cosmos/Turkish-Gemma-9b-v0.1"
     hf_load_in_4bit: bool = True
     hf_adapter_path: str = ""
+    # Üretim ayarları; gecikmeyi en çok bunlar belirler. Aday cümleler kısa
+    # olduğu için 24 belirteç yeter; model satır sonunda da durur.
+    hf_max_new_tokens: int = Field(default=24, ge=4, le=128)
+    hf_decoding: HfDecoding = "beam_sample"
+    hf_num_beams: int = Field(default=0, ge=0, le=16, description="0: aday sayısı kadar (en az 4)")
 
     llm_base_url: str = ""
     llm_api_key: str = ""
