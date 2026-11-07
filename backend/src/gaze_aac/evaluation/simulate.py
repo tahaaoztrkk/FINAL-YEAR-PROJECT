@@ -44,8 +44,11 @@ async def simulate_case(
     top_k: int,
     use_context: bool,
     max_rounds: int = 5,
+    request_latencies: list[float] | None = None,
 ) -> tuple[int, int | None, float]:
     """Tek cümle için kullanıcı davranışını modeller.
+
+    ``request_latencies`` verilirse her model çağrısının süresi ona eklenir.
 
     Returns:
         (yapılan seçim sayısı, doğru adayın sırası veya None, toplam gecikme ms)
@@ -77,6 +80,8 @@ async def simulate_case(
         )
         result = await service.expand(request)
         total_latency += result.latency_ms
+        if request_latencies is not None:
+            request_latencies.append(result.latency_ms)
 
         for rank, candidate in enumerate(result.candidates):
             if _normalize_for_match(candidate.text) == target:
@@ -101,7 +106,12 @@ async def run_condition(
 
     for case in cases:
         selections, rank, latency = await simulate_case(
-            case, service, scheme_id, top_k, use_context
+            case,
+            service,
+            scheme_id,
+            top_k,
+            use_context,
+            request_latencies=stats.request_latencies_ms,
         )
         stats.sentence_count += 1
         stats.total_selections += selections
@@ -136,7 +146,8 @@ async def run_grid(
                     f"[{service.provider_name:>18}] {scheme_id} "
                     f"bağlam={'var' if use_context else 'yok':>3} "
                     f"KSR={stats.ksr:5.1f}%  ilk1={stats.top1:5.1f}%  "
-                    f"ilk5={stats.top5:5.1f}%  ({elapsed:.1f} sn)"
+                    f"ilk5={stats.top5:5.1f}%  istek={stats.mean_request_latency_ms:6.0f} ms  "
+                    f"({elapsed:.1f} sn)"
                 )
     return results
 
@@ -214,6 +225,16 @@ def main() -> None:
     parser.add_argument("--top-k", type=int, default=5)
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument(
+        "--max-new-tokens", type=int, default=None, help="hf_local: üretilecek en çok belirteç"
+    )
+    parser.add_argument(
+        "--decoding",
+        choices=("beam_sample", "beam", "sample", "greedy"),
+        default=None,
+        help="hf_local: üretim yöntemi",
+    )
+    parser.add_argument("--beams", type=int, default=None, help="hf_local: ışın sayısı")
+    parser.add_argument(
         "--adapter",
         type=Path,
         default=None,
@@ -226,6 +247,14 @@ def main() -> None:
         if not args.adapter.exists():
             raise SystemExit(f"Adaptör bulunamadı: {args.adapter}")
         settings = settings.model_copy(update={"hf_adapter_path": str(args.adapter)})
+    overrides = {
+        "hf_max_new_tokens": args.max_new_tokens,
+        "hf_decoding": args.decoding,
+        "hf_num_beams": args.beams,
+    }
+    settings = settings.model_copy(
+        update={key: value for key, value in overrides.items() if value is not None}
+    )
     # Test kümesi Ocak'a kadar kapalı: geliştirme sırasında doğrulama kümesi
     # ölçülür, sağlayıcılar yalnızca eğitim kümesini görür.
     corpus = args.corpus or settings.val_path

@@ -20,7 +20,12 @@ from gaze_aac.evaluation.simulate import (
     warm_up_services,
 )
 from gaze_aac.nlp.expander import ExpansionService, back_check, build_provider, default_corpus_path
-from gaze_aac.nlp.providers.hf_local import HuggingFaceProvider, dtype_kwargs, supports_bf16
+from gaze_aac.nlp.providers.hf_local import (
+    HuggingFaceProvider,
+    dtype_kwargs,
+    generation_kwargs,
+    supports_bf16,
+)
 from gaze_aac.nlp.providers.mock import MockProvider
 from gaze_aac.nlp.providers.ngram import NGramProvider
 from gaze_aac.nlp.schemes import get_scheme
@@ -193,6 +198,8 @@ class TestSimulation:
             "ilk5",
             "mrr",
             "gecikme_ms",
+            "istek_ms",
+            "istek_ms_en_cok",
         }
 
 
@@ -299,3 +306,47 @@ class TestWarmUp:
         }
         warm_up_services(services)
         assert warmable.warmed == 1
+
+
+class TestGenerationSettings:
+    def test_default_keeps_beam_sampling(self) -> None:
+        kwargs = generation_kwargs("beam_sample", 5, 24)
+        assert kwargs["do_sample"] is True
+        assert kwargs["num_beams"] == 5
+        assert kwargs["num_return_sequences"] == 5
+        assert kwargs["max_new_tokens"] == 24
+
+    def test_beams_never_fewer_than_candidates(self) -> None:
+        assert generation_kwargs("beam", 5, 24, num_beams=3)["num_beams"] == 5
+        assert generation_kwargs("beam", 3, 24, num_beams=3)["num_beams"] == 3
+        assert generation_kwargs("beam", 3, 24)["num_beams"] == 4
+
+    def test_sample_and_greedy_use_no_beams(self) -> None:
+        sample = generation_kwargs("sample", 5, 24)
+        assert sample["num_beams"] == 1 and sample["num_return_sequences"] == 5
+        greedy = generation_kwargs("greedy", 5, 24)
+        assert greedy["do_sample"] is False and greedy["num_return_sequences"] == 1
+
+    def test_unknown_decoding_fails_before_model_load(self) -> None:
+        with pytest.raises(ValueError):
+            HuggingFaceProvider("model", decoding="hizli")
+
+    def test_settings_reach_provider(self) -> None:
+        settings = Settings(
+            expander_provider="hf_local", hf_max_new_tokens=16, hf_decoding="beam", hf_num_beams=3
+        )
+        provider = build_provider("hf_local", settings)
+        assert isinstance(provider, HuggingFaceProvider)
+        assert (provider.max_new_tokens, provider.decoding, provider.num_beams) == (16, "beam", 3)
+
+
+class TestRequestLatency:
+    async def test_each_model_call_is_recorded(self) -> None:
+        stats = await run_condition(
+            [SimulationCase(text="Su istiyorum.")],
+            ExpansionService(MockProvider(None)),
+            "S1",
+        )
+        assert len(stats.request_latencies_ms) >= 1
+        row = stats.as_row()
+        assert "istek_ms" in row and "istek_ms_en_cok" in row

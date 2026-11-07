@@ -121,6 +121,9 @@ def build_provider(
             model_id=getattr(settings, "hf_model_id", ""),
             load_in_4bit=getattr(settings, "hf_load_in_4bit", True),
             adapter_path=getattr(settings, "hf_adapter_path", "") or None,
+            max_new_tokens=getattr(settings, "hf_max_new_tokens", 24),
+            decoding=getattr(settings, "hf_decoding", "beam_sample"),
+            num_beams=getattr(settings, "hf_num_beams", 0),
         )
 
     if provider_name == "openai_compatible":
