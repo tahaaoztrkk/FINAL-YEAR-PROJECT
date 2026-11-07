@@ -10,8 +10,8 @@ bu alanın varlığına dayanır.
 
 Grup alanı aynı anlamı farklı söyleyen cümleleri bağlar ("Su istiyorum." ve
 "Susadım."). İkisi de derlemde kalır, çünkü kullanıcılar aynı ihtiyacı farklı
-söyler; ama bölmede birlikte hareket ederler. Grubun ilki dışındakiler
-``"note": "çıkarılacak"`` ile işaretlidir: ekip gözden geçirince silinecekler.
+söyler; ama bölmede birlikte hareket ederler. ``note`` alanı gözden geçirilmeyi
+bekleyen cümleleri işaretlemek için kullanılır (ör. ``"note": "çıkarılacak"``).
 """
 
 from __future__ import annotations
