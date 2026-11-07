@@ -26,6 +26,7 @@ from gaze_aac.nlp.providers.hf_local import (
     generation_kwargs,
     supports_bf16,
 )
+from gaze_aac.nlp.providers.llamacpp import LlamaCppProvider, candidates_from_texts
 from gaze_aac.nlp.providers.mock import MockProvider
 from gaze_aac.nlp.providers.ngram import NGramProvider
 from gaze_aac.nlp.schemes import get_scheme
@@ -350,3 +351,59 @@ class TestRequestLatency:
         assert len(stats.request_latencies_ms) >= 1
         row = stats.as_row()
         assert "istek_ms" in row and "istek_ms_en_cok" in row
+
+
+class TestLlamaCppProvider:
+    @staticmethod
+    def _server(replies: list[str], seen: list[dict[str, object]]) -> object:
+        import json
+
+        import httpx
+
+        def handle(request: httpx.Request) -> httpx.Response:
+            assert request.url.path == "/completion"
+            body = json.loads(request.content)
+            seen.append(body)
+            return httpx.Response(200, json={"content": replies[int(body["seed"])]})
+
+        return httpx.MockTransport(handle)
+
+    async def test_uses_the_training_prompt_without_chat_template(self) -> None:
+        seen: list[dict[str, object]] = []
+        provider = LlamaCppProvider(
+            transport=self._server([" Su istiyorum.", " Su içiyorum."], seen)
+        )
+        request = ExpansionRequest(abbreviation="s i", scheme="S1", top_k=2)
+        candidates = await provider.expand(request)
+
+        assert [c.text for c in candidates] == ["Su istiyorum.", "Su içiyorum."]
+        assert candidates[0].score > candidates[1].score
+        from gaze_aac.nlp.prompts import build_prompt
+
+        assert all(body["prompt"] == build_prompt("s i", scheme="S1") for body in seen)
+        assert {body["temperature"] for body in seen} == {0.0, 0.7}
+        assert all(body["stop"] == ["\n"] for body in seen)
+
+    async def test_duplicates_and_blank_lines_are_dropped(self) -> None:
+        seen: list[dict[str, object]] = []
+        provider = LlamaCppProvider(
+            transport=self._server(["Tamam.", "Tamam.", "  ", "Olur.\nfazla"], seen)
+        )
+        candidates = await provider.expand(ExpansionRequest(abbreviation="t", scheme="S1", top_k=4))
+        assert [c.text for c in candidates] == ["Tamam.", "Olur."]
+
+    def test_texts_keep_order_as_score(self) -> None:
+        scores = [c.score for c in candidates_from_texts(["a", "b", "c"])]
+        assert scores == sorted(scores, reverse=True)
+
+    def test_built_from_settings(self) -> None:
+        settings = Settings(llamacpp_url="http://127.0.0.1:9090/", llamacpp_max_tokens=16)
+        provider = build_provider("llamacpp", settings)
+        assert isinstance(provider, LlamaCppProvider)
+        assert provider.base_url == "http://127.0.0.1:9090"
+        assert provider.payload("x", 0)["n_predict"] == 16
+
+    def test_warm_up_explains_missing_server(self) -> None:
+        provider = LlamaCppProvider(base_url="http://127.0.0.1:9")
+        with pytest.raises(RuntimeError, match="llama-server"):
+            provider.warm_up()

@@ -15,7 +15,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 GazeSource = Literal["mouse", "webcam"]
 HfDecoding = Literal["beam_sample", "beam", "sample", "greedy"]
-ExpanderProvider = Literal["mock", "ngram", "hf_local", "openai_compatible"]
+ExpanderProvider = Literal["mock", "ngram", "hf_local", "llamacpp", "openai_compatible"]
 
 _BACKEND_ROOT = Path(__file__).resolve().parents[2]
 
@@ -67,6 +67,10 @@ class Settings(BaseSettings):
     hf_max_new_tokens: int = Field(default=24, ge=4, le=128)
     hf_decoding: HfDecoding = "beam_sample"
     hf_num_beams: int = Field(default=0, ge=0, le=16, description="0: aday sayısı kadar (en az 4)")
+
+    # llamacpp: ince ayarlı GGUF modeli çalıştıran llama-server adresi
+    llamacpp_url: str = "http://127.0.0.1:8080"
+    llamacpp_max_tokens: int = Field(default=24, ge=4, le=128)
 
     llm_base_url: str = ""
     llm_api_key: str = ""

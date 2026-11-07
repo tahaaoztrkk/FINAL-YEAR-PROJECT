@@ -314,6 +314,46 @@ API modelini üst sınır karşılaştırması olarak kullanmak için
 **API anahtarını `.env` dosyasına yazın, koda gömmeyin** — `.gitignore`
 `.env` dosyasını zaten dışarıda tutuyor.
 
+## Demo bilgisayarı (llama.cpp)
+
+T4'te HuggingFace + bitsandbytes ile ince ayarlı model istek başına ~4,5 sn
+sürdü ve üretim ayarları (ışın, belirteç sınırı) bunu değiştirmedi. Demoda
+model GGUF'a çevrilip llama.cpp ile çalışır.
+
+**1. GGUF üretimi (Colab).** Defterdeki "GGUF dışa aktarma" bölümü adaptörü
+modelle birleştirir ve Q4_K_M dosyasını (~5,5 GB) Drive'a
+`gaze-aac/turkish-gemma-aac-Q4_K_M.gguf` olarak yazar. Dosyayı demo
+bilgisayarına indirin, örn. `models/` klasörüne.
+
+**2. llama-server.** [llama.cpp sürümlerinden](https://github.com/ggml-org/llama.cpp/releases)
+Windows CUDA derlemesini indirin. RTX 50 serisi kartlar için yeni CUDA
+sürümlü (cu12.8 ve üstü) derleme gerekir; çalışmazsa Vulkan derlemesini
+deneyin. Sonra:
+
+```powershell
+llama-server -m models\turkish-gemma-aac-Q4_K_M.gguf -ngl 99 -c 2048 --parallel 5 --port 8080
+```
+
+- `-ngl 99`: bütün katmanlar GPU'da.
+- `--parallel 5`: beş aday aynı anda, tek toplu işte üretilir.
+- `-c 2048`: beş yuvaya bölünür (~400 belirteç), en uzun S4 istemine yeter.
+  8 GB kartta model ~5,5 GB tuttuğu için bağlamı büyütmeyin.
+
+**3. Backend.** `backend/.env` içinde:
+
+```
+EXPANDER_PROVIDER=llamacpp
+LLAMACPP_URL=http://127.0.0.1:8080
+```
+
+Gecikmeyi ölçmek için (sunucu açıkken):
+
+```bash
+python -m gaze_aac.evaluation.simulate --providers llamacpp --schemes S1 --limit 10 --out results/gecikme_llamacpp.csv
+```
+
+`istek_ms` sütunu tek isteğin süresidir; hedef 1000 ms altı.
+
 ## Sık karşılaşılanlar
 
 **`[WinError 10013] ... bir yuvaya erişilmeye çalışıldı`** — port Windows
