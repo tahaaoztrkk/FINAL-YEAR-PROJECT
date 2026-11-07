@@ -14,6 +14,7 @@ from gaze_aac.config import Settings
 from gaze_aac.data.corpus import Corpus, CorpusEntry, build_training_pairs
 from gaze_aac.nlp.prompts import build_prompt
 from gaze_aac.nlp.schemes import get_scheme
+from gaze_aac.study.protocol import StudyMaterials
 
 
 def _corpus_with_groups() -> Corpus:
@@ -188,3 +189,66 @@ class TestFixedSplit:
     def test_repo_corpus_keeps_hand_written_test_set(self) -> None:
         corpus = Corpus.load(Settings().source_corpus_path)
         assert sum(e.split == "test" for e in corpus.entries) == 31
+
+
+class TestNearDuplicates:
+    def test_one_word_swap_of_a_test_sentence_is_caught(self) -> None:
+        corpus = Corpus(
+            [
+                CorpusEntry(text="Biraz daha yemek istiyorum.", split="test"),
+                CorpusEntry(text="Biraz daha uyumak istiyorum."),
+                CorpusEntry(text="Kitabımı getirir misin?"),
+            ]
+        )
+        found = corpus.near_duplicates("test")
+        assert [item.entry.text for item in found] == ["Biraz daha uyumak istiyorum."]
+
+    def test_spelling_variant_is_caught(self) -> None:
+        corpus = Corpus(
+            [
+                CorpusEntry(text="Dışarı çıkmak istiyorum.", split="test"),
+                CorpusEntry(text="Dışarıya çıkmak istiyorum."),
+            ]
+        )
+        assert len(corpus.near_duplicates("test")) == 1
+
+    def test_shared_template_alone_is_not_a_copy(self) -> None:
+        corpus = Corpus(
+            [
+                CorpusEntry(text="Kahve içebilir miyim?", split="test"),
+                CorpusEntry(text="Çay içebilir miyim?"),
+                CorpusEntry(text="Su istiyorum."),
+            ]
+        )
+        assert corpus.near_duplicates("test") == []
+
+    def test_same_group_goes_to_test_together_and_is_skipped(self) -> None:
+        corpus = Corpus(
+            [
+                CorpusEntry(text="Dışarı çıkmak istiyorum.", group="disari", split="test"),
+                CorpusEntry(text="Dışarıya çıkmak istiyorum.", group="disari"),
+            ]
+        )
+        assert corpus.near_duplicates("test") == []
+
+    def test_repo_corpus_has_no_copy_of_a_test_sentence(self) -> None:
+        corpus = Corpus.load(Settings().source_corpus_path)
+        assert corpus.near_duplicates("test") == []
+
+    def test_copy_of_an_outside_sentence_is_caught(self) -> None:
+        corpus = Corpus(
+            [
+                CorpusEntry(text="Bana kitap okur musun?"),
+                CorpusEntry(text="Kapıyı kapatır mısın?", split="val"),
+            ]
+        )
+        found = corpus.near_copies_of(
+            ["Bana biraz kitap okur musun?", "Kapıyı biraz kapatır mısın?"]
+        )
+        # Doğrulama cümlesi eğitimde görülmediği için sayılmaz.
+        assert [item.entry.text for item in found] == ["Bana kitap okur musun?"]
+
+    def test_repo_corpus_has_no_copy_of_a_study_sentence(self) -> None:
+        settings = Settings()
+        study = StudyMaterials.load(settings.study_sentences_path).all_sentences()
+        assert Corpus.load(settings.source_corpus_path).near_copies_of(study) == []

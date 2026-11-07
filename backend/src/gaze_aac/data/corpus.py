@@ -20,6 +20,7 @@ import json
 import random
 from collections import Counter
 from dataclasses import dataclass, field
+from difflib import SequenceMatcher
 from pathlib import Path
 
 from ..nlp.prompts import build_training_record
@@ -74,6 +75,34 @@ class CorpusEntry:
 
 
 SPLITS = ("train", "val", "test")
+
+# İki cümle kelimelerinin bu kadarını paylaşıyorsa ya da harf dizisi bu kadar
+# benziyorsa biri ötekinin kopyası sayılır ("Biraz daha uyumak istiyorum." ile
+# "Biraz daha yemek istiyorum." gibi). Eşanlamlı ama farklı kelimeli cümleleri
+# ("Karnım aç." / "Acıktım.") yakalamaz; onlar için gözden geçirme gerekir.
+NEAR_WORD_SHARE = 0.75
+NEAR_CHAR_RATIO = 0.9
+
+
+@dataclass(frozen=True)
+class NearDuplicate:
+    """Sabit kümedeki bir cümleye fazla benzeyen serbest cümle."""
+
+    entry: CorpusEntry
+    fixed: CorpusEntry
+    word_share: float
+    char_ratio: float
+
+
+def similarity(a: str, b: str) -> tuple[float, float]:
+    """Ortak kelime payı ve harf dizisi benzerliği (ikisi de 0–1)."""
+    words_a, words_b = tokenize(a), tokenize(b)
+    if not words_a or not words_b:
+        return 0.0, 0.0
+    shared = len(set(words_a) & set(words_b))
+    word_share = shared / max(len(set(words_a)), len(set(words_b)))
+    char_ratio = SequenceMatcher(None, " ".join(words_a), " ".join(words_b)).ratio()
+    return word_share, char_ratio
 
 
 def _checked_split(value: object, path: Path, line_number: int) -> str:
@@ -196,6 +225,37 @@ class Corpus:
             else:
                 parts[2].extend(members)
         return Corpus(parts[0]), Corpus(parts[1]), Corpus(parts[2])
+
+    def near_duplicates(self, fixed_split: str = "test") -> list[NearDuplicate]:
+        """``fixed_split`` kümesine sabitli cümlelere fazla benzeyen serbest cümleler.
+
+        Eğitime düşen bir kopya, test cümlesini ezberden bilinir kılar. Aynı
+        gruptakiler zaten birlikte o kümeye gider, onlara bakılmaz.
+        """
+        return self._close_to([entry for entry in self.entries if entry.split == fixed_split])
+
+    def near_copies_of(self, texts: list[str]) -> list[NearDuplicate]:
+        """Eğitime girebilecek ve derlem dışı cümlelere (ör. kullanıcı testi) benzeyenler.
+
+        Doğrulama ve test kümesine sabitli cümleler eğitimde görülmez, onlara bakılmaz.
+        """
+        targets = [CorpusEntry(text=text) for text in texts]
+        return self._close_to(targets, skip=("val", "test"))
+
+    def _close_to(
+        self, targets: list[CorpusEntry], skip: tuple[str, ...] = SPLITS
+    ) -> list[NearDuplicate]:
+        found: list[NearDuplicate] = []
+        for entry in self.entries:
+            if entry.split in skip:
+                continue
+            for target in targets:
+                if entry.group and entry.group == target.group:
+                    continue
+                word_share, char_ratio = similarity(entry.text, target.text)
+                if word_share >= NEAR_WORD_SHARE or char_ratio >= NEAR_CHAR_RATIO:
+                    found.append(NearDuplicate(entry, target, word_share, char_ratio))
+        return found
 
     def __len__(self) -> int:
         return len(self.entries)

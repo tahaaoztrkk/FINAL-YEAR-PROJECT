@@ -19,6 +19,7 @@ import argparse
 from pathlib import Path
 
 from ..config import get_settings
+from ..study.protocol import StudyMaterials
 from .corpus import Corpus, CorpusEntry, build_training_pairs, write_pairs
 
 # Her kategori için başlangıç cümleleri. Ekip bunları 40–50'ye çıkarır,
@@ -127,6 +128,31 @@ def main() -> None:
         raise SystemExit(
             f"En az {args.min_sentences} cümle bekleniyordu, {len(corpus)} var. Derlemi genişletin."
         )
+
+    for fixed_split, label in (("test", "test"), ("val", "doğrulama")):
+        close = corpus.near_duplicates(fixed_split)
+        if not close:
+            continue
+        print(f"\n{len(close)} cümle {label} kümesindeki bir cümleye çok benziyor:")
+        for item in close:
+            print(f"  {item.entry.text!r} ~ {item.fixed.text!r}")
+        if fixed_split == "test":
+            raise SystemExit(
+                "Bu cümleler eğitime düşerse test sonucu şişer. Silin ya da test "
+                "cümlesinin grubuna bağlayın."
+            )
+
+    if settings.study_sentences_path.exists():
+        study = StudyMaterials.load(settings.study_sentences_path).all_sentences()
+        close = corpus.near_copies_of(study)
+        if close:
+            print(f"\n{len(close)} cümle kullanıcı testi cümlelerine çok benziyor:")
+            for item in close:
+                print(f"  {item.entry.text!r} ~ {item.fixed.text!r}")
+            raise SystemExit(
+                "Model bunları eğitimde görürse kullanıcı testindeki B koşulu ezber "
+                "ölçer. Derlemden silin."
+            )
 
     train, val, test = corpus.split()
     corpus.save(settings.corpus_path)
