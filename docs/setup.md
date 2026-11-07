@@ -354,6 +354,12 @@ python -m gaze_aac.evaluation.simulate --providers llamacpp --schemes S1 --limit
 
 `istek_ms` sütunu tek isteğin süresidir; hedef 1000 ms altı.
 
+İlk ölçüm (7 Kasım, RTX 5060 Laptop 8 GB, CUDA 13 derlemesi, S1, 10 cümle):
+istek başına 907 ms, KSR %43,9, ilk1 %90. Aynı model T4'te HuggingFace ile
+~4.500 ms idi. GPU belleği 6,5/8 GB doluyor; demo sırasında GPU kullanan başka
+uygulama açık olmasın. Sunucu günlüğüne göre sürenin çoğu istemin işlenmesi
+(123 belirteç, ~340 ms); üretim 4–10 belirteç, ~100 ms.
+
 ## Sık karşılaşılanlar
 
 **`[WinError 10013] ... bir yuvaya erişilmeye çalışıldı`** — port Windows

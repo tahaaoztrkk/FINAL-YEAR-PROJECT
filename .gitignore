@@ -29,6 +29,8 @@ data/processed/*
 data/sessions/
 !data/**/.gitkeep
 models/
+# llama.cpp hazir derlemesi (demo bilgisayari, ~700 MB)
+llama/
 *.onnx
 *.gguf
 *.safetensors
