@@ -50,6 +50,8 @@ class CorpusEntry:
     context: str | None = None
     group: str = ""
     note: str = ""
+    # Sabit küme: "train", "val" ya da "test". Boşsa bölme rastgele atar.
+    split: str = ""
 
     @property
     def split_key(self) -> str:
@@ -66,7 +68,19 @@ class CorpusEntry:
             payload["context"] = self.context
         if self.note:
             payload["note"] = self.note
+        if self.split:
+            payload["split"] = self.split
         return json.dumps(payload, ensure_ascii=False)
+
+
+SPLITS = ("train", "val", "test")
+
+
+def _checked_split(value: object, path: Path, line_number: int) -> str:
+    split = str(value or "")
+    if split and split not in SPLITS:
+        raise ValueError(f"{path}:{line_number} split alanı {SPLITS} olmalı, {split!r} geldi")
+    return split
 
 
 @dataclass
@@ -97,6 +111,7 @@ class Corpus:
                         context=record.get("context"),
                         group=str(record.get("group", "")),
                         note=str(record.get("note", "")),
+                        split=_checked_split(record.get("split", ""), path, line_number),
                     )
                 )
         return cls(entries=entries)
@@ -138,6 +153,10 @@ class Corpus:
         Grubu olmayan cümle kendi başına bir gruptur. Tohum sabittir: aynı
         bölme her koşuda aynı çıkar, yoksa koşular arası karşılaştırma
         anlamsızlaşır.
+
+        ``split`` alanı dolu cümleler (ve gruptaşları) o kümede kalır. Test
+        kümesi sabitlenmişse yeni cümleler yalnızca eğitim ve doğrulamaya
+        dağıtılır.
         """
         if not 0 < train < 1 or not 0 <= val < 1 or train + val >= 1:
             raise ValueError("Oranlar 0–1 arasında olmalı ve toplamı 1'den küçük kalmalı")
@@ -145,14 +164,31 @@ class Corpus:
         groups: dict[str, list[CorpusEntry]] = {}
         for entry in self.entries:
             groups.setdefault(entry.split_key, []).append(entry)
-        ordered = list(groups.values())
-        random.Random(seed).shuffle(ordered)
 
-        n = len(self.entries)
-        train_target = int(n * train)
-        val_target = int(n * val)
         parts: tuple[list[CorpusEntry], list[CorpusEntry], list[CorpusEntry]] = ([], [], [])
-        for members in ordered:
+        index = {"train": 0, "val": 1, "test": 2}
+        free: list[list[CorpusEntry]] = []
+        for key, members in groups.items():
+            fixed = {m.split for m in members if m.split}
+            if len(fixed) > 1:
+                raise ValueError(f"{key} grubundaki cümleler farklı kümelere sabitlenmiş: {fixed}")
+            if fixed:
+                parts[index[fixed.pop()]].extend(members)
+            else:
+                free.append(members)
+        random.Random(seed).shuffle(free)
+
+        # Test kümesi sabitlenmişse yeni cümleler teste girmez: elle yazılmış
+        # test cümleleri derlem büyüse de aynı kalır, sonuçlar karşılaştırılabilir.
+        if parts[2]:
+            n_open = len(self.entries) - len(parts[2])
+            train_target = int(n_open * train / (train + val))
+            val_target = n_open
+        else:
+            n = len(self.entries)
+            train_target = int(n * train)
+            val_target = int(n * val)
+        for members in free:
             if len(parts[0]) < train_target:
                 parts[0].extend(members)
             elif len(parts[1]) < val_target:
