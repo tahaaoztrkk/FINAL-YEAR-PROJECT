@@ -126,6 +126,14 @@ def build_provider(
             num_beams=getattr(settings, "hf_num_beams", 0),
         )
 
+    if provider_name == "llamacpp":
+        from .providers.llamacpp import LlamaCppProvider
+
+        return LlamaCppProvider(
+            base_url=getattr(settings, "llamacpp_url", "http://127.0.0.1:8080"),
+            max_tokens=getattr(settings, "llamacpp_max_tokens", 24),
+        )
+
     if provider_name == "openai_compatible":
         from .providers.openai_compatible import OpenAICompatibleProvider
 
@@ -137,5 +145,5 @@ def build_provider(
 
     raise ValueError(
         f"Bilinmeyen genişletici sağlayıcı: {provider_name!r}. "
-        "Seçenekler: mock, ngram, hf_local, openai_compatible"
+        "Seçenekler: mock, ngram, hf_local, llamacpp, openai_compatible"
     )
