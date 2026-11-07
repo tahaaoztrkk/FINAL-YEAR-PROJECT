@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException, Request
 
+from ...nlp.expander import ExpansionService
 from ...nlp.schemes import get_scheme
 from ...schemas.expansion import ExpansionRequest, ExpansionResult
 
@@ -22,7 +23,8 @@ async def expand(payload: ExpansionRequest, request: Request) -> ExpansionResult
     except KeyError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 
-    return await request.app.state.expansion.expand(payload)
+    service: ExpansionService = request.app.state.expansion
+    return await service.expand(payload)
 
 
 @router.post("/abbreviate", response_model=dict[str, str])

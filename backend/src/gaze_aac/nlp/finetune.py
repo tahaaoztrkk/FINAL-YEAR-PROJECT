@@ -39,6 +39,7 @@ from pathlib import Path
 from typing import Any, Protocol
 
 from ..data.corpus import Corpus, build_training_pairs
+from .providers.hf_local import dtype_kwargs, supports_bf16
 from .schemes import tokenize
 
 # PyTorch'un kayıpta yok saydığı etiket değeri.
@@ -286,8 +287,6 @@ def _load_with_peft(config: FinetuneConfig, dtype: Any) -> tuple[Any, Any]:
         bnb_4bit_use_double_quant=True,
         bnb_4bit_compute_dtype=dtype,
     )
-    # transformers 5 ``torch_dtype`` adını ``dtype`` yaptı.
-    dtype_key = "dtype" if int(transformers.__version__.split(".")[0]) >= 5 else "torch_dtype"
     tokenizer = AutoTokenizer.from_pretrained(config.model_id)
     model = AutoModelForCausalLM.from_pretrained(
         config.model_id,
@@ -295,7 +294,7 @@ def _load_with_peft(config: FinetuneConfig, dtype: Any) -> tuple[Any, Any]:
         device_map="auto",
         # Gemma 2'nin logit kırpması sdpa'da yok; eğitimde eager öneriliyor.
         attn_implementation="eager",
-        **{dtype_key: dtype},
+        **dtype_kwargs(transformers.__version__, dtype),
     )
     model.config.use_cache = False
     model = prepare_model_for_kbit_training(model, use_gradient_checkpointing=True)
@@ -362,7 +361,7 @@ def train(
 
     hyper = config.hyper
     set_seed(hyper.seed)
-    bf16 = bool(torch.cuda.is_bf16_supported())
+    bf16 = supports_bf16(torch)
     dtype = torch.bfloat16 if bf16 else torch.float16
 
     print(f"Model yükleniyor ({backend}): {config.model_id}")

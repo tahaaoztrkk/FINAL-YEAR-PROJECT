@@ -141,6 +141,22 @@ async def run_grid(
     return results
 
 
+def warm_up_services(services: dict[str, ExpansionService]) -> None:
+    """Büyük modeli ölçümden önce yükler.
+
+    Yoksa yükleme süresi (dakikalar) ilk cümlenin gecikmesine eklenir ve
+    ortalama gecikmeyi bozar. ``warm_up`` yöntemi olmayan sağlayıcılar atlanır.
+    """
+    for service in services.values():
+        warm_up = getattr(service.provider, "warm_up", None)
+        if not callable(warm_up):
+            continue
+        started = time.perf_counter()
+        print(f"[{service.provider_name}] model yükleniyor...")
+        warm_up()
+        print(f"[{service.provider_name}] yüklendi ({time.perf_counter() - started:.0f} sn)")
+
+
 def context_options_for(cases: list[SimulationCase]) -> tuple[bool, ...]:
     """Koşulacak bağlam seçenekleri: bağlamlı cümle yoksa yalnızca bağlamsız."""
     return (False, True) if any(case.context for case in cases) else (False,)
@@ -225,6 +241,8 @@ def main() -> None:
         name: ExpansionService(build_provider(name, settings, corpus_path=train))
         for name in args.providers
     }
+
+    warm_up_services(services)
 
     # Bağlamı olmayan cümlelerde "bağlam var" koşulu aynı istemi ikinci kez
     # koşar: tabloya bilgi katmaz, büyük modelde süreyi ikiye katlar.

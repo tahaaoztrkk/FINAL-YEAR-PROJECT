@@ -51,6 +51,10 @@ class ExpansionService:
         self._provider = provider
 
     @property
+    def provider(self) -> ExpansionProvider:
+        return self._provider
+
+    @property
     def provider_name(self) -> str:
         return self._provider.name
 

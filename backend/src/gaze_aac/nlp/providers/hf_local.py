@@ -18,6 +18,26 @@ from ...schemas.expansion import Candidate, ExpansionRequest
 from ..prompts import build_prompt
 
 
+def supports_bf16(torch: Any) -> bool:
+    """GPU bf16'yı donanımda çalıştırıyor mu (Ampere ve sonrası: L4, A100).
+
+    ``torch.cuda.is_bf16_supported()`` T4'te de True dönebilir: bf16 orada
+    yazılımla taklit edilir ve çok yavaştır. Unsloth da T4'te modeli fp16
+    yükler; eğitim ayarı modelle aynı türde olmalı. Bu yüzden doğrudan
+    işlem kapasitesine bakılır.
+    """
+    if not torch.cuda.is_available():
+        return False
+    major, _minor = torch.cuda.get_device_capability()
+    return bool(major >= 8)
+
+
+def dtype_kwargs(transformers_version: str, dtype: Any) -> dict[str, Any]:
+    """transformers 5 ``torch_dtype`` adını ``dtype`` yaptı."""
+    key = "dtype" if int(transformers_version.split(".")[0]) >= 5 else "torch_dtype"
+    return {key: dtype}
+
+
 class HuggingFaceProvider:
     """Yerel nedensel dil modeliyle aday cümle üretir."""
 
@@ -45,12 +65,15 @@ class HuggingFaceProvider:
 
         try:
             import torch
+            import transformers
             from transformers import AutoModelForCausalLM, AutoTokenizer
         except ImportError as exc:  # pragma: no cover - ortama bağlı
             raise RuntimeError(
                 'transformers/torch kurulu değil. Kurmak için: pip install -e ".[llm]"'
             ) from exc
 
+        # Eğitimle aynı tür: T4'te fp16, bf16 destekli GPU'da bf16.
+        dtype = torch.bfloat16 if supports_bf16(torch) else torch.float16
         quantization_config = None
         if self.load_in_4bit:
             try:
@@ -58,7 +81,7 @@ class HuggingFaceProvider:
 
                 quantization_config = BitsAndBytesConfig(
                     load_in_4bit=True,
-                    bnb_4bit_compute_dtype=torch.float16,
+                    bnb_4bit_compute_dtype=dtype,
                     bnb_4bit_quant_type="nf4",
                     bnb_4bit_use_double_quant=True,
                 )
@@ -70,7 +93,7 @@ class HuggingFaceProvider:
             self.model_id,
             quantization_config=quantization_config,
             device_map="auto",
-            torch_dtype=torch.float16,
+            **dtype_kwargs(transformers.__version__, dtype),
         )
 
         if self.adapter_path:
@@ -81,6 +104,14 @@ class HuggingFaceProvider:
         model.eval()
         self._model, self._tokenizer = model, tokenizer
         return model, tokenizer
+
+    def warm_up(self) -> None:
+        """Modeli şimdi yükler.
+
+        Yükleme dakikalar sürer; ilk isteğe kalırsa o isteğin gecikmesine
+        eklenir ve ölçülen ortalama gecikmeyi bozar.
+        """
+        self._load()
 
     def _generate(self, prompt: str, top_k: int) -> list[Candidate]:
         import torch

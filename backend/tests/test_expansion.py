@@ -17,9 +17,10 @@ from gaze_aac.evaluation.simulate import (
     context_options_for,
     run_condition,
     simulate_case,
+    warm_up_services,
 )
 from gaze_aac.nlp.expander import ExpansionService, back_check, build_provider, default_corpus_path
-from gaze_aac.nlp.providers.hf_local import HuggingFaceProvider
+from gaze_aac.nlp.providers.hf_local import HuggingFaceProvider, dtype_kwargs, supports_bf16
 from gaze_aac.nlp.providers.mock import MockProvider
 from gaze_aac.nlp.providers.ngram import NGramProvider
 from gaze_aac.nlp.schemes import get_scheme
@@ -241,3 +242,60 @@ class TestContextOptions:
     def test_with_context_both_conditions(self) -> None:
         cases = [SimulationCase(text="Evet.", context="Su ister misin?")]
         assert context_options_for(cases) == (False, True)
+
+
+class _FakeCuda:
+    def __init__(self, available: bool, capability: tuple[int, int]) -> None:
+        self._available = available
+        self._capability = capability
+
+    def is_available(self) -> bool:
+        return self._available
+
+    def get_device_capability(self) -> tuple[int, int]:
+        return self._capability
+
+    def is_bf16_supported(self) -> bool:
+        # T4'te torch bunu taklit yüzünden True dönebilir; kullanılmamalı.
+        return True
+
+
+class _FakeTorch:
+    def __init__(self, available: bool, capability: tuple[int, int]) -> None:
+        self.cuda = _FakeCuda(available, capability)
+
+
+class TestPrecision:
+    def test_t4_uses_fp16_even_if_torch_claims_bf16(self) -> None:
+        assert not supports_bf16(_FakeTorch(True, (7, 5)))
+
+    def test_ampere_and_later_use_bf16(self) -> None:
+        assert supports_bf16(_FakeTorch(True, (8, 0)))
+        assert supports_bf16(_FakeTorch(True, (8, 9)))
+
+    def test_no_gpu_is_not_bf16(self) -> None:
+        assert not supports_bf16(_FakeTorch(False, (0, 0)))
+
+    def test_dtype_argument_name_follows_transformers_version(self) -> None:
+        assert dtype_kwargs("4.46.3", "fp16") == {"torch_dtype": "fp16"}
+        assert dtype_kwargs("5.0.0", "fp16") == {"dtype": "fp16"}
+
+
+class _WarmableProvider(MockProvider):
+    def __init__(self) -> None:
+        super().__init__(None)
+        self.warmed = 0
+
+    def warm_up(self) -> None:
+        self.warmed += 1
+
+
+class TestWarmUp:
+    def test_providers_with_warm_up_are_loaded_once(self) -> None:
+        warmable = _WarmableProvider()
+        services = {
+            "big": ExpansionService(warmable),
+            "plain": ExpansionService(MockProvider(None)),
+        }
+        warm_up_services(services)
+        assert warmable.warmed == 1
