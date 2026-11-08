@@ -1,8 +1,10 @@
+<!-- Berkay, Yusuf ile paylaştı — 8 Kasım 2026 -->
+
 # Öneri: kamera modunda canlı bakış mesajı
 
 Durum: **taslak, Kişi 1 (Berkay) → Kişi 3 (Yusuf)**. Karar verilince
 `schemas/messages.py`, üretilen TypeScript tipleri ve `ws-protocol.md` aynı
-PR'da güncellenir; bu dosya silinir.
+PR'da güncellenir; yapılacaklar listesi bitince bu dosya silinir.
 
 ## Sorun
 
@@ -79,3 +81,35 @@ yazılacağı için şimdi karar vermek iki kez değiştirmekten ucuz.
   landmark kaydı indirme.
 - `features/gaze/useFaceTracking.ts`: her karede 478 nokta ve zaman damgası
   veren kanca. Öznitelik hesabı (11 Kasım) bunun üstüne gelecek.
+
+İlk ölçüm (Berkay'ın bilgisayarı, Chrome, 8 Kasım): GPU, 27 fps,
+işleme süresi p50 14.7 ms / p95 17.1 ms (bütçe 33 ms), yüz bulunan kare %100.
+
+## Yapılacaklar
+
+### Yusuf ile birlikte karar verilecek
+
+- [ ] Kamera modu için `gaze_features` mesajı (seçenek A) kabul mü?
+- [ ] Düşük güvenli kare eşiği (öneri: `confidence < 0.3` eşlemeye girmez)
+- [ ] Kalibrasyondan önce gelen örnek: `not_calibrated` hatası bir kez
+- [ ] Deney kaydına öznitelik vektörü yazılsın mı?
+- [ ] Arayüz bakış kaynağını `ready.gaze_source`'tan mı seçsin?
+- [ ] `calibration_sample` için `purpose: "fit" | "validate"` alanı
+
+### Berkay
+
+- [x] 8 Kasım — MediaPipe tarayıcıda çalışıyor (`?kamera`)
+- [ ] 8 Kasım — Canlı bakış mesajının içeriği Yusuf'la belli
+- [ ] 11 Kasım — 12 öznitelik TypeScript'te; landmark kaydıyla Python'a
+      karşı eşitlik testi
+- [ ] 14 Kasım — Yusuf'un kalibrasyon ekranıyla ilk kalibrasyon, imleç
+      kameradan geliyor
+- [ ] 17 Kasım — 2° altı hata ölçümü ve raporu (gözlüklü / gözlüksüz ayrı)
+
+### Yusuf
+
+- [ ] Karar verilen mesajı `schemas/messages.py`'ye ekle, tipleri üret,
+      `ws-protocol.md`'yi güncelle
+- [ ] `ws.py`: `gaze_features` gelince `map_features` → `process_gaze`
+- [ ] `App.tsx`: bakış kaynağını sabit `'mouse'` yerine ayardan al
+- [ ] 14 Kasım'a kalibrasyon ekranı (ızgara + doğrulama noktaları)
