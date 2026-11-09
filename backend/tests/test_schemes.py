@@ -85,7 +85,7 @@ class TestRevealedWords:
 
     def test_s4_keeps_tags_on_hidden_words(self) -> None:
         revealed = SuffixTaggedScheme().abbreviate_revealing(self.sentence, 1)
-        assert revealed == "yarın h-DAT g i-NEG+PROG+1S"
+        assert revealed == "yarın h g i-NEG+PROG+1S"
 
     @pytest.mark.parametrize("scheme_id", ["S1", "S2", "S3", "S4"])
     def test_back_check_accepts_revealed_words(self, scheme_id: str) -> None:
@@ -103,7 +103,10 @@ class TestRevealedWords:
 
 class TestCanonicalAbbreviation:
     def test_letters_lower_tags_upper(self) -> None:
-        assert canonical_abbreviation("Y h-dat g-fut+1s") == "y h-DAT g-FUT+1S"
+        assert canonical_abbreviation("Y h-q g-fut+1s") == "y h-Q g-FUT+1S"
+
+    def test_tags_follow_the_fixed_order_without_repeats(self) -> None:
+        assert canonical_abbreviation("g-1s+fut+1s") == "g-FUT+1S"
 
     def test_generated_form_is_unchanged(self) -> None:
         abbreviation = SuffixTaggedScheme().abbreviate("Yarın hastaneye gitmek istemiyorum.")

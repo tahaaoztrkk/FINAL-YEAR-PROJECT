@@ -136,6 +136,24 @@ uzar. Eski kural tablosu yalnızca kelime sonuna baktığı için ("masa" ->
 `m-DAT`, "telefonumu" -> `t`) Zemberek'ten önceki S4 sonuçları ve S4
 eğitim çiftleriyle eğitilmiş modeller yenileriyle karşılaştırılamaz.
 
+S4 etiket kümesi 8 etikettir: NEG, PAST, FUT, PROG, Q, 1S, 2S, PLUR. Bir
+kelimeye birden çok etiket verilir ("istemiyorum" -> `i-NEG+PROG+1S`) ve
+etiketler hep bu sırayla yazılır; arayüzde hangi sırayla seçildiği önemli
+değildir. Hal ekleri (-e, -de, -den, -i) arayüz ızgarasına sığmadığı için
+çıkarıldı. 12 etiketle üretilmiş eğitim çiftleri ve onlarla eğitilmiş
+modeller yeni S4 girdisine uymaz; modeli yeniden eğitin.
+
+Bulunamayan cümlenin maliyeti, denemelerde girilen seçimler artı cümlenin
+harf sayısıdır: kullanıcı beş denemeden sonra vazgeçip cümleyi baştan harf
+harf yazar. Son denemede bütün kelimeler açık yazılmışsa cümle zaten
+yazılmıştır ve yalnızca seslendirilir (+1). Eskiden boşa giden denemeler
+bedava sayılıyordu. İlk-1, ilk-5 ve MRR artık yalnızca ilk denemeden (salt
+kısaltma) ölçülür; herhangi bir denemede bulunma oranı `bulunan`
+sütunundadır. Doğrulama kümesinde n-gram için KSR S1'de %8,8'den %-12,9'a,
+S4'te %12,3'ten %-6,9'a, ilk-1 %60'lardan %0–3'e düştü: n-gram doğrulama
+cümlelerini neredeyse yalnızca kelime açık yazıldıktan sonra buluyor. Bu
+değişiklikten önceki sonuçlarla karşılaştırma yapmayın.
+
 `mock` sağlayıcısı yalnızca derlemdeki cümleleri bulabildiği için doğrulama
 kümesinde %0 çıkar; bu beklenen sonuçtur. Karşılaştırmanın asıl tabanı
 `ngram`'dır.

@@ -8,6 +8,7 @@ import pytest
 
 from gaze_aac.config import Settings
 from gaze_aac.evaluation.metrics import (
+    character_count,
     keystroke_savings_rate,
     mean_reciprocal_rank,
     top_k_accuracy,
@@ -273,6 +274,7 @@ class TestSimulation:
             "ilk1",
             "ilk5",
             "mrr",
+            "bulunan",
             "gecikme_ms",
             "istek_ms",
             "istek_ms_en_cok",
@@ -294,6 +296,23 @@ class _FoundAfterReveal:
         return [Candidate(text=self.sentence)]
 
 
+class _AlwaysFound:
+    name = "test"
+
+    def __init__(self, sentence: str) -> None:
+        self.sentence = sentence
+
+    async def expand(self, request: ExpansionRequest) -> list[Candidate]:
+        return [Candidate(text=self.sentence)]
+
+
+class _NeverFound:
+    name = "test"
+
+    async def expand(self, request: ExpansionRequest) -> list[Candidate]:
+        return [Candidate(text="Başka bir cümle.")]
+
+
 class TestRevealCost:
     sentence = "Yarın hastaneye gitmek istemiyorum."
 
@@ -309,13 +328,54 @@ class TestRevealCost:
         scheme = get_scheme(scheme_id)
         service = ExpansionService(_FoundAfterReveal(self.sentence))
 
-        selections, rank, _ = await simulate_case(
+        result = await simulate_case(
             SimulationCase(text=self.sentence), service, scheme_id, top_k=5, use_context=False
         )
 
-        assert rank == 0
+        assert result.found_round == 1
         expected_extra = len("yarın") - scheme.keystrokes("yarın")
-        assert selections == scheme.keystrokes(self.sentence) + expected_extra + 1
+        assert result.selections == scheme.keystrokes(self.sentence) + expected_extra + 1
+
+    async def test_rank_counts_only_the_first_attempt(self) -> None:
+        """Kelime açık yazıldıktan sonra bulunan cümle ilk-k'ya girmez."""
+        service = ExpansionService(_FoundAfterReveal(self.sentence))
+        result = await simulate_case(
+            SimulationCase(text=self.sentence), service, "S1", top_k=5, use_context=False
+        )
+        assert result.first_rank is None
+
+    async def test_found_in_first_attempt_has_rank(self) -> None:
+        service = ExpansionService(_AlwaysFound(self.sentence))
+        result = await simulate_case(
+            SimulationCase(text=self.sentence), service, "S1", top_k=5, use_context=False
+        )
+        assert (result.first_rank, result.found_round) == (0, 0)
+        assert result.selections == get_scheme("S1").keystrokes(self.sentence) + 1
+
+    async def test_not_found_adds_spent_selections(self) -> None:
+        """Bulunamayan cümlede denemelerde girilen seçimler boşa gitmiş sayılır."""
+        sentence = "Bunu yarın sabah erkenden doktora sormak istiyorum."
+        scheme = get_scheme("S1")
+        service = ExpansionService(_NeverFound())
+        result = await simulate_case(
+            SimulationCase(text=sentence), service, "S1", top_k=5, use_context=False
+        )
+        # Beşinci deneme ilk dört kelimeyi açık yazar; sonra baştan harf harf.
+        revealed = ["bunu", "yarın", "sabah", "erkenden"]
+        spent = scheme.keystrokes(sentence) + sum(len(word) - 1 for word in revealed)
+        assert result.found_round is None
+        assert result.first_rank is None
+        assert result.selections == spent + character_count(sentence)
+
+    async def test_fully_revealed_sentence_is_spoken_not_retyped(self) -> None:
+        """Bütün kelimeler açık yazıldıysa cümle zaten yazılmıştır."""
+        sentence = "Su istiyorum."
+        service = ExpansionService(_NeverFound())
+        result = await simulate_case(
+            SimulationCase(text=sentence), service, "S1", top_k=5, use_context=False
+        )
+        assert result.found_round is None
+        assert result.selections == character_count(sentence) + 1
 
 
 class TestContextOptions:

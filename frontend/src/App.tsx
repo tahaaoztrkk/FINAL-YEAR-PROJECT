@@ -21,6 +21,8 @@ import {
   GRID_TOP,
   LETTER_GROUPS,
   buildTargets,
+  currentWordTags,
+  toggleSuffix,
   type KeyboardMode,
 } from '@/features/keyboard/layout';
 import { useStudy } from '@/features/study/useStudy';
@@ -95,8 +97,9 @@ export default function App() {
           return;
 
         case 'suffix':
-          setAbbreviation((prev) => `${prev}-${value}`);
-          setMode('groups');
+          // Bir kelimede birden çok ek olabilir ("istemiyorum" ->
+          // NEG+PROG+1S): ek ekranı açık kalır, kullanıcı 'Bitti' ile çıkar.
+          setAbbreviation((prev) => toggleSuffix(prev, value));
           return;
 
         case 'candidate': {
@@ -113,7 +116,8 @@ export default function App() {
             return;
           }
           if (value === 'delete') {
-            setAbbreviation((prev) => prev.replace(/-[A-Z0-9+]+$|.$/u, ''));
+            // Önce son etiket silinir, sonra harfler: "i-NEG+1S" -> "i-NEG" -> "i".
+            setAbbreviation((prev) => prev.replace(/[-+][A-Z0-9]+$|.$/u, ''));
             return;
           }
           if (value === 'back') {
@@ -189,9 +193,17 @@ export default function App() {
     enabled: state.connection === 'open',
   });
 
+  // Etiketler bir dize olarak karşılaştırılır: her harfte yeni dizi
+  // üretilirse hedefler gereksiz yere yeniden sunucuya gönderilir.
+  const selectedTagKey = mode === 'suffixes' ? currentWordTags(abbreviation).join('+') : '';
+  const selectedTags = useMemo(
+    () => (selectedTagKey ? selectedTagKey.split('+') : []),
+    [selectedTagKey],
+  );
+
   const targets = useMemo(
-    () => buildTargets(mode, activeGroup, { expand: !lettersOnly }),
-    [mode, activeGroup, lettersOnly],
+    () => buildTargets(mode, activeGroup, { expand: !lettersOnly, selectedTags }),
+    [mode, activeGroup, lettersOnly, selectedTags],
   );
 
   const validCandidates = useMemo(
@@ -266,7 +278,7 @@ export default function App() {
             {mode === 'letters' &&
               activeGroup !== null &&
               `Grup: ${LETTER_GROUPS[activeGroup]?.join(' ')}`}
-            {mode === 'suffixes' && 'Bu kelimenin eki hangisi?'}
+            {mode === 'suffixes' && 'Bu kelimenin ekleri hangileri? · bitince Bitti'}
           </p>
         </section>
 

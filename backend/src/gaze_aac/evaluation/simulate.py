@@ -5,9 +5,17 @@ kalır: her test cümlesi için kısaltma üretilir, sağlayıcıdan adaylar ist
 kullanıcının davranışı modellenir.
 
 Modellenen kullanıcı şöyle davranır: doğru cümle listede varsa seçer; yoksa
-bir karakter daha girer ve tekrar dener. Bu, gerçek kullanıcının yapacağı
-şeyin iyimser ama tutarlı bir yaklaşımıdır ve bütün koşullarda aynı
-uygulandığı için karşılaştırmayı adil kılar.
+cümlenin başından bir kelimeyi açık yazar ve tekrar dener. En fazla beş
+denemeden sonra vazgeçip cümleyi baştan harf harf yazar; o ana kadar
+girdiği seçimler boşa gitmiş sayılır. (Son denemede bütün kelimeler açık
+yazılmışsa cümle zaten yazılmıştır, yalnızca seslendirilir.) Bu, gerçek kullanıcının yapacağı şeyin
+iyimser ama tutarlı bir yaklaşımıdır ve bütün koşullarda aynı uygulandığı
+için karşılaştırmayı adil kılar.
+
+İlk-1, ilk-5 ve MRR yalnızca ilk denemeden (salt kısaltma) ölçülür. Kelime
+açık yazıldıktan sonra bulmak çok kolaylaşır; o turları da saymak oranları
+şişirir. Sonraki turların etkisi toplam seçim sayısında (KSR) görünür,
+kaçıncı denemede bulunduğu ise ``bulunan`` sütununda.
 """
 
 from __future__ import annotations
@@ -17,6 +25,7 @@ import csv
 import time
 from dataclasses import dataclass
 from pathlib import Path
+from typing import NamedTuple
 
 from ..nlp.expander import ExpansionService
 from ..nlp.schemes import get_scheme, normalize_abbreviation, tokenize, warm_up_schemes
@@ -32,6 +41,19 @@ class SimulationCase:
     context: str | None = None
 
 
+class CaseResult(NamedTuple):
+    """Tek cümlenin simülasyon sonucu."""
+
+    selections: int
+    """Toplam seçim; bulunamadıysa boşa giden seçimler + harf harf yazım."""
+    first_rank: int | None
+    """Doğru adayın ilk denemedeki sırası (0 tabanlı); ilk denemede yoksa None."""
+    latency_ms: float
+    """Bütün denemelerdeki model çağrılarının toplam süresi."""
+    found_round: int | None
+    """Doğru cümlenin bulunduğu deneme (0 = salt kısaltma); hiç bulunmadıysa None."""
+
+
 def _normalize_for_match(text: str) -> str:
     """Karşılaştırma için cümleyi sadeleştirir: noktalama ve büyük harf yok sayılır."""
     return " ".join(tokenize(text))
@@ -45,13 +67,10 @@ async def simulate_case(
     use_context: bool,
     max_rounds: int = 5,
     request_latencies: list[float] | None = None,
-) -> tuple[int, int | None, float]:
+) -> CaseResult:
     """Tek cümle için kullanıcı davranışını modeller.
 
     ``request_latencies`` verilirse her model çağrısının süresi ona eklenir.
-
-    Returns:
-        (yapılan seçim sayısı, doğru adayın sırası veya None, toplam gecikme ms)
     """
     scheme = get_scheme(scheme_id)
     words = tokenize(case.text)
@@ -59,6 +78,11 @@ async def simulate_case(
 
     base_selections = scheme.keystrokes(case.text)
     total_latency = 0.0
+    # Son denemede girilmiş olan seçimler. Cümle bulunamazsa bunlar boşa
+    # gitmiştir: kullanıcı onları girdi, sonra yine harf harf yazdı.
+    spent_selections = 0
+    revealed_all = False
+    first_rank: int | None = None
 
     # Tur 1: tam kısaltma. Sonraki turlarda kullanıcı cümlenin başından
     # itibaren birer kelime açık yazar (çıkmaz sokak olmaması ilkesi).
@@ -71,6 +95,8 @@ async def simulate_case(
         # Kısaltmanın maliyeti şemaya göre değişir (S1'de 1, S2'de 2 seçim,
         # S4'te harf + etiketler); hep 1 saymak S2–S4'ü haksız yere cezalandırır.
         extra_selections = sum(len(w) for w in revealed) - scheme.keystrokes(" ".join(revealed))
+        spent_selections = base_selections + extra_selections
+        revealed_all = round_index == len(words)
 
         request = ExpansionRequest(
             abbreviation=normalize_abbreviation(abbreviation),
@@ -85,11 +111,21 @@ async def simulate_case(
 
         for rank, candidate in enumerate(result.candidates):
             if _normalize_for_match(candidate.text) == target:
+                if round_index == 0:
+                    first_rank = rank
                 # Seçim maliyeti: kısaltma + aday listesinden seçim (1 dwell)
-                return base_selections + extra_selections + 1, rank, total_latency
+                return CaseResult(spent_selections + 1, first_rank, total_latency, round_index)
 
-    # Hiç bulunamadı: kullanıcı cümleyi harf harf yazmak zorunda kaldı.
-    return character_count(case.text), None, total_latency
+    # Hiç bulunamadı. Son denemede bütün kelimeler açık yazılmışsa cümle
+    # zaten yazılmıştır, kullanıcı onu seslendirir (1 seçim). Yoksa denemelerde
+    # girdiği seçimler boşa gider ve cümleyi baştan harf harf yazar. Yalnızca
+    # harf sayısını yazmak boşa giden denemeleri bedava sayar; zayıf modelleri
+    # ve şemaları olduğundan iyi gösterir.
+    if revealed_all:
+        return CaseResult(spent_selections + 1, first_rank, total_latency, None)
+    return CaseResult(
+        spent_selections + character_count(case.text), first_rank, total_latency, None
+    )
 
 
 async def run_condition(
@@ -105,7 +141,7 @@ async def run_condition(
     )
 
     for case in cases:
-        selections, rank, latency = await simulate_case(
+        result = await simulate_case(
             case,
             service,
             scheme_id,
@@ -114,10 +150,11 @@ async def run_condition(
             request_latencies=stats.request_latencies_ms,
         )
         stats.sentence_count += 1
-        stats.total_selections += selections
+        stats.total_selections += result.selections
         stats.total_characters += character_count(case.text)
-        stats.ranks.append(rank)
-        stats.latencies_ms.append(latency)
+        stats.ranks.append(result.first_rank)
+        stats.found_rounds.append(result.found_round)
+        stats.latencies_ms.append(result.latency_ms)
 
     return stats
 
@@ -146,7 +183,8 @@ async def run_grid(
                     f"[{service.provider_name:>18}] {scheme_id} "
                     f"bağlam={'var' if use_context else 'yok':>3} "
                     f"KSR={stats.ksr:5.1f}%  ilk1={stats.top1:5.1f}%  "
-                    f"ilk5={stats.top5:5.1f}%  istek={stats.mean_request_latency_ms:6.0f} ms  "
+                    f"ilk5={stats.top5:5.1f}%  bulunan={stats.found_rate:5.1f}%  "
+                    f"istek={stats.mean_request_latency_ms:6.0f} ms  "
                     f"({elapsed:.1f} sn)"
                 )
     return results
