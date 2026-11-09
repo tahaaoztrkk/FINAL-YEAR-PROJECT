@@ -13,7 +13,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from ...schemas.expansion import Candidate, ExpansionRequest
-from ..schemes import get_scheme, normalize_abbreviation
+from ..schemes import get_scheme, normalize_abbreviation, tokenize
 
 FALLBACK_SENTENCES: tuple[str, ...] = (
     "Su istiyorum.",
@@ -75,8 +75,15 @@ class MockProvider:
 
         exact: list[Candidate] = []
         prefix: list[Candidate] = []
+        # Her parça kelimenin baş harfiyle başlar (açık yazılmış kelime de).
+        # Baş harfleri tutmayan cümle kısaltılmadan elenir: S4 kısaltması
+        # Zemberek'ten geçer, bütün derlemi her istekte çözümlemek yavaştır.
+        initials = [piece[:1] for piece in wanted.split()]
 
         for sentence in self._sentences:
+            words = tokenize(sentence)
+            if [word[:1] for word in words[: len(initials)]] != initials:
+                continue
             # İki taraf da normalleştirilir: S4 etiketleri büyük harfle üretilir,
             # ``wanted`` ise küçültülmüş gelir.
             produced = normalize_abbreviation(scheme.abbreviate(sentence))

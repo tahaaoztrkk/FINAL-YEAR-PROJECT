@@ -17,6 +17,9 @@ dependencies = [
     # Kullanıcı testinin istatistiği (Shapiro-Wilk, Wilcoxon, t testi).
     "scipy>=1.11",
     "websockets>=13.0",
+    # S4 ek etiketleri (nlp/morphology.py). Saf Python, Java gerekmez;
+    # eski bağımlılıklarının Python 3.13 sorunları kodda yamalanır.
+    "zemberek-python>=0.2.3",
 ]
 
 [project.optional-dependencies]

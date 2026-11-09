@@ -19,7 +19,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from ..nlp.expander import ExpansionService
-from ..nlp.schemes import get_scheme, normalize_abbreviation, tokenize
+from ..nlp.schemes import get_scheme, normalize_abbreviation, tokenize, warm_up_schemes
 from ..schemas.expansion import ExpansionRequest
 from .metrics import SimulationStats, character_count
 
@@ -157,7 +157,9 @@ def warm_up_services(services: dict[str, ExpansionService]) -> None:
 
     Yoksa yükleme süresi (dakikalar) ilk cümlenin gecikmesine eklenir ve
     ortalama gecikmeyi bozar. ``warm_up`` yöntemi olmayan sağlayıcılar atlanır.
+    S4'ün kullandığı Zemberek de burada yüklenir.
     """
+    warm_up_schemes()
     for service in services.values():
         warm_up = getattr(service.provider, "warm_up", None)
         if not callable(warm_up):

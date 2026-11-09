@@ -45,6 +45,8 @@ Kameradan ekran koordinatına giden yol. Her adım ayrı modül:
 ### `nlp/` — kısaltma genişletme
 
 - `schemes.py` — dört kısaltma şeması. Projenin araştırma sorusu burada.
+- `morphology.py` — S4 ek etiketleri için Zemberek çözümlemesi. Eğitim
+  çiftleri de geri kontrol de etiketi buradan alır.
 - `expander.py` — sağlayıcı arayüzü, geri kontrol, süre ölçümü.
 - `providers/` — mock, n-gram, yerel HF modeli, API modeli.
 - `prompts.py` — istem şablonları. Eğitim ve çıkarım aynı biçimi kullanır.

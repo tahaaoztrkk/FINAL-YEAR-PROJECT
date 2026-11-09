@@ -123,6 +123,13 @@ cezalandırıyordu ve doğrulama kümesinde n-gram KSR'sini S2'de %7,8'den
 %18,1'e, S4'te %15,2'den %19,8'e çıkardı. Bu değişiklikten önceki sonuçlarla
 karşılaştırma yapmayın.
 
+S4 ek etiketleri Zemberek ile çıkarılır (`nlp/morphology.py`). Zemberek
+ilk kullanımda birkaç saniyede yüklenir ve cümle başına ~10 ms harcar;
+`build_corpus` ve n-gram modelinin kurulması bu yüzden yarım dakika kadar
+uzar. Eski kural tablosu yalnızca kelime sonuna baktığı için ("masa" ->
+`m-DAT`, "telefonumu" -> `t`) Zemberek'ten önceki S4 sonuçları ve S4
+eğitim çiftleriyle eğitilmiş modeller yenileriyle karşılaştırılamaz.
+
 `mock` sağlayıcısı yalnızca derlemdeki cümleleri bulabildiği için doğrulama
 kümesinde %0 çıkar; bu beklenen sonuçtur. Karşılaştırmanın asıl tabanı
 `ngram`'dır.
