@@ -1,13 +1,13 @@
 """S4 şeması için Zemberek ile ek sınıfı çözümlemesi.
 
-S4'te kullanıcı her kelimenin baş harfinden sonra ekin ne olduğunu seçer
+S4'te kullanıcı her kelimenin baş harfinden sonra kelimedeki ekleri seçer
 ("istemiyorum" -> ``i-NEG+PROG+1S``). Bu etiketler iki yerde hesaplanır:
 eğitim çiftleri üretilirken ve modelin adayları geri kontrol edilirken. İkisi
 de buradan geçer, böylece model hangi etiketle eğitildiyse onunla ölçülür.
 
 Eski kural tablosu (``schemes.guess_suffix_tag``) yalnızca kelime sonuna
-bakıyordu: "masa" sonundaki "a" yüzünden ``DAT``, "telefonumu" ise hiçbir şey
-alıyordu. Zemberek kelimeyi köküne ve eklerine ayırır, cümle bağlamında
+bakıyordu: "kedi" sonundaki "di" yüzünden ``PAST``, "telefonumu" ise hiçbir
+şey alıyordu. Zemberek kelimeyi köküne ve eklerine ayırır, cümle bağlamında
 belirsizliği giderir ("yüzü" isim mi, fiil mi). Zemberek'in tanımadığı
 kelimelerde (özel ad, yazım hatası) kural tablosuna dönülür.
 
@@ -31,7 +31,8 @@ from typing import Any
 # Kişi ekleri hem fiilde (``A1sg``: geliyor-um) hem isimde (``P1sg``:
 # anne-m) "ben" anlamı taşır; kullanıcı ikisini de "ben" diye düşünür.
 # Çoğul kişi ve iyelik (gidelim, evimiz) ayrı etiket olmadığı için ``PLUR``
-# sayılır. Yeterlilik olumsuzu ("gel-eme-yeceğim") ``NEG``'dir.
+# sayılır. Yeterlilik olumsuzu ("gel-eme-yeceğim") ``NEG``'dir. Hal ekleri
+# (-e, -de, -den, -i) S4 etiket kümesinde yok, bu yüzden burada da yok.
 #
 # Yalnızca kelimede görünen ekler etiket alır. Zemberek "sür" emrine ve
 # "ben" zamirine de 2. ve 1. tekil kişi yazar, ama ortada ek yoktur;
@@ -55,10 +56,6 @@ MORPHEME_TAGS: dict[str, str] = {
     "P1pl": "PLUR",
     "P2pl": "PLUR",
     "P3pl": "PLUR",
-    "Dat": "DAT",
-    "Loc": "LOC",
-    "Abl": "ABL",
-    "Acc": "ACC",
 }
 
 
@@ -147,7 +144,10 @@ class ZemberekTagger:
 
     def _tag_analysis(self, word: str, analysis: Any) -> str:
         if analysis is None or analysis.is_unknown():
-            return self._fallback(word) if self._fallback is not None else ""
+            if self._fallback is None:
+                return ""
+            guessed = str(self._fallback(word)).split("+")
+            return "+".join(tag for tag in guessed if tag in self.allowed)
         # İlk öğe kökün kendisidir (Noun, Verb...), hiçbir etikete düşmez.
         morphemes = [data.morpheme.id_ for data in analysis.morpheme_data_list if data.surface]
         return tags_from_morphemes(morphemes, self.allowed)

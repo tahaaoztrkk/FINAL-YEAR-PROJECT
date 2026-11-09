@@ -10,7 +10,7 @@ böylece simülasyon tek döngüyle dördünü de ölçebilir:
     S1  baş harf                     "y h g i"
     S2  ilk iki harf                 "ya ha gi is"
     S3  ilk + son harf               "yn he gk im"
-    S4  baş harf + ek sınıfı etiketi "y h-E g-MEK i-NEG1S"
+    S4  baş harf + ek sınıfı etiketi "y h g i-NEG+PROG+1S"
 
 Yeni şema eklemek için ``AbbreviationScheme`` türetin ve ``register`` ile
 kaydedin; simülasyon ve API otomatik olarak görür.
@@ -129,15 +129,42 @@ class AbbreviationScheme(ABC):
 
 
 def normalize_abbreviation(abbreviation: str) -> str:
-    """Kısaltmayı karşılaştırmaya hazır hale getirir."""
-    return " ".join(turkish_lower(abbreviation).split())
+    """Kısaltmayı karşılaştırmaya hazır hale getirir.
+
+    S4 etiketleri ``SUFFIX_TAGS`` sırasına dizilir ve tekrarları atılır:
+    arayüzde kullanıcı etiketleri istediği sırayla seçer, "i-1s+neg+prog"
+    ile "i-NEG+PROG+1S" aynı kısaltmadır.
+    """
+    return " ".join(_order_piece(piece) for piece in turkish_lower(abbreviation).split())
+
+
+def order_tags(tags: Sequence[str]) -> list[str]:
+    """Etiketleri ``SUFFIX_TAGS`` sırasına dizer; tekrarları atar.
+
+    Tanımlı olmayan etiketler sona, geldikleri sırayla eklenir. Büyük-küçük
+    harf korunur, sıralama büyük harfe göre yapılır.
+
+    >>> order_tags(["1S", "NEG", "PROG", "NEG"])
+    ['NEG', 'PROG', '1S']
+    """
+    rank = {tag: index for index, tag in enumerate(SUFFIX_TAGS)}
+    unique = list(dict.fromkeys(tag for tag in tags if tag))
+    return sorted(unique, key=lambda tag: rank.get(tag.upper(), len(rank)))
+
+
+def _order_piece(piece: str) -> str:
+    head, dash, tags = piece.partition("-")
+    if not dash:
+        return piece
+    ordered = order_tags(tags.split("+"))
+    return f"{head}-{'+'.join(ordered)}" if ordered else head
 
 
 def canonical_abbreviation(abbreviation: str) -> str:
     """Dil modeline giden tek biçim: harfler küçük, S4 etiketleri büyük.
 
-    Eğitim çiftleri kısaltmayı ``abbreviate`` ile üretir (``h-DAT``), arayüz
-    ve simülasyon ise küçültüp gönderir (``h-dat``). İstem iki yoldan farklı
+    Eğitim çiftleri kısaltmayı ``abbreviate`` ile üretir (``i-NEG+1S``), arayüz
+    ve simülasyon ise küçültüp gönderir (``i-neg+1s``). İstem iki yoldan farklı
     çıkarsa ince ayarlı model, eğitimde hiç görmediği bir girdiyle karşılaşır.
     """
     pieces = []
@@ -194,8 +221,14 @@ class FirstLastScheme(AbbreviationScheme):
         return word[0] + word[-1]
 
 
-# Ek sınıfı etiketleri. Arayüzde her biri ayrı bir büyük hedef olur.
-# Liste bilinçli olarak kısa tutuldu: 12 hedefli ızgaraya sığması gerekiyor.
+# Ek sınıfı etiketleri. Arayüzde her biri ayrı bir büyük hedef olur ve bir
+# kelimeye birden çok etiket verilebilir. Sıra önemlidir: kısaltmada
+# etiketler bu sırayla yazılır (``order_tags``).
+#
+# Liste 12 hedefli ızgaraya sığmak zorunda: son satır eylemlere ayrıldığı
+# için 8 hücre kalıyor. Hal ekleri (-e, -de, -den, -i) bu yüzden dışarıda:
+# kullanıcının dilbilgisi terimi olarak düşünmesi zor, model de çoğunu
+# fiilden ve bağlamdan çıkarabiliyor ("ev gidiyorum" -> "eve gidiyorum").
 SUFFIX_TAGS: dict[str, str] = {
     "NEG": "olumsuz",
     "PAST": "geçmiş zaman",
@@ -205,16 +238,12 @@ SUFFIX_TAGS: dict[str, str] = {
     "1S": "1. tekil kişi",
     "2S": "2. tekil kişi",
     "PLUR": "çoğul",
-    "DAT": "yönelme (-e)",
-    "LOC": "bulunma (-de)",
-    "ABL": "ayrılma (-den)",
-    "ACC": "belirtme (-i)",
 }
 
 # Kural tabanlı yaklaşık çözümleme. Asıl çözümleme Zemberek ile yapılır
 # (morphology.py); bu tablo yalnızca Zemberek'in tanımadığı kelimelerde
 # (özel ad, yazım hatası) kullanılır. Yalnızca kelime sonuna baktığı için
-# tek başına güvenilmez: "masa" sonundaki "a" yüzünden DAT alır.
+# tek başına güvenilmez: "kedi" sonundaki "di" yüzünden PAST alır.
 _SUFFIX_RULES: tuple[tuple[str, str], ...] = (
     ("miyorum", "NEG+PROG+1S"),
     ("miyor", "NEG+PROG"),
@@ -244,22 +273,6 @@ _SUFFIX_RULES: tuple[tuple[str, str], ...] = (
     ("tı", "PAST"),
     ("ler", "PLUR"),
     ("lar", "PLUR"),
-    ("den", "ABL"),
-    ("dan", "ABL"),
-    ("ten", "ABL"),
-    ("tan", "ABL"),
-    ("de", "LOC"),
-    ("da", "LOC"),
-    ("te", "LOC"),
-    ("ta", "LOC"),
-    ("ye", "DAT"),
-    ("ya", "DAT"),
-    ("e", "DAT"),
-    ("a", "DAT"),
-    ("yi", "ACC"),
-    ("yı", "ACC"),
-    ("i", "ACC"),
-    ("ı", "ACC"),
 )
 
 
@@ -278,8 +291,9 @@ def guess_suffix_tag(word: str) -> str:
 class SuffixTaggedScheme(AbbreviationScheme):
     """S4 — baş harf + ek sınıfı etiketi.
 
-    En bilgili şema: kullanıcı baş harfi girer, sonra ekin ne olduğunu tek
-    seçimle söyler. Tuş tasarrufu S1'den düşük ama belirsizlik çok daha az.
+    En bilgili şema: kullanıcı baş harfi girer, sonra kelimedeki ekleri
+    etiket başına bir seçimle söyler ("istemiyorum" -> ``i-NEG+PROG+1S``).
+    Tuş tasarrufu S1'den düşük ama belirsizlik çok daha az.
 
     Hipotez: Türkçede S4, S1'den daha az tasarruf etmesine rağmen toplam
     seçim sayısını düşürür, çünkü yanlış adayı düzeltme turlarını ortadan
@@ -309,16 +323,19 @@ class SuffixTaggedScheme(AbbreviationScheme):
         return guess_suffix_tag(word)
 
     def _tags(self, words: Sequence[str]) -> list[str]:
+        """Kelimelerin etiketleri, ``SUFFIX_TAGS`` sırasında ve yalnızca o kümeden."""
         if self._tagger is not None and hasattr(self._tagger, "tag_sentence"):
-            return [str(tag) for tag in self._tagger.tag_sentence(words)]
-        return [self._tag(word) for word in words]
+            raw = [str(tag) for tag in self._tagger.tag_sentence(words)]
+        else:
+            raw = [self._tag(word) for word in words]
+        return ["+".join(t for t in order_tags(tag.split("+")) if t in SUFFIX_TAGS) for tag in raw]
 
     @staticmethod
     def _join(word: str, tag: str) -> str:
         return f"{word[:1]}-{tag}" if tag else word[:1]
 
     def abbreviate_word(self, word: str) -> str:
-        return self._join(word, self._tag(word))
+        return self.abbreviate_words([word])[0]
 
     def abbreviate_words(self, words: Sequence[str]) -> list[str]:
         return [self._join(w, t) for w, t in zip(words, self._tags(words), strict=True)]

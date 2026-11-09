@@ -50,7 +50,7 @@ def build_prompt(
         examples: Az atışlı istem için (kısaltma, cümle) çiftleri.
 
     Kısaltma ``canonical_abbreviation`` ile tek biçime getirilir: arayüzden
-    ``h-dat``, eğitim verisinden ``h-DAT`` gelse de istem aynı çıkar.
+    ``i-1s+neg``, eğitim verisinden ``i-NEG+1S`` gelse de istem aynı çıkar.
     """
     parts = [SYSTEM_PROMPT, "", f"Kural: {scheme_rule(scheme)}"]
 

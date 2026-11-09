@@ -90,7 +90,10 @@ class SimulationStats:
     sentence_count: int = 0
     total_selections: int = 0
     total_characters: int = 0
+    # Doğru adayın ilk denemedeki (salt kısaltma) sırası; ilk-k ve MRR bundan.
     ranks: list[int | None] = field(default_factory=list)
+    # Doğru cümlenin bulunduğu deneme (0 = salt kısaltma), bulunmadıysa None.
+    found_rounds: list[int | None] = field(default_factory=list)
     latencies_ms: list[float] = field(default_factory=list)
     # Tek tek model çağrılarının süresi. ``latencies_ms`` cümle başına toplamdır
     # ve açık yazma turlarını da içerir; arayüzdeki bekleme bu değerdir.
@@ -111,6 +114,14 @@ class SimulationStats:
     @property
     def mrr(self) -> float:
         return mean_reciprocal_rank(self.ranks)
+
+    @property
+    def found_rate(self) -> float:
+        """Herhangi bir denemede bulunan cümlelerin yüzdesi."""
+        if not self.found_rounds:
+            return 0.0
+        found = sum(1 for round_index in self.found_rounds if round_index is not None)
+        return found / len(self.found_rounds) * 100.0
 
     @property
     def mean_latency_ms(self) -> float:
@@ -136,6 +147,7 @@ class SimulationStats:
             "ilk1": round(self.top1, 2),
             "ilk5": round(self.top5, 2),
             "mrr": round(self.mrr, 4),
+            "bulunan": round(self.found_rate, 2),
             "gecikme_ms": round(self.mean_latency_ms, 1),
             "istek_ms": round(self.mean_request_latency_ms, 1),
             "istek_ms_en_cok": round(self.max_request_latency_ms, 1),

@@ -28,7 +28,14 @@ export const LETTER_GROUPS: readonly string[][] = [
   ['u', 'ü', 'v', 'y', 'z'],
 ];
 
-/** Ek sınıfı etiketleri (S4 şeması için). */
+/**
+ * Ek sınıfı etiketleri (S4 şeması için). Arka uçtaki `SUFFIX_TAGS` ile aynı
+ * küme ve aynı sıra: kısaltmada etiketler bu sırayla yazılır.
+ *
+ * Bir kelimeye birden çok etiket verilebilir ("istemiyorum" ->
+ * `i-NEG+PROG+1S`). Sekiz etiket, eylem satırının üstündeki sekiz hücreyi
+ * tam doldurur; hal ekleri (-e, -de, -den, -i) bu yüzden listede yok.
+ */
 export const SUFFIX_TAGS: readonly { id: string; label: string }[] = [
   { id: 'NEG', label: 'olumsuz' },
   { id: 'PAST', label: 'geçmiş' },
@@ -36,7 +43,44 @@ export const SUFFIX_TAGS: readonly { id: string; label: string }[] = [
   { id: 'PROG', label: 'şimdiki' },
   { id: 'Q', label: 'soru' },
   { id: '1S', label: 'ben' },
+  { id: '2S', label: 'sen' },
+  { id: 'PLUR', label: 'çoğul' },
 ];
+
+const TAG_ORDER = new Map(SUFFIX_TAGS.map((tag, index) => [tag.id, index]));
+
+/** Kısaltmadaki son kelimeyi baş kısmına ve etiketlerine ayırır. */
+function splitLastWord(abbreviation: string): { before: string; head: string; tags: string[] } {
+  const start = abbreviation.lastIndexOf(' ') + 1;
+  const word = abbreviation.slice(start);
+  const dash = word.indexOf('-');
+  return {
+    before: abbreviation.slice(0, start),
+    head: dash === -1 ? word : word.slice(0, dash),
+    tags: dash === -1 ? [] : word.slice(dash + 1).split('+').filter(Boolean),
+  };
+}
+
+/** Yazılmakta olan kelimeye verilmiş etiketler. */
+export function currentWordTags(abbreviation: string): string[] {
+  return splitLastWord(abbreviation).tags;
+}
+
+/**
+ * Son kelimeye etiketi ekler; zaten varsa çıkarır.
+ *
+ * Etiketler hangi sırayla seçilirse seçilsin `SUFFIX_TAGS` sırasında yazılır,
+ * böylece ekranda görünen kısaltma eğitim verisindekiyle aynı biçimde olur.
+ *
+ * `toggleSuffix('y h g i-NEG', '1S')` -> `'y h g i-NEG+1S'`
+ */
+export function toggleSuffix(abbreviation: string, tag: string): string {
+  const { before, head, tags } = splitLastWord(abbreviation);
+  if (head === '') return abbreviation;
+  const next = tags.includes(tag) ? tags.filter((t) => t !== tag) : [...tags, tag];
+  next.sort((a, b) => (TAG_ORDER.get(a) ?? 99) - (TAG_ORDER.get(b) ?? 99));
+  return next.length > 0 ? `${before}${head}-${next.join('+')}` : `${before}${head}`;
+}
 
 export const GRID_COLUMNS = 4;
 export const GRID_ROWS = 3;
@@ -82,6 +126,8 @@ export interface BuildOptions {
    * hücresi boş kalır, diğer eylemler yerinden kaymaz.
    */
   expand?: boolean;
+  /** Ek ekranında, yazılan kelimeye zaten verilmiş etiketler (işaretli görünür). */
+  selectedTags?: readonly string[];
 }
 
 /**
@@ -94,7 +140,7 @@ export interface BuildOptions {
 export function buildTargets(
   mode: KeyboardMode,
   activeGroup: number | null,
-  { expand = true }: BuildOptions = {},
+  { expand = true, selectedTags = [] }: BuildOptions = {},
 ): GazeTarget[] {
   const targets: GazeTarget[] = [];
 
@@ -127,11 +173,14 @@ export function buildTargets(
       });
     });
   } else if (mode === 'suffixes') {
+    // Seçilen etiket yerinde kalır, yalnızca işaretlenir: kullanıcı
+    // yerleri ezberler, kayan hedef yanlış seçime yol açar. Yeniden
+    // seçmek etiketi geri alır.
     SUFFIX_TAGS.forEach((tag, index) => {
       targets.push({
         id: `suffix:${tag.id}`,
         ...cellRect(index),
-        label: tag.label,
+        label: selectedTags.includes(tag.id) ? `✓ ${tag.label}` : tag.label,
         kind: 'key',
       });
     });
@@ -142,10 +191,12 @@ export function buildTargets(
   const actionStart = (GRID_ROWS - 1) * GRID_COLUMNS;
   ACTIONS.forEach((action, index) => {
     if (!expand && action.id === 'action:expand') return;
+    // Ek ekranında 'Geri' kelimeyi bitirir: etiket seçimi bu tuşla kapanır.
+    const label = mode === 'suffixes' && action.id === 'action:back' ? 'Bitti' : action.label;
     targets.push({
       id: action.id,
       ...cellRect(actionStart + index),
-      label: action.label,
+      label,
       kind: 'action',
     });
   });
