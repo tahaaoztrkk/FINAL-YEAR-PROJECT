@@ -14,6 +14,7 @@ from gaze_aac.config import Settings
 from gaze_aac.data.corpus import Corpus, CorpusEntry, build_training_pairs
 from gaze_aac.nlp.prompts import build_prompt
 from gaze_aac.nlp.schemes import get_scheme
+from gaze_aac.study.protocol import StudyMaterials
 
 
 def _corpus_with_groups() -> Corpus:
@@ -128,3 +129,126 @@ class TestTrainingPairs:
         assert build_prompt(abbreviation.lower(), scheme="S4") == build_prompt(
             abbreviation, scheme="S4"
         )
+
+
+class TestFixedSplit:
+    @staticmethod
+    def _corpus(new: int) -> Corpus:
+        entries = [CorpusEntry(text=f"Test cümlesi {i}.", split="test") for i in range(10)]
+        entries += [CorpusEntry(text=f"Doğrulama {i}.", split="val") for i in range(5)]
+        entries += [CorpusEntry(text=f"Yeni cümle {i}.") for i in range(new)]
+        return Corpus(entries)
+
+    def test_fixed_test_set_survives_growth(self) -> None:
+        small = self._corpus(40)
+        large = self._corpus(400)
+        for corpus in (small, large):
+            _, _, test = corpus.split()
+            assert sorted(e.text for e in test.entries) == sorted(
+                f"Test cümlesi {i}." for i in range(10)
+            )
+
+    def test_new_sentences_fill_train_and_val_in_ratio(self) -> None:
+        train, val, test = self._corpus(400).split()
+        assert len(test) == 10
+        assert len(train) + len(val) == 405
+        assert abs(len(train) / 405 - 8 / 9) < 0.01
+
+    def test_group_follows_its_fixed_member(self) -> None:
+        corpus = Corpus(
+            [
+                CorpusEntry(text="Su istiyorum.", group="su", split="test"),
+                CorpusEntry(text="Susadım.", group="su"),
+                *[CorpusEntry(text=f"Cümle {i}.") for i in range(20)],
+            ]
+        )
+        _, _, test = corpus.split()
+        assert {e.text for e in test.entries} == {"Su istiyorum.", "Susadım."}
+
+    def test_conflicting_group_is_rejected(self) -> None:
+        corpus = Corpus(
+            [
+                CorpusEntry(text="Su istiyorum.", group="su", split="test"),
+                CorpusEntry(text="Susadım.", group="su", split="train"),
+            ]
+        )
+        with pytest.raises(ValueError):
+            corpus.split()
+
+    def test_split_survives_save_and_load(self, tmp_path: Path) -> None:
+        path = tmp_path / "derlem.jsonl"
+        Corpus([CorpusEntry(text="Tamam.", split="test")]).save(path)
+        assert Corpus.load(path).entries[0].split == "test"
+
+    def test_unknown_split_value_is_rejected(self, tmp_path: Path) -> None:
+        path = tmp_path / "derlem.jsonl"
+        path.write_text('{"text": "Tamam.", "split": "egitim"}\n', encoding="utf-8")
+        with pytest.raises(ValueError):
+            Corpus.load(path)
+
+    def test_repo_corpus_keeps_hand_written_test_set(self) -> None:
+        corpus = Corpus.load(Settings().source_corpus_path)
+        assert sum(e.split == "test" for e in corpus.entries) == 31
+
+
+class TestNearDuplicates:
+    def test_one_word_swap_of_a_test_sentence_is_caught(self) -> None:
+        corpus = Corpus(
+            [
+                CorpusEntry(text="Biraz daha yemek istiyorum.", split="test"),
+                CorpusEntry(text="Biraz daha uyumak istiyorum."),
+                CorpusEntry(text="Kitabımı getirir misin?"),
+            ]
+        )
+        found = corpus.near_duplicates("test")
+        assert [item.entry.text for item in found] == ["Biraz daha uyumak istiyorum."]
+
+    def test_spelling_variant_is_caught(self) -> None:
+        corpus = Corpus(
+            [
+                CorpusEntry(text="Dışarı çıkmak istiyorum.", split="test"),
+                CorpusEntry(text="Dışarıya çıkmak istiyorum."),
+            ]
+        )
+        assert len(corpus.near_duplicates("test")) == 1
+
+    def test_shared_template_alone_is_not_a_copy(self) -> None:
+        corpus = Corpus(
+            [
+                CorpusEntry(text="Kahve içebilir miyim?", split="test"),
+                CorpusEntry(text="Çay içebilir miyim?"),
+                CorpusEntry(text="Su istiyorum."),
+            ]
+        )
+        assert corpus.near_duplicates("test") == []
+
+    def test_same_group_goes_to_test_together_and_is_skipped(self) -> None:
+        corpus = Corpus(
+            [
+                CorpusEntry(text="Dışarı çıkmak istiyorum.", group="disari", split="test"),
+                CorpusEntry(text="Dışarıya çıkmak istiyorum.", group="disari"),
+            ]
+        )
+        assert corpus.near_duplicates("test") == []
+
+    def test_repo_corpus_has_no_copy_of_a_test_sentence(self) -> None:
+        corpus = Corpus.load(Settings().source_corpus_path)
+        assert corpus.near_duplicates("test") == []
+
+    def test_copy_of_an_outside_sentence_is_caught(self) -> None:
+        corpus = Corpus(
+            [
+                CorpusEntry(text="Bana kitap okur musun?"),
+                CorpusEntry(text="Kapıyı kapatır mısın?", split="val"),
+            ]
+        )
+        found = corpus.near_copies_of(
+            ["Bana biraz kitap okur musun?", "Kapıyı biraz kapatır mısın?"]
+        )
+        # Doğrulama cümlesi eğitimde görülmediği için sayılmaz.
+        assert [item.entry.text for item in found] == ["Bana kitap okur musun?"]
+
+    def test_repo_corpus_has_no_copy_of_a_study_sentence(self) -> None:
+        settings = Settings()
+        study = StudyMaterials.load(settings.study_sentences_path).all_sentences()
+        assert Corpus.load(settings.source_corpus_path).near_copies_of(study) == []
