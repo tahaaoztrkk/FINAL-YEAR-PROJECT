@@ -47,29 +47,29 @@
 {"text": "Dışarı çıkmak istiyorum.", "category": "temel_ihtiyac", "group": "disari_cikmak", "split": "test"}
 {"text": "Biraz temiz hava almak istiyorum.", "category": "temel_ihtiyac", "group": "disari_cikmak", "split": "test"}
 {"text": "Kumandayı uzatır mısın?", "category": "temel_ihtiyac"}
-{"text": "Başım ağrıyor.", "category": "agri_saglik"}
+{"text": "Başım ağrıyor.", "category": "agri_saglik", "group": "bas_agrisi"}
 {"text": "Nefes almakta zorlanıyorum.", "category": "agri_saglik", "group": "nefes_darligi", "split": "test"}
 {"text": "Sırtım çok ağrıyor.", "category": "agri_saglik"}
-{"text": "İlacımın saati geldi.", "category": "agri_saglik"}
+{"text": "İlacımın saati geldi.", "category": "agri_saglik", "group": "ilac_saati"}
 {"text": "Doktoru çağırır mısın?", "category": "agri_saglik"}
 {"text": "Acım var.", "category": "agri_saglik", "group": "agri_var"}
 {"text": "Midem bulanıyor.", "category": "agri_saglik", "group": "bulanti", "split": "test"}
-{"text": "Karnım ağrıyor.", "category": "agri_saglik"}
+{"text": "Karnım ağrıyor.", "category": "agri_saglik", "group": "karin_agrisi"}
 {"text": "Göğsüm sıkışıyor.", "category": "agri_saglik"}
 {"text": "Boğazım ağrıyor.", "category": "agri_saglik", "split": "val"}
 {"text": "Başım dönüyor.", "category": "agri_saglik"}
 {"text": "Ateşim var gibi.", "category": "agri_saglik", "split": "test"}
-{"text": "Çok terledim.", "category": "agri_saglik"}
+{"text": "Çok terledim.", "category": "agri_saglik", "group": "terleme"}
 {"text": "Bacağım uyuştu.", "category": "agri_saglik"}
 {"text": "Kolum ağrıyor.", "category": "agri_saglik"}
 {"text": "Elim uyuşuyor.", "category": "agri_saglik"}
 {"text": "Ağrım geçmedi.", "category": "agri_saglik"}
 {"text": "Ağrım biraz azaldı.", "category": "agri_saglik"}
 {"text": "İlacımı aldım mı?", "category": "agri_saglik"}
-{"text": "İlacımı henüz almadım.", "category": "agri_saglik"}
+{"text": "İlacımı henüz almadım.", "category": "agri_saglik", "group": "ilac_almadim"}
 {"text": "Bu ilacı içmek istemiyorum.", "category": "agri_saglik"}
 {"text": "Hemşireyi çağırır mısın?", "category": "agri_saglik", "split": "val"}
-{"text": "Öksürüğüm var.", "category": "agri_saglik"}
+{"text": "Öksürüğüm var.", "category": "agri_saglik", "group": "oksuruk"}
 {"text": "Balgam söküyorum.", "category": "agri_saglik"}
 {"text": "Gözüm yanıyor.", "category": "agri_saglik"}
 {"text": "Kulağım ağrıyor.", "category": "agri_saglik", "split": "test"}
@@ -96,13 +96,13 @@
 {"text": "Boynum tutuldu.", "category": "agri_saglik"}
 {"text": "Yutkunmakta zorlanıyorum.", "category": "agri_saglik"}
 {"text": "Doktorla konuşmak istiyorum.", "category": "agri_saglik", "split": "val"}
-{"text": "Pozisyonumu değiştirir misin?", "category": "pozisyon_bakim"}
-{"text": "Yatağımı yukarı kaldırır mısın?", "category": "pozisyon_bakim"}
-{"text": "Üşüyorum, battaniye alır mısın?", "category": "pozisyon_bakim"}
+{"text": "Pozisyonumu değiştirir misin?", "category": "pozisyon_bakim", "group": "pozisyon_degistir"}
+{"text": "Yatağımı yukarı kaldırır mısın?", "category": "pozisyon_bakim", "group": "yatak_kaldir"}
+{"text": "Üşüyorum, battaniye alır mısın?", "category": "pozisyon_bakim", "group": "battaniye"}
 {"text": "Gözlüğümü takar mısın?", "category": "pozisyon_bakim"}
 {"text": "Yastığımı düzeltir misin?", "category": "pozisyon_bakim", "split": "val"}
 {"text": "Yatağı biraz indirir misin?", "category": "pozisyon_bakim", "split": "val"}
-{"text": "Beni sağ tarafıma çevirir misin?", "category": "pozisyon_bakim"}
+{"text": "Beni sağ tarafıma çevirir misin?", "category": "pozisyon_bakim", "group": "sag_donmek"}
 {"text": "Beni sol tarafıma çevirir misin?", "category": "pozisyon_bakim"}
 {"text": "Sırt üstü yatmak istiyorum.", "category": "pozisyon_bakim"}
 {"text": "Oturmak istiyorum.", "category": "pozisyon_bakim", "split": "test"}
@@ -128,12 +128,12 @@
 {"text": "Krem sürer misin?", "category": "pozisyon_bakim", "group": "krem_surmek"}
 {"text": "Dudaklarım kurudu.", "category": "pozisyon_bakim", "group": "dudak_kurumasi"}
 {"text": "Tırnaklarımı keser misin?", "category": "pozisyon_bakim", "group": "tirnak"}
-{"text": "Tıraş olmak istiyorum.", "category": "pozisyon_bakim", "group": "tiras"}
+{"text": "Tıraş olmak istiyorum.", "category": "pozisyon_bakim", "group": "tiras", "split": "test"}
 {"text": "Çarşafı değiştirir misin?", "category": "pozisyon_bakim"}
 {"text": "Yatak ıslandı.", "category": "pozisyon_bakim", "split": "test"}
 {"text": "Sandalyem rahat değil.", "category": "pozisyon_bakim"}
 {"text": "Biraz öne eğilmek istiyorum.", "category": "pozisyon_bakim"}
-{"text": "Beni biraz yukarı çeker misin?", "category": "pozisyon_bakim"}
+{"text": "Beni biraz yukarı çeker misin?", "category": "pozisyon_bakim", "group": "yukari_cekmek"}
 {"text": "Kayıyorum, beni tutar mısın?", "category": "pozisyon_bakim"}
 {"text": "Ekranı biraz yaklaştırır mısın?", "category": "pozisyon_bakim"}
 {"text": "Ekranı biraz uzaklaştırır mısın?", "category": "pozisyon_bakim"}
@@ -316,9 +316,9 @@
 {"text": "Yatmadan önce sıcak süt alabilir miyim?", "category": "temel_ihtiyac"}
 {"text": "Ihlamur yapar mısın?", "category": "temel_ihtiyac"}
 {"text": "Bitki çayı içmek istiyorum.", "category": "temel_ihtiyac"}
-{"text": "Çay demlendi mi?", "category": "temel_ihtiyac"}
-{"text": "Çayım soğudu.", "category": "temel_ihtiyac"}
-{"text": "Çayımı tazeler misin?", "category": "temel_ihtiyac"}
+{"text": "Çay demlendi mi?", "category": "temel_ihtiyac", "split": "test"}
+{"text": "Çayım soğudu.", "category": "temel_ihtiyac", "split": "test"}
+{"text": "Çayımı tazeler misin?", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Çayım açık olsun.", "category": "temel_ihtiyac"}
 {"text": "Çayıma şeker koyma.", "category": "temel_ihtiyac"}
 {"text": "Çayıma bir şeker atar mısın?", "category": "temel_ihtiyac"}
@@ -331,7 +331,7 @@
 {"text": "Su içmeyi unuttum.", "category": "temel_ihtiyac"}
 {"text": "Bana sık sık su ver.", "category": "temel_ihtiyac"}
 {"text": "Gece başucuma su bırakır mısın?", "category": "temel_ihtiyac"}
-{"text": "Pipet bitmiş.", "category": "temel_ihtiyac"}
+{"text": "Pipet bitmiş.", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Pipeti biraz kısaltır mısın?", "category": "temel_ihtiyac"}
 {"text": "Bardağı biraz eğer misin?", "category": "temel_ihtiyac"}
 {"text": "Ağzımdan su aktı.", "category": "temel_ihtiyac"}
@@ -340,7 +340,7 @@
 {"text": "Kahvaltı yapmak istiyorum.", "category": "temel_ihtiyac"}
 {"text": "Kahvaltıda yumurta istiyorum.", "category": "temel_ihtiyac"}
 {"text": "Haşlanmış yumurta yiyebilir miyim?", "category": "temel_ihtiyac"}
-{"text": "Peynir ve zeytin istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Peynir ve zeytin istiyorum.", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Kahvaltıda bal ve kaymak olsun.", "category": "temel_ihtiyac"}
 {"text": "Ekmeği küçük küçük böler misin?", "category": "temel_ihtiyac"}
 {"text": "Lokmaları küçük yapar mısın?", "category": "temel_ihtiyac", "group": "kucuk_lokma"}
@@ -357,7 +357,7 @@
 {"text": "Canım meyve çekti.", "category": "temel_ihtiyac"}
 {"text": "Elma soyar mısın?", "category": "temel_ihtiyac"}
 {"text": "Muz istiyorum.", "category": "temel_ihtiyac"}
-{"text": "Karpuz keser misin?", "category": "temel_ihtiyac"}
+{"text": "Karpuz keser misin?", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Mandalina soyar mısın?", "category": "temel_ihtiyac"}
 {"text": "Elmayı rendeler misin?", "category": "temel_ihtiyac"}
 {"text": "Bugün ne pişirdin?", "category": "temel_ihtiyac"}
@@ -391,7 +391,7 @@
 {"text": "Daha sonra yerim.", "category": "temel_ihtiyac"}
 {"text": "Ara öğün yiyebilir miyim?", "category": "temel_ihtiyac"}
 {"text": "Bunu yememe izin var mı?", "category": "temel_ihtiyac"}
-{"text": "Şekersiz olsun.", "category": "temel_ihtiyac"}
+{"text": "Şekersiz olsun.", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Az yağlı olsun.", "category": "temel_ihtiyac"}
 {"text": "Etin yanında sebze istiyorum.", "category": "temel_ihtiyac"}
 {"text": "Köfte yemek istiyorum.", "category": "temel_ihtiyac"}
@@ -434,12 +434,12 @@
 {"text": "Havluyu verir misin?", "category": "temel_ihtiyac"}
 {"text": "Bornozumu getirir misin?", "category": "temel_ihtiyac"}
 {"text": "Losyon sürer misin?", "category": "temel_ihtiyac", "group": "krem_surmek"}
-{"text": "Ellerim kurudu.", "category": "temel_ihtiyac"}
+{"text": "Ellerim kurudu.", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Dudaklarım çatladı.", "category": "temel_ihtiyac", "group": "dudak_kurumasi"}
 {"text": "Dudak kremi sürer misin?", "category": "temel_ihtiyac"}
 {"text": "Tırnaklarım uzamış.", "category": "temel_ihtiyac", "group": "tirnak"}
-{"text": "Sakalımı tıraş eder misin?", "category": "temel_ihtiyac", "group": "tiras"}
-{"text": "Sakalım uzadı.", "category": "temel_ihtiyac", "group": "tiras"}
+{"text": "Sakalımı tıraş eder misin?", "category": "temel_ihtiyac", "group": "tiras", "split": "test"}
+{"text": "Sakalım uzadı.", "category": "temel_ihtiyac", "group": "tiras", "split": "test"}
 {"text": "Burnum akıyor, mendil verir misin?", "category": "temel_ihtiyac", "group": "burun"}
 {"text": "Gözümü siler misin?", "category": "temel_ihtiyac"}
 {"text": "Gözüme bir şey kaçtı.", "category": "temel_ihtiyac"}
@@ -447,7 +447,7 @@
 {"text": "Ağız bakımı yapar mısın?", "category": "temel_ihtiyac"}
 {"text": "Takma dişimi takar mısın?", "category": "temel_ihtiyac"}
 {"text": "Protezimi çıkarır mısın?", "category": "temel_ihtiyac"}
-{"text": "Kulaklarımı temizler misin?", "category": "temel_ihtiyac"}
+{"text": "Kulaklarımı temizler misin?", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Deodorant sürer misin?", "category": "temel_ihtiyac"}
 {"text": "Biraz parfüm sıkar mısın?", "category": "temel_ihtiyac"}
 {"text": "Temiz kıyafet giymek istiyorum.", "category": "temel_ihtiyac", "group": "kiyafet"}
@@ -455,9 +455,9 @@
 {"text": "Kıyafetim kirlendi.", "category": "temel_ihtiyac", "group": "kiyafet"}
 {"text": "Saçlarım çok uzadı.", "category": "temel_ihtiyac"}
 {"text": "Biraz makyaj yapmak istiyorum.", "category": "temel_ihtiyac"}
-{"text": "Ojemi sürer misin?", "category": "temel_ihtiyac"}
+{"text": "Ojemi sürer misin?", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Banyoda düşmekten korkuyorum.", "category": "temel_ihtiyac"}
-{"text": "Banyoda sandalyeye oturayım.", "category": "temel_ihtiyac"}
+{"text": "Banyoda sandalyeye oturayım.", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Banyodan sonra üşüyorum.", "category": "temel_ihtiyac"}
 {"text": "Pişik olmuş, krem sürer misin?", "category": "temel_ihtiyac"}
 {"text": "Saç kurutma makinesini getirir misin?", "category": "temel_ihtiyac"}
@@ -466,7 +466,7 @@
 {"text": "Aynayı tutar mısın?", "category": "temel_ihtiyac"}
 {"text": "Kendimi aynada görmek istiyorum.", "category": "temel_ihtiyac"}
 {"text": "Kulağıma su kaçtı.", "category": "temel_ihtiyac"}
-{"text": "Tenime pudra sürer misin?", "category": "temel_ihtiyac"}
+{"text": "Tenime pudra sürer misin?", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Gözlerim kapanıyor.", "category": "temel_ihtiyac", "group": "uyumak"}
 {"text": "Artık yatmak istiyorum.", "category": "temel_ihtiyac", "group": "uyumak"}
 {"text": "Gözüme uyku girmiyor.", "category": "temel_ihtiyac", "group": "uyuyamamak"}
@@ -501,12 +501,12 @@
 {"text": "Odada bunaldım.", "category": "temel_ihtiyac", "group": "sicak"}
 {"text": "Oda buz gibi olmuş.", "category": "temel_ihtiyac", "group": "soguk"}
 {"text": "Kaloriferi kısar mısın?", "category": "temel_ihtiyac"}
-{"text": "Kaloriferi açar mısın?", "category": "temel_ihtiyac"}
+{"text": "Kaloriferi açar mısın?", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Klimayı açar mısın?", "category": "temel_ihtiyac"}
 {"text": "Klimayı kapatır mısın?", "category": "temel_ihtiyac"}
 {"text": "Klima yüzüme geliyor.", "category": "temel_ihtiyac"}
 {"text": "Vantilatörü açar mısın?", "category": "temel_ihtiyac"}
-{"text": "Vantilatörü bana çevirme.", "category": "temel_ihtiyac"}
+{"text": "Vantilatörü bana çevirme.", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Isıtıcıyı yanıma getirir misin?", "category": "temel_ihtiyac"}
 {"text": "Dışarısı çok gürültülü.", "category": "temel_ihtiyac"}
 {"text": "Biraz sessizlik istiyorum.", "category": "temel_ihtiyac"}
@@ -514,8 +514,8 @@
 {"text": "Oda koku yapmış.", "category": "temel_ihtiyac"}
 {"text": "Odayı toplar mısın?", "category": "temel_ihtiyac"}
 {"text": "Odada çok eşya var.", "category": "temel_ihtiyac"}
-{"text": "Çiçekleri sulamayı unutma.", "category": "temel_ihtiyac"}
-{"text": "Çiçekleri pencerenin önüne koy.", "category": "temel_ihtiyac"}
+{"text": "Çiçekleri sulamayı unutma.", "category": "temel_ihtiyac", "split": "test"}
+{"text": "Çiçekleri pencerenin önüne koy.", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Kanalı değiştirir misin?", "category": "temel_ihtiyac"}
 {"text": "Diziyi açar mısın?", "category": "temel_ihtiyac"}
 {"text": "Dizinin saati geldi.", "category": "temel_ihtiyac"}
@@ -547,7 +547,7 @@
 {"text": "Kart oynamak istiyorum.", "category": "temel_ihtiyac"}
 {"text": "Yeni bir kitap almak istiyorum.", "category": "temel_ihtiyac"}
 {"text": "Kitabın kaldığım yerini bulur musun?", "category": "temel_ihtiyac"}
-{"text": "Yazılar çok küçük.", "category": "temel_ihtiyac"}
+{"text": "Yazılar çok küçük.", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Mendil verir misin?", "category": "temel_ihtiyac"}
 {"text": "Bunu masaya koyar mısın?", "category": "temel_ihtiyac"}
 {"text": "Bunu benden uzaklaştır.", "category": "temel_ihtiyac"}
@@ -563,7 +563,7 @@
 {"text": "Şuradaki şeyi verir misin?", "category": "temel_ihtiyac"}
 {"text": "Onu biraz sağa koyar mısın?", "category": "temel_ihtiyac"}
 {"text": "Bunu yere düşürdüm.", "category": "temel_ihtiyac"}
-{"text": "Bunu kaldırır mısın?", "category": "temel_ihtiyac"}
+{"text": "Bunu kaldırır mısın?", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Cihazın şarjı azaldı.", "category": "temel_ihtiyac"}
 {"text": "Anahtarlarım nerede?", "category": "temel_ihtiyac"}
 {"text": "Namaz kılmak istiyorum.", "category": "temel_ihtiyac"}
@@ -581,10 +581,10 @@
 {"text": "Bana biraz zaman ver.", "category": "temel_ihtiyac"}
 {"text": "Hemen gelir misin?", "category": "temel_ihtiyac"}
 {"text": "Buraya gelir misin?", "category": "temel_ihtiyac"}
-{"text": "Yardıma ihtiyacım var.", "category": "temel_ihtiyac"}
+{"text": "Yardıma ihtiyacım var.", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Bir şeye ihtiyacım var.", "category": "temel_ihtiyac"}
 {"text": "Bir şey istiyorum ama söyleyemiyorum.", "category": "temel_ihtiyac"}
-{"text": "Ne istediğimi tahmin edebilir misin?", "category": "temel_ihtiyac"}
+{"text": "Ne istediğimi tahmin edebilir misin?", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Bir şey daha istiyorum.", "category": "temel_ihtiyac"}
 {"text": "Hepsi bu, teşekkürler.", "category": "temel_ihtiyac"}
 {"text": "Çay saati geldi.", "category": "temel_ihtiyac"}
@@ -592,16 +592,16 @@
 {"text": "Bir bardak daha çay alabilir miyim?", "category": "temel_ihtiyac"}
 {"text": "Kola içmek istiyorum.", "category": "temel_ihtiyac"}
 {"text": "Sütü ısıtır mısın?", "category": "temel_ihtiyac"}
-{"text": "Su içerken başımı tutar mısın?", "category": "temel_ihtiyac"}
+{"text": "Su içerken başımı tutar mısın?", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Suyu kaşıkla verir misin?", "category": "temel_ihtiyac"}
 {"text": "Gazoz var mı?", "category": "temel_ihtiyac"}
 {"text": "İçeceğime buz koyma.", "category": "temel_ihtiyac"}
 {"text": "Şerbet yapar mısın?", "category": "temel_ihtiyac"}
 {"text": "Bugün çorba var mı?", "category": "temel_ihtiyac"}
-{"text": "Sıcak bir çorba iyi gelir.", "category": "temel_ihtiyac"}
+{"text": "Sıcak bir çorba iyi gelir.", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Ekmek istemiyorum.", "category": "temel_ihtiyac"}
 {"text": "Ekmeği çorbaya batırır mısın?", "category": "temel_ihtiyac"}
-{"text": "Simit alır mısın?", "category": "temel_ihtiyac"}
+{"text": "Simit alır mısın?", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Poğaça istiyorum.", "category": "temel_ihtiyac"}
 {"text": "Menemen yapar mısın?", "category": "temel_ihtiyac"}
 {"text": "Kahvaltı hazır mı?", "category": "temel_ihtiyac"}
@@ -609,14 +609,14 @@
 {"text": "Masada yemek istiyorum.", "category": "temel_ihtiyac"}
 {"text": "Hep birlikte yiyelim.", "category": "temel_ihtiyac"}
 {"text": "Fırında tavuk yapar mısın?", "category": "temel_ihtiyac"}
-{"text": "Kuru fasulye yemek istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Kuru fasulye yemek istiyorum.", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Sarma yaptın mı?", "category": "temel_ihtiyac"}
 {"text": "Canım mantı çekti.", "category": "temel_ihtiyac"}
 {"text": "Turşu var mı?", "category": "temel_ihtiyac"}
-{"text": "Salata yapar mısın?", "category": "temel_ihtiyac"}
-{"text": "Salatayı ince doğrar mısın?", "category": "temel_ihtiyac"}
+{"text": "Salata yapar mısın?", "category": "temel_ihtiyac", "split": "test"}
+{"text": "Salatayı ince doğrar mısın?", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Meyveleri küçük keser misin?", "category": "temel_ihtiyac"}
-{"text": "Çekirdeksiz üzüm istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Çekirdeksiz üzüm istiyorum.", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Kirazları yıkar mısın?", "category": "temel_ihtiyac"}
 {"text": "Kek yaptın mı?", "category": "temel_ihtiyac"}
 {"text": "Sütlaç istiyorum.", "category": "temel_ihtiyac"}
@@ -636,32 +636,32 @@
 {"text": "Saçımı kestirmek istiyorum.", "category": "temel_ihtiyac", "group": "sac_kesmek"}
 {"text": "Saçımı kısa kestirmek istiyorum.", "category": "temel_ihtiyac", "group": "sac_kesmek"}
 {"text": "Berberi eve çağırır mısın?", "category": "temel_ihtiyac"}
-{"text": "Kaşlarımı alır mısın?", "category": "temel_ihtiyac"}
+{"text": "Kaşlarımı alır mısın?", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Bıyığımı düzeltir misin?", "category": "temel_ihtiyac"}
 {"text": "Tıraş bıçağı körelmiş.", "category": "temel_ihtiyac"}
-{"text": "Tıraş makinesini getirir misin?", "category": "temel_ihtiyac"}
-{"text": "Uyumadan önce biraz kitap okuyalım.", "category": "temel_ihtiyac"}
+{"text": "Tıraş makinesini getirir misin?", "category": "temel_ihtiyac", "split": "test"}
+{"text": "Uyumadan önce biraz kitap okuyalım.", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Bu akşam geç yatacağım.", "category": "temel_ihtiyac"}
 {"text": "Kediyi yanıma getirir misin?", "category": "temel_ihtiyac"}
-{"text": "Kedimi sevmek istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Kedimi sevmek istiyorum.", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Kuşun kafesini örter misin?", "category": "temel_ihtiyac"}
 {"text": "Saksıları içeri alır mısın?", "category": "temel_ihtiyac"}
 {"text": "Ortalığı süpürür müsün?", "category": "temel_ihtiyac"}
 {"text": "Oda çok dağınık.", "category": "temel_ihtiyac"}
 {"text": "Masayı temizler misin?", "category": "temel_ihtiyac"}
-{"text": "Çöpü boşaltır mısın?", "category": "temel_ihtiyac"}
+{"text": "Çöpü boşaltır mısın?", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Hava çok nemli.", "category": "temel_ihtiyac"}
 {"text": "Odaya biraz oda spreyi sıkar mısın?", "category": "temel_ihtiyac"}
 {"text": "Saati göreceğim bir yere asar mısın?", "category": "temel_ihtiyac"}
-{"text": "Takvimi göreceğim yere koy.", "category": "temel_ihtiyac"}
+{"text": "Takvimi göreceğim yere koy.", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Bir film önerir misin?", "category": "temel_ihtiyac"}
 {"text": "Bu filmi daha önce izledik.", "category": "temel_ihtiyac"}
-{"text": "Sesi kapat, sadece görüntü kalsın.", "category": "temel_ihtiyac"}
+{"text": "Sesi kapat, sadece görüntü kalsın.", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Kumandanın pili bitti.", "category": "temel_ihtiyac"}
 {"text": "Ekrana bakmaktan gözlerim yoruldu.", "category": "temel_ihtiyac"}
 {"text": "Biraz ara verelim.", "category": "temel_ihtiyac"}
 {"text": "Bilgisayarı açar mısın?", "category": "temel_ihtiyac"}
-{"text": "Bilgisayarda oyun oynamak istiyorum.", "category": "temel_ihtiyac"}
+{"text": "Bilgisayarda oyun oynamak istiyorum.", "category": "temel_ihtiyac", "split": "test"}
 {"text": "Sesli kitap açar mısın?", "category": "temel_ihtiyac"}
 {"text": "Gazetedeki bulmacayı bana okur musun?", "category": "temel_ihtiyac"}
 {"text": "Markete gidecek misin?", "category": "temel_ihtiyac"}
@@ -672,3 +672,479 @@
 {"text": "Yeni çorap almamız lazım.", "category": "temel_ihtiyac"}
 {"text": "Cüzdanımı getirir misin?", "category": "temel_ihtiyac"}
 {"text": "Kimliğimi çantama koyar mısın?", "category": "temel_ihtiyac"}
+{"text": "Dizim ağrıyor.", "category": "agri_saglik"}
+{"text": "Belim ağrıyor.", "category": "agri_saglik"}
+{"text": "Omzum ağrıyor.", "category": "agri_saglik"}
+{"text": "Bileğim ağrıyor.", "category": "agri_saglik"}
+{"text": "Topuğum ağrıyor.", "category": "agri_saglik"}
+{"text": "Kalçam ağrıyor.", "category": "agri_saglik"}
+{"text": "Ayak bileğim şişti.", "category": "agri_saglik"}
+{"text": "Parmaklarım ağrıyor.", "category": "agri_saglik"}
+{"text": "Ensem ağrıyor.", "category": "agri_saglik"}
+{"text": "Çenem ağrıyor.", "category": "agri_saglik"}
+{"text": "Göğsümün sol tarafı ağrıyor.", "category": "agri_saglik"}
+{"text": "Kaburgalarım ağrıyor.", "category": "agri_saglik"}
+{"text": "Gözlerimin arkası ağrıyor.", "category": "agri_saglik"}
+{"text": "Şakaklarım zonkluyor.", "category": "agri_saglik"}
+{"text": "Midem ağrıyor.", "category": "agri_saglik", "group": "karin_agrisi"}
+{"text": "Kasıklarım ağrıyor.", "category": "agri_saglik"}
+{"text": "Tüm vücudum ağrıyor.", "category": "agri_saglik"}
+{"text": "Her yerim sızlıyor.", "category": "agri_saglik"}
+{"text": "Sağ kolumda ağrı var.", "category": "agri_saglik"}
+{"text": "Sol bacağımda ağrı var.", "category": "agri_saglik"}
+{"text": "Ağrı sırtımdan bacağıma vuruyor.", "category": "agri_saglik"}
+{"text": "Ağrı koluma yayılıyor.", "category": "agri_saglik"}
+{"text": "Tam burası ağrıyor.", "category": "agri_saglik"}
+{"text": "Ağrının yerini gösterebilirim.", "category": "agri_saglik"}
+{"text": "Dokunduğun yer acıyor.", "category": "agri_saglik"}
+{"text": "Oraya dokunma, acıyor.", "category": "agri_saglik"}
+{"text": "Çok acı çekiyorum.", "category": "agri_saglik", "group": "agri_var"}
+{"text": "Ağrıya dayanamıyorum.", "category": "agri_saglik", "group": "agri_var"}
+{"text": "Ağrım ondan sekiz.", "category": "agri_saglik", "split": "test"}
+{"text": "Ağrım ondan üç.", "category": "agri_saglik"}
+{"text": "Ağrım hafif.", "category": "agri_saglik"}
+{"text": "Ağrım orta şiddette.", "category": "agri_saglik"}
+{"text": "Ağrım giderek artıyor.", "category": "agri_saglik"}
+{"text": "Ağrı geçti.", "category": "agri_saglik"}
+{"text": "Ağrı yine başladı.", "category": "agri_saglik"}
+{"text": "Ağrı gece artıyor.", "category": "agri_saglik", "split": "test"}
+{"text": "Ağrı sabahları daha kötü.", "category": "agri_saglik"}
+{"text": "Batma gibi bir ağrı var.", "category": "agri_saglik"}
+{"text": "Yanma gibi bir ağrı var.", "category": "agri_saglik"}
+{"text": "Zonklayan bir ağrı var.", "category": "agri_saglik", "split": "test"}
+{"text": "Sızlıyor ama dayanılır.", "category": "agri_saglik"}
+{"text": "Kıpırdayınca ağrıyor.", "category": "agri_saglik"}
+{"text": "Yatınca ağrım artıyor.", "category": "agri_saglik"}
+{"text": "Otururken ağrım azalıyor.", "category": "agri_saglik"}
+{"text": "Ağrı yüzünden uyuyamıyorum.", "category": "agri_saglik"}
+{"text": "Dünden beri ağrım var.", "category": "agri_saglik", "split": "test"}
+{"text": "Bu ağrı yeni başladı.", "category": "agri_saglik"}
+{"text": "Bu ağrıyı daha önce hiç yaşamadım.", "category": "agri_saglik", "split": "test"}
+{"text": "Ağrı kesici işe yaramadı.", "category": "agri_saglik"}
+{"text": "Ağrı kesici iyi geldi.", "category": "agri_saglik"}
+{"text": "Sıcak su torbası iyi gelir.", "category": "agri_saglik"}
+{"text": "Buz koyar mısın?", "category": "agri_saglik"}
+{"text": "Ağrıyan yere masaj yapar mısın?", "category": "agri_saglik"}
+{"text": "İlaç saatim geçti mi?", "category": "agri_saglik", "group": "ilac_saati"}
+{"text": "İlacımı vermeyi unutma.", "category": "agri_saglik", "group": "ilac_saati"}
+{"text": "İlacımı şimdi verir misin?", "category": "agri_saglik"}
+{"text": "Akşam ilacımı aldım.", "category": "agri_saglik"}
+{"text": "Sabah ilacımı almadım.", "category": "agri_saglik", "group": "ilac_almadim"}
+{"text": "İlacımı iki kez aldım galiba.", "category": "agri_saglik"}
+{"text": "Bu ilaç midemi bozuyor.", "category": "agri_saglik"}
+{"text": "Bu ilaç uykumu getiriyor.", "category": "agri_saglik"}
+{"text": "Bu ilaçtan sonra başım dönüyor.", "category": "agri_saglik", "split": "test"}
+{"text": "İlacı ezip verir misin?", "category": "agri_saglik"}
+{"text": "İlacı suyla yutamıyorum.", "category": "agri_saglik"}
+{"text": "Hapı yutamıyorum, şurup olarak verir misin?", "category": "agri_saglik"}
+{"text": "İlacı tüpten verir misin?", "category": "agri_saglik"}
+{"text": "İlacım bitmek üzere.", "category": "agri_saglik", "split": "test"}
+{"text": "Eczaneden ilacımı alır mısın?", "category": "agri_saglik"}
+{"text": "Reçetem yenilenmeli.", "category": "agri_saglik"}
+{"text": "Bu ilacın adı ne?", "category": "agri_saglik", "split": "test"}
+{"text": "Bu ilaç ne için?", "category": "agri_saglik", "split": "test"}
+{"text": "Doz değişti mi?", "category": "agri_saglik"}
+{"text": "Yeni ilaca başladık mı?", "category": "agri_saglik"}
+{"text": "İlacımı aç karnına mı alıyorum?", "category": "agri_saglik"}
+{"text": "İlacı yemekten sonra ver.", "category": "agri_saglik"}
+{"text": "Vitaminimi aldım mı?", "category": "agri_saglik"}
+{"text": "Uyku ilacımı alabilir miyim?", "category": "agri_saglik"}
+{"text": "Ağrı kesicinin etkisi geçti.", "category": "agri_saglik"}
+{"text": "Bir ağrı kesici daha alabilir miyim?", "category": "agri_saglik"}
+{"text": "İğne olmak istemiyorum.", "category": "agri_saglik"}
+{"text": "Serumum bitti.", "category": "agri_saglik"}
+{"text": "Serumun yeri acıyor.", "category": "agri_saglik"}
+{"text": "Damar yolum çıktı.", "category": "agri_saglik"}
+{"text": "Damar yolumun yeri şişti.", "category": "agri_saglik"}
+{"text": "İlaç kutularını bana göster.", "category": "agri_saglik", "split": "test"}
+{"text": "İlaç çizelgesini kontrol eder misin?", "category": "agri_saglik"}
+{"text": "Doktora söyler misin?", "category": "agri_saglik"}
+{"text": "Doktor randevum ne zaman?", "category": "agri_saglik"}
+{"text": "Randevumu unutma.", "category": "agri_saglik"}
+{"text": "Randevuyu erteleyebilir miyiz?", "category": "agri_saglik"}
+{"text": "Kontrole gitmemiz gerekiyor.", "category": "agri_saglik"}
+{"text": "Kontrol günü yarın mı?", "category": "agri_saglik"}
+{"text": "Hastaneye gitmemiz gerekebilir.", "category": "agri_saglik"}
+{"text": "Acil servise gitmemiz lazım.", "category": "agri_saglik"}
+{"text": "Ambulans çağır.", "category": "agri_saglik"}
+{"text": "Bu acil.", "category": "agri_saglik"}
+{"text": "Acil değil, sonra bakarız.", "category": "agri_saglik"}
+{"text": "Ev hemşiresi ne zaman gelecek?", "category": "agri_saglik"}
+{"text": "Sonuçlarımı doktora gösterdin mi?", "category": "agri_saglik", "split": "test"}
+{"text": "Kan tahlili ne zaman?", "category": "agri_saglik"}
+{"text": "Kan verirken acıdı.", "category": "agri_saglik", "split": "test"}
+{"text": "Film çekilecek mi?", "category": "agri_saglik", "split": "test"}
+{"text": "Emar sonucu çıktı mı?", "category": "agri_saglik"}
+{"text": "Raporumu yeniletmemiz gerekiyor.", "category": "agri_saglik", "split": "test"}
+{"text": "Sağlık kurulu raporu ne zaman?", "category": "agri_saglik"}
+{"text": "Hastanede kalmak istemiyorum.", "category": "agri_saglik", "split": "test"}
+{"text": "Evde tedavi olmak istiyorum.", "category": "agri_saglik"}
+{"text": "Ziyaret saatleri ne zaman?", "category": "agri_saglik"}
+{"text": "Taburcu olmak istiyorum.", "category": "agri_saglik"}
+{"text": "Doktorun söylediklerini yazar mısın?", "category": "agri_saglik"}
+{"text": "Doktorun söylediğini anlamadım.", "category": "agri_saglik"}
+{"text": "Bana her şeyi açıkça söyleyin.", "category": "agri_saglik"}
+{"text": "Kararı ben vermek istiyorum.", "category": "agri_saglik", "split": "test"}
+{"text": "Bu tedaviyi kabul etmiyorum.", "category": "agri_saglik"}
+{"text": "Biraz düşünmem lazım.", "category": "agri_saglik", "split": "test"}
+{"text": "Şekerimi ölçer misin?", "category": "agri_saglik"}
+{"text": "Nabzımı ölçer misin?", "category": "agri_saglik"}
+{"text": "Oksijen değerim kaç?", "category": "agri_saglik"}
+{"text": "Tansiyonum kaç çıktı?", "category": "agri_saglik"}
+{"text": "Şekerim düştü galiba.", "category": "agri_saglik"}
+{"text": "Şekerim yüksek olabilir.", "category": "agri_saglik"}
+{"text": "Tansiyonum düştü galiba.", "category": "agri_saglik"}
+{"text": "Tansiyonum yükseldi galiba.", "category": "agri_saglik"}
+{"text": "Kilomu ölçelim.", "category": "agri_saglik"}
+{"text": "Kilo verdim galiba.", "category": "agri_saglik"}
+{"text": "Ölçüm sonuçlarını deftere yaz.", "category": "agri_saglik"}
+{"text": "Cihaz ötüyor, bakar mısın?", "category": "agri_saglik"}
+{"text": "Parmağımdaki cihaz düştü.", "category": "agri_saglik"}
+{"text": "Oksijen probu yerinden çıktı.", "category": "agri_saglik"}
+{"text": "Maskemi takar mısın?", "category": "agri_saglik"}
+{"text": "Maskemi çıkarır mısın?", "category": "agri_saglik"}
+{"text": "Maske yüzümü sıkıyor.", "category": "agri_saglik"}
+{"text": "Maske hava kaçırıyor.", "category": "agri_saglik"}
+{"text": "Maskenin altı yara yaptı.", "category": "agri_saglik"}
+{"text": "Cihazın hortumu çıktı.", "category": "agri_saglik"}
+{"text": "Cihazın suyu bitti.", "category": "agri_saglik"}
+{"text": "Makinenin sesi değişti.", "category": "agri_saglik"}
+{"text": "Cihazın basıncını artırır mısın?", "category": "agri_saglik"}
+{"text": "Gece cihazı takmayı unutma.", "category": "agri_saglik"}
+{"text": "Burun kanülüm çıktı.", "category": "agri_saglik"}
+{"text": "Oksijen tüpü bitmek üzere.", "category": "agri_saglik"}
+{"text": "Salyam akıyor.", "category": "agri_saglik", "group": "salya"}
+{"text": "Ağzımda tükürük birikti.", "category": "agri_saglik", "group": "salya"}
+{"text": "Ağzımı aspire eder misin?", "category": "agri_saglik"}
+{"text": "Aspiratörü çalıştırır mısın?", "category": "agri_saglik"}
+{"text": "Boğazımda balgam var.", "category": "agri_saglik"}
+{"text": "Balgamı çıkaramıyorum.", "category": "agri_saglik"}
+{"text": "Öksürük cihazını kullanalım.", "category": "agri_saglik"}
+{"text": "Sırtıma vurur musun, balgam sökülsün.", "category": "agri_saglik"}
+{"text": "Öksürmekte zorlanıyorum.", "category": "agri_saglik", "split": "test"}
+{"text": "Gece çok öksürdüm.", "category": "agri_saglik"}
+{"text": "Kuru bir öksürüğüm var.", "category": "agri_saglik", "group": "oksuruk"}
+{"text": "Hırıltılı bir ses var.", "category": "agri_saglik"}
+{"text": "Sesim kısıldı.", "category": "agri_saglik"}
+{"text": "Hıçkırık tuttu.", "category": "agri_saglik", "split": "test"}
+{"text": "Hapşırık geliyor.", "category": "agri_saglik", "split": "test"}
+{"text": "Yutarken boğazım takılıyor.", "category": "agri_saglik", "group": "bogaz_takilma"}
+{"text": "Yemek boğazımda kaldı.", "category": "agri_saglik", "group": "bogaz_takilma"}
+{"text": "Yemek yerken öksürüyorum.", "category": "agri_saglik"}
+{"text": "Su içerken öksürüyorum.", "category": "agri_saglik"}
+{"text": "Yemek yanlış yere kaçtı.", "category": "agri_saglik"}
+{"text": "Lokma boğazıma takıldı.", "category": "agri_saglik", "group": "bogaz_takilma"}
+{"text": "Kıvamlı içeceklerle daha rahat yutuyorum.", "category": "agri_saglik"}
+{"text": "Beslenme tüpüm tıkandı.", "category": "agri_saglik"}
+{"text": "Tüpün etrafı kızardı.", "category": "agri_saglik"}
+{"text": "Tüpün yerini temizler misin?", "category": "agri_saglik"}
+{"text": "Mama çok hızlı akıyor.", "category": "agri_saglik"}
+{"text": "Mamayı biraz yavaşlat.", "category": "agri_saglik"}
+{"text": "İştahım yok.", "category": "agri_saglik"}
+{"text": "Son günlerde iştahım azaldı.", "category": "agri_saglik"}
+{"text": "Ağzımın tadı yok.", "category": "agri_saglik"}
+{"text": "Ağzımda yara var.", "category": "agri_saglik", "split": "test"}
+{"text": "Diş etim kanıyor.", "category": "agri_saglik"}
+{"text": "Dilim yanıyor.", "category": "agri_saglik"}
+{"text": "Kabız oldum.", "category": "agri_saglik"}
+{"text": "Üç gündür tuvalete çıkamadım.", "category": "agri_saglik"}
+{"text": "İshal oldum.", "category": "agri_saglik"}
+{"text": "Karnım şişti.", "category": "agri_saglik"}
+{"text": "Karnımda gaz var.", "category": "agri_saglik"}
+{"text": "Midem yanıyor.", "category": "agri_saglik"}
+{"text": "Ekşime yapıyor.", "category": "agri_saglik"}
+{"text": "Hazımsızlık çekiyorum.", "category": "agri_saglik"}
+{"text": "Yemekten sonra midem ağrıyor.", "category": "agri_saglik"}
+{"text": "İdrarım yanıyor.", "category": "agri_saglik"}
+{"text": "İdrarım çok koyu.", "category": "agri_saglik"}
+{"text": "İdrar yaparken acıyor.", "category": "agri_saglik"}
+{"text": "Sık sık idrara çıkıyorum.", "category": "agri_saglik"}
+{"text": "İdrarımı tutamıyorum.", "category": "agri_saglik"}
+{"text": "Sondam acıtıyor.", "category": "agri_saglik"}
+{"text": "Lavman gerekebilir.", "category": "agri_saglik"}
+{"text": "Laksatif alabilir miyim?", "category": "agri_saglik"}
+{"text": "Kuyruk sokumumda yara açıldı.", "category": "agri_saglik", "group": "yatak_yarasi"}
+{"text": "Bası yaram var gibi.", "category": "agri_saglik", "group": "yatak_yarasi"}
+{"text": "Topuğum kızardı.", "category": "agri_saglik"}
+{"text": "Sırtımda kızarıklık var.", "category": "agri_saglik"}
+{"text": "Yaramın pansumanını yapar mısın?", "category": "agri_saglik"}
+{"text": "Pansumanım ıslandı.", "category": "agri_saglik"}
+{"text": "Yaram sızıntı yapıyor.", "category": "agri_saglik"}
+{"text": "Yaram kötü kokuyor.", "category": "agri_saglik", "split": "test"}
+{"text": "Yaram iyileşiyor mu?", "category": "agri_saglik"}
+{"text": "Cildim çok kuru.", "category": "agri_saglik"}
+{"text": "Ellerimde kaşıntı var.", "category": "agri_saglik"}
+{"text": "Bir yerimde döküntü çıktı.", "category": "agri_saglik"}
+{"text": "Sivrisinek ısırdı.", "category": "agri_saglik"}
+{"text": "Elim morarmış.", "category": "agri_saglik"}
+{"text": "Bacağımda morluk var.", "category": "agri_saglik"}
+{"text": "Bir yere çarptım.", "category": "agri_saglik"}
+{"text": "Elimi kestim.", "category": "agri_saglik"}
+{"text": "Ayaklarım şişti.", "category": "agri_saglik", "split": "test"}
+{"text": "Ellerim şişti.", "category": "agri_saglik"}
+{"text": "Bacaklarım su topladı.", "category": "agri_saglik"}
+{"text": "Tırnağım batıyor.", "category": "agri_saglik"}
+{"text": "Kremi yaraya sürer misin?", "category": "agri_saglik"}
+{"text": "Kaslarım seğiriyor.", "category": "agri_saglik", "split": "test"}
+{"text": "Kolumda seğirme var.", "category": "agri_saglik"}
+{"text": "Ellerim titriyor.", "category": "agri_saglik"}
+{"text": "Kolumu kaldıramıyorum.", "category": "agri_saglik"}
+{"text": "Elimi sıkamıyorum.", "category": "agri_saglik"}
+{"text": "Parmaklarım karıncalanıyor.", "category": "agri_saglik"}
+{"text": "Ayaklarım karıncalanıyor.", "category": "agri_saglik"}
+{"text": "Yüzüm uyuştu.", "category": "agri_saglik"}
+{"text": "Dilim uyuşuyor.", "category": "agri_saglik"}
+{"text": "Boynumu tutamıyorum.", "category": "agri_saglik"}
+{"text": "Başımı dik tutamıyorum.", "category": "agri_saglik"}
+{"text": "Kollarım çok güçsüz.", "category": "agri_saglik"}
+{"text": "Dün olduğundan daha zayıfım.", "category": "agri_saglik"}
+{"text": "Konuşmam daha da zorlaştı.", "category": "agri_saglik"}
+{"text": "Eskisinden daha çabuk yoruluyorum.", "category": "agri_saglik"}
+{"text": "Egzersizlerimi yapmak istiyorum.", "category": "agri_saglik"}
+{"text": "Bugün egzersiz yapamayacağım.", "category": "agri_saglik", "split": "test"}
+{"text": "Kollarımı esnetir misin?", "category": "agri_saglik"}
+{"text": "Bacaklarıma masaj yapar mısın?", "category": "agri_saglik"}
+{"text": "Halsizim.", "category": "agri_saglik"}
+{"text": "Hiç gücüm yok.", "category": "agri_saglik"}
+{"text": "Bayılacak gibiyim.", "category": "agri_saglik"}
+{"text": "Gözlerim kararıyor.", "category": "agri_saglik"}
+{"text": "Kalbim çok hızlı atıyor.", "category": "agri_saglik"}
+{"text": "Çarpıntım var.", "category": "agri_saglik"}
+{"text": "Dünden daha kötüyüm.", "category": "agri_saglik"}
+{"text": "Bir şeyler ters gidiyor.", "category": "agri_saglik"}
+{"text": "Kendimi tuhaf hissediyorum.", "category": "agri_saglik"}
+{"text": "Kendimi hasta gibi hissediyorum.", "category": "agri_saglik"}
+{"text": "Burnum tıkandı.", "category": "agri_saglik"}
+{"text": "Burnum kanıyor.", "category": "agri_saglik"}
+{"text": "Gözlerim kurudu.", "category": "agri_saglik"}
+{"text": "Gözüme damla damlatır mısın?", "category": "agri_saglik"}
+{"text": "Gözlerim bulanık görüyor.", "category": "agri_saglik"}
+{"text": "Gözüm seğiriyor.", "category": "agri_saglik"}
+{"text": "Başım çok ağır.", "category": "agri_saglik"}
+{"text": "Başım zonkluyor.", "category": "agri_saglik", "group": "bas_agrisi"}
+{"text": "Migrenim tuttu.", "category": "agri_saglik"}
+{"text": "Işık başımı ağrıtıyor.", "category": "agri_saglik"}
+{"text": "Ses başımı ağrıtıyor.", "category": "agri_saglik"}
+{"text": "Uyuyunca geçer.", "category": "agri_saglik", "split": "test"}
+{"text": "Biraz uzanırsam geçer.", "category": "agri_saglik"}
+{"text": "Endişelenecek bir şey yok.", "category": "agri_saglik"}
+{"text": "Hemen bakmanız lazım.", "category": "agri_saglik"}
+{"text": "Bir şeyim yok, merak etme.", "category": "agri_saglik"}
+{"text": "Gece birkaç kez uyandım.", "category": "agri_saglik", "group": "uyuyamamak"}
+{"text": "Gündüz çok uyuyorum.", "category": "agri_saglik"}
+{"text": "Sürekli uykum var.", "category": "agri_saglik"}
+{"text": "Kâbus görüp uyandım.", "category": "agri_saglik"}
+{"text": "Gece çok terledim.", "category": "agri_saglik", "group": "terleme"}
+{"text": "Sabah başım ağrıyarak uyandım.", "category": "agri_saglik"}
+{"text": "Uzun zamandır aynı pozisyondayım.", "category": "pozisyon_bakim", "group": "pozisyon_degistir"}
+{"text": "Beni biraz döndürür müsün?", "category": "pozisyon_bakim", "group": "pozisyon_degistir"}
+{"text": "Beni yan yatırır mısın?", "category": "pozisyon_bakim", "group": "yan_yatmak"}
+{"text": "Yan yatmak istiyorum.", "category": "pozisyon_bakim", "group": "yan_yatmak"}
+{"text": "Yüzüstü yatamıyorum.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Sağ tarafıma dönmek istiyorum.", "category": "pozisyon_bakim", "group": "sag_donmek"}
+{"text": "Sol tarafım ağrıdı, beni çevir.", "category": "pozisyon_bakim"}
+{"text": "Sırtımın arkasına yastık koyar mısın?", "category": "pozisyon_bakim"}
+{"text": "Dizlerimin arasına yastık koyar mısın?", "category": "pozisyon_bakim"}
+{"text": "Topuklarımın altına yastık koyar mısın?", "category": "pozisyon_bakim"}
+{"text": "Yastığı başımın altından çek.", "category": "pozisyon_bakim"}
+{"text": "İkinci bir yastık istiyorum.", "category": "pozisyon_bakim"}
+{"text": "Yastık çok alçak.", "category": "pozisyon_bakim"}
+{"text": "Yastığı ters çevirir misin?", "category": "pozisyon_bakim"}
+{"text": "Kalçam yatağa batıyor.", "category": "pozisyon_bakim"}
+{"text": "Belimin altı boşta kaldı.", "category": "pozisyon_bakim"}
+{"text": "Aşağı kaydım, beni yukarı al.", "category": "pozisyon_bakim", "group": "yukari_cekmek"}
+{"text": "Yatağın ortasına çeker misin?", "category": "pozisyon_bakim"}
+{"text": "Yatağın kenarına çok yakınım.", "category": "pozisyon_bakim"}
+{"text": "Düşeceğim gibi hissediyorum.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Yatak korkuluğunu kaldırır mısın?", "category": "pozisyon_bakim"}
+{"text": "Yatak korkuluğunu indirir misin?", "category": "pozisyon_bakim"}
+{"text": "Çarşaf altımda buruştu.", "category": "pozisyon_bakim"}
+{"text": "Çarşafı gerer misin?", "category": "pozisyon_bakim"}
+{"text": "Altımdaki bezi düzeltir misin?", "category": "pozisyon_bakim"}
+{"text": "Havalı yatağın motoru çalışmıyor.", "category": "pozisyon_bakim"}
+{"text": "Havalı yatak çok sert.", "category": "pozisyon_bakim"}
+{"text": "Havalı yatak çok yumuşak.", "category": "pozisyon_bakim"}
+{"text": "Bu pozisyon rahat.", "category": "pozisyon_bakim"}
+{"text": "Böyle kalayım.", "category": "pozisyon_bakim"}
+{"text": "Biraz daha sağa.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Biraz daha sola.", "category": "pozisyon_bakim"}
+{"text": "Biraz daha yukarı.", "category": "pozisyon_bakim"}
+{"text": "Biraz daha aşağı.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Tamam, böyle iyi.", "category": "pozisyon_bakim"}
+{"text": "Bir saat sonra beni yine çevir.", "category": "pozisyon_bakim"}
+{"text": "Beni çevirirken yavaş ol.", "category": "pozisyon_bakim"}
+{"text": "Beni çevirirken kolumu altımda bırakma.", "category": "pozisyon_bakim"}
+{"text": "Yatağın baş tarafını kaldırır mısın?", "category": "pozisyon_bakim", "group": "yatak_kaldir"}
+{"text": "Yatağın ayak tarafını kaldırır mısın?", "category": "pozisyon_bakim"}
+{"text": "Yatağın ayak tarafını indirir misin?", "category": "pozisyon_bakim"}
+{"text": "Yatağı düz yap.", "category": "pozisyon_bakim"}
+{"text": "Yatak çok dik oldu.", "category": "pozisyon_bakim"}
+{"text": "Yatak kumandası nerede?", "category": "pozisyon_bakim"}
+{"text": "Yatak kumandası elimin altında olsun.", "category": "pozisyon_bakim"}
+{"text": "Yatak hareket etmiyor.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Koltuğa geçmek istiyorum.", "category": "pozisyon_bakim"}
+{"text": "Beni koltuğa alır mısın?", "category": "pozisyon_bakim"}
+{"text": "Sandalyeden yatağa geçelim.", "category": "pozisyon_bakim"}
+{"text": "Yatağa yatırır mısın?", "category": "pozisyon_bakim"}
+{"text": "Kaldırma cihazını getirir misin?", "category": "pozisyon_bakim"}
+{"text": "Askıyı düzgün tak.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Askı beni sıkıyor.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Kaldırırken korkuyorum.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Kaldırırken iki kişi olun.", "category": "pozisyon_bakim"}
+{"text": "Yavaş indir.", "category": "pozisyon_bakim"}
+{"text": "Ayaklarım yere değsin.", "category": "pozisyon_bakim"}
+{"text": "Ayaklarım boşta kaldı.", "category": "pozisyon_bakim"}
+{"text": "Koltukta öne kaydım.", "category": "pozisyon_bakim"}
+{"text": "Koltuğa geri yasla beni.", "category": "pozisyon_bakim"}
+{"text": "Koltuğun arkasını yatırır mısın?", "category": "pozisyon_bakim"}
+{"text": "Uzun süre oturunca yoruluyorum.", "category": "pozisyon_bakim"}
+{"text": "Masaya yanaşmak istiyorum.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Salona geçmek istiyorum.", "category": "pozisyon_bakim"}
+{"text": "Beni mutfağa götürür müsün?", "category": "pozisyon_bakim"}
+{"text": "Odama dönmek istiyorum.", "category": "pozisyon_bakim"}
+{"text": "Televizyonun karşısına geçelim.", "category": "pozisyon_bakim"}
+{"text": "Tekerlekli sandalyenin frenini kontrol eder misin?", "category": "pozisyon_bakim"}
+{"text": "Freni çek.", "category": "pozisyon_bakim"}
+{"text": "Freni bırak.", "category": "pozisyon_bakim"}
+{"text": "Ayaklığı indirir misin?", "category": "pozisyon_bakim"}
+{"text": "Ayaklığı kaldırır mısın?", "category": "pozisyon_bakim"}
+{"text": "Ayaklarımı ayaklığa koyar mısın?", "category": "pozisyon_bakim"}
+{"text": "Sandalyenin minderi kaydı.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Sandalyenin minderini değiştir.", "category": "pozisyon_bakim"}
+{"text": "Kafalığı ayarlar mısın?", "category": "pozisyon_bakim"}
+{"text": "Kafalık çok geride.", "category": "pozisyon_bakim"}
+{"text": "Başım öne düşüyor.", "category": "pozisyon_bakim"}
+{"text": "Boyunluğumu takar mısın?", "category": "pozisyon_bakim"}
+{"text": "Boyunluğumu çıkarır mısın?", "category": "pozisyon_bakim"}
+{"text": "Kemeri takar mısın?", "category": "pozisyon_bakim"}
+{"text": "Kemer çok sıkı.", "category": "pozisyon_bakim"}
+{"text": "Kol dayanağına kolumu koy.", "category": "pozisyon_bakim"}
+{"text": "Sandalyeyi biraz geriye yatır.", "category": "pozisyon_bakim"}
+{"text": "Sandalyenin şarjı bitiyor.", "category": "pozisyon_bakim"}
+{"text": "Sandalyeyi şarja tak.", "category": "pozisyon_bakim"}
+{"text": "Joystick'i elime yaklaştır.", "category": "pozisyon_bakim"}
+{"text": "Yavaş it, sarsılıyorum.", "category": "pozisyon_bakim"}
+{"text": "Kapıdan geçerken dikkat et.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Rampadan yavaş in.", "category": "pozisyon_bakim"}
+{"text": "Elimi göğsümün üstüne koy.", "category": "pozisyon_bakim"}
+{"text": "Elimi yanıma indirir misin?", "category": "pozisyon_bakim"}
+{"text": "Kolumu yastığın üstüne koyar mısın?", "category": "pozisyon_bakim"}
+{"text": "Elimi avucuma kıvrık bırakma.", "category": "pozisyon_bakim"}
+{"text": "Parmaklarımı açar mısın?", "category": "pozisyon_bakim"}
+{"text": "El ateli takar mısın?", "category": "pozisyon_bakim"}
+{"text": "El atelini çıkarır mısın?", "category": "pozisyon_bakim"}
+{"text": "Ayak atelini takar mısın?", "category": "pozisyon_bakim"}
+{"text": "Ayak ateli sürtüyor.", "category": "pozisyon_bakim"}
+{"text": "Ayaklarımı yukarı kaldırır mısın?", "category": "pozisyon_bakim"}
+{"text": "Bacak bacak üstüne atmak istiyorum.", "category": "pozisyon_bakim"}
+{"text": "Bacaklarım birbirine değiyor.", "category": "pozisyon_bakim"}
+{"text": "Ayağım yatağın ucuna değiyor.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Ayağım battaniyenin altında sıkıştı.", "category": "pozisyon_bakim"}
+{"text": "Başımı biraz öne eğer misin?", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Başım geriye düştü.", "category": "pozisyon_bakim"}
+{"text": "Çenemi destekler misin?", "category": "pozisyon_bakim"}
+{"text": "Başımın altındaki havluyu düzelt.", "category": "pozisyon_bakim"}
+{"text": "Battaniyeyi üstüme örter misin?", "category": "pozisyon_bakim", "group": "battaniye"}
+{"text": "Battaniyeyi ayaklarıma kadar indir.", "category": "pozisyon_bakim"}
+{"text": "Battaniye çok ağır.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "İnce bir örtü istiyorum.", "category": "pozisyon_bakim"}
+{"text": "Yorganı değiştirelim.", "category": "pozisyon_bakim"}
+{"text": "Omuzlarım açıkta kaldı.", "category": "pozisyon_bakim"}
+{"text": "Elektrikli battaniyeyi açar mısın?", "category": "pozisyon_bakim"}
+{"text": "Elektrikli battaniyeyi kapatır mısın?", "category": "pozisyon_bakim"}
+{"text": "Hırkamı çıkarır mısın?", "category": "pozisyon_bakim"}
+{"text": "Ceketimi giydirir misin?", "category": "pozisyon_bakim"}
+{"text": "Kalın bir şey giymek istiyorum.", "category": "pozisyon_bakim"}
+{"text": "İnce bir şey giymek istiyorum.", "category": "pozisyon_bakim"}
+{"text": "Atkımı takar mısın?", "category": "pozisyon_bakim"}
+{"text": "Beremi takar mısın?", "category": "pozisyon_bakim"}
+{"text": "Terledim, üstümü aç.", "category": "pozisyon_bakim"}
+{"text": "Pijamamı değiştirir misin?", "category": "pozisyon_bakim", "group": "kiyafet"}
+{"text": "Bugün ne giysem?", "category": "pozisyon_bakim"}
+{"text": "Mavi gömleğimi giymek istiyorum.", "category": "pozisyon_bakim"}
+{"text": "Eşofmanımı giydirir misin?", "category": "pozisyon_bakim"}
+{"text": "Pantolonumu giydirir misin?", "category": "pozisyon_bakim"}
+{"text": "Pantolonum çok dar.", "category": "pozisyon_bakim"}
+{"text": "Düğmelerimi ilikler misin?", "category": "pozisyon_bakim"}
+{"text": "Fermuarı çeker misin?", "category": "pozisyon_bakim"}
+{"text": "Kemerimi gevşetir misin?", "category": "pozisyon_bakim"}
+{"text": "Ayakkabılarımı giydirir misin?", "category": "pozisyon_bakim"}
+{"text": "Ayakkabılarımı çıkarır mısın?", "category": "pozisyon_bakim"}
+{"text": "Ayakkabım vuruyor.", "category": "pozisyon_bakim"}
+{"text": "Terliklerimi ayağıma geçirir misin?", "category": "pozisyon_bakim"}
+{"text": "Kıyafetimin etiketi batıyor.", "category": "pozisyon_bakim"}
+{"text": "Yakam batıyor.", "category": "pozisyon_bakim"}
+{"text": "Kolum kıyafetin içinde sıkıştı.", "category": "pozisyon_bakim"}
+{"text": "Kıyafetimi düzeltir misin?", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Üstüm yukarı sıyrıldı.", "category": "pozisyon_bakim"}
+{"text": "Önlüğü çıkarır mısın?", "category": "pozisyon_bakim"}
+{"text": "Saatimi çıkarır mısın?", "category": "pozisyon_bakim"}
+{"text": "Kolyemi takar mısın?", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Küpelerimi takar mısın?", "category": "pozisyon_bakim"}
+{"text": "Gözlüğümü yanıma koy.", "category": "pozisyon_bakim"}
+{"text": "Gözlüğüm buğulandı.", "category": "pozisyon_bakim"}
+{"text": "Gözlüğüm burnumdan kaydı.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Okuma gözlüğümü verir misin?", "category": "pozisyon_bakim"}
+{"text": "Gözlüğümün vidası gevşemiş.", "category": "pozisyon_bakim"}
+{"text": "İşitme cihazımı takar mısın?", "category": "pozisyon_bakim"}
+{"text": "İşitme cihazımı çıkarır mısın?", "category": "pozisyon_bakim"}
+{"text": "İşitme cihazının pili bitti.", "category": "pozisyon_bakim"}
+{"text": "Gözümü kapatmakta zorlanıyorum.", "category": "pozisyon_bakim"}
+{"text": "Göz bandımı takar mısın?", "category": "pozisyon_bakim"}
+{"text": "Göz merhemimi sürer misin?", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Sırtımı ovar mısın?", "category": "pozisyon_bakim"}
+{"text": "Kollarımı ovar mısın?", "category": "pozisyon_bakim"}
+{"text": "Ayak bileklerimi ovar mısın?", "category": "pozisyon_bakim"}
+{"text": "Ayaklarımı ılık suya sokar mısın?", "category": "pozisyon_bakim"}
+{"text": "Koltuk altlarımı siler misin?", "category": "pozisyon_bakim"}
+{"text": "Boynumu siler misin?", "category": "pozisyon_bakim"}
+{"text": "Ayak parmaklarımın arasını kurula.", "category": "pozisyon_bakim"}
+{"text": "Topuklarımı kontrol eder misin?", "category": "pozisyon_bakim"}
+{"text": "Sırtımı kontrol eder misin, kızarıklık var mı?", "category": "pozisyon_bakim"}
+{"text": "Ağzımı nemlendirir misin?", "category": "pozisyon_bakim"}
+{"text": "Ağzımı bir pamukla temizler misin?", "category": "pozisyon_bakim"}
+{"text": "Dişlerimi diş ipiyle temizler misin?", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Saçımı arkaya atar mısın?", "category": "pozisyon_bakim"}
+{"text": "Saçıma toka takar mısın?", "category": "pozisyon_bakim"}
+{"text": "Sakalımı düzeltir misin?", "category": "pozisyon_bakim"}
+{"text": "Burnumun kıllarını alır mısın?", "category": "pozisyon_bakim"}
+{"text": "Kulağımın arkasını sil.", "category": "pozisyon_bakim"}
+{"text": "Tırnaklarıma törpü vurur musun?", "category": "pozisyon_bakim"}
+{"text": "Ekranı tam karşıma koy.", "category": "pozisyon_bakim"}
+{"text": "Ekran çok aşağıda.", "category": "pozisyon_bakim"}
+{"text": "Ekran çok yukarıda.", "category": "pozisyon_bakim"}
+{"text": "Ekranı biraz sola çevir.", "category": "pozisyon_bakim"}
+{"text": "Ekranı biraz sağa çevir.", "category": "pozisyon_bakim"}
+{"text": "Ekran yansıyor, göremiyorum.", "category": "pozisyon_bakim"}
+{"text": "Ekranın parlaklığını azalt.", "category": "pozisyon_bakim"}
+{"text": "Ekranın parlaklığını artır.", "category": "pozisyon_bakim"}
+{"text": "Kamera yüzümü tam görmüyor.", "category": "pozisyon_bakim"}
+{"text": "Kamerayı biraz yukarı kaldır.", "category": "pozisyon_bakim"}
+{"text": "Kameranın önünde bir şey var.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Işık kameraya vuruyor.", "category": "pozisyon_bakim"}
+{"text": "İmleç gözümü takip etmiyor.", "category": "pozisyon_bakim"}
+{"text": "İmleç kayıyor.", "category": "pozisyon_bakim"}
+{"text": "Seçimler çok hızlı oluyor.", "category": "pozisyon_bakim"}
+{"text": "Seçimler çok yavaş oluyor.", "category": "pozisyon_bakim"}
+{"text": "Bekleme süresini uzatır mısın?", "category": "pozisyon_bakim"}
+{"text": "Bekleme süresini kısaltır mısın?", "category": "pozisyon_bakim"}
+{"text": "Harfler çok küçük.", "category": "pozisyon_bakim"}
+{"text": "Cihazı kapatır mısın, gözlerim yoruldu.", "category": "pozisyon_bakim"}
+{"text": "Cihazı açar mısın, bir şey söyleyeceğim.", "category": "pozisyon_bakim"}
+{"text": "Tablet standı yamuldu.", "category": "pozisyon_bakim"}
+{"text": "Tableti biraz uzaklaştır.", "category": "pozisyon_bakim"}
+{"text": "Bana zil verir misin, gerekirse çalarım.", "category": "pozisyon_bakim"}
+{"text": "Göz takibi çalışmıyor.", "category": "pozisyon_bakim"}
+{"text": "Harf tahtasıyla konuşalım.", "category": "pozisyon_bakim"}
+{"text": "Evet için göz kırpacağım.", "category": "pozisyon_bakim"}
+{"text": "Hayır için gözlerimi yukarı kaldıracağım.", "category": "pozisyon_bakim"}
+{"text": "Sandalyeyi yanıma çek.", "category": "pozisyon_bakim"}
+{"text": "Masayı yatağın üstüne getir.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Masayı kaldırır mısın?", "category": "pozisyon_bakim"}
+{"text": "Çöp kutusunu yanıma koy.", "category": "pozisyon_bakim"}
+{"text": "Yatağın yanındaki dolabı aç.", "category": "pozisyon_bakim"}
+{"text": "Yatağın yanını boşalt.", "category": "pozisyon_bakim"}
+{"text": "Odadaki halıyı kaldıralım, tekerlek takılıyor.", "category": "pozisyon_bakim"}
+{"text": "Lambayı yatağın yanına al.", "category": "pozisyon_bakim"}
+{"text": "Kapıyı kilitleme.", "category": "pozisyon_bakim"}
+{"text": "Beni pencereye doğru çevirir misin?", "category": "pozisyon_bakim"}
