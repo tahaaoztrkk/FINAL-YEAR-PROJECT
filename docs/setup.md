@@ -84,8 +84,14 @@ cümleleri aynı kümeye düşer. Emin olmadığınız bir cümleyi
 `"note": "çıkarılacak"` ile işaretleyin; gözden geçirince silin ya da notu
 kaldırıp tutun.
 
-Şu an 6 kategoride 299 taslak cümle var. Hedef ~3.000: yeni cümleleri bu
-dosyaya ekleyip PR açın, böylece her ekleme gözden geçirilir. Doğal olmayan
+`"context"` alanı, karşı tarafın o cümleden hemen önce söylediği cümledir
+(`"Su ister misin?"`). Doğrulama ve test kümesinin bütün cümlelerinde, eğitim
+kümesinin bir kısmında vardır. Simülasyon bağlamlı ve bağlamsız koşulu aynı
+cümlelerde ölçer; eğitim çiftlerinde bağlamlı cümle hem bağlamlı hem bağlamsız
+yer alır. Bağlam hedef cümleyi içermemelidir.
+
+Derlem 6 kategoride ~2.900 cümle. Yeni cümleleri bu dosyaya ekleyip PR açın,
+böylece her ekleme gözden geçirilir. Doğal olmayan
 Türkçe cümleler sonuçları sessizce bozar; emin olmadığınız cümleyi eklemeyin.
 
 Derlemi işlemek için:
