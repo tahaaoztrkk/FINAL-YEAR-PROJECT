@@ -267,7 +267,10 @@ def main() -> None:
 
     cases = load_cases(corpus, limit=args.limit)
     services = {
-        name: ExpansionService(build_provider(name, settings, corpus_path=train))
+        name: ExpansionService(
+            build_provider(name, settings, corpus_path=train),
+            max_refills=settings.expander_max_refills,
+        )
         for name in args.providers
     }
 

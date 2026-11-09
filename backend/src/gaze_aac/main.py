@@ -35,7 +35,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     setup_logging(settings.debug)
 
     provider = build_provider(settings.expander_provider, settings)
-    app.state.expansion = ExpansionService(provider)
+    app.state.expansion = ExpansionService(provider, max_refills=settings.expander_max_refills)
 
     logger.info(
         "Hazır | bakış kaynağı=%s | genişletici=%s | dwell=%d ms",

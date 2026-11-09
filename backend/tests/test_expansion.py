@@ -79,6 +79,81 @@ class TestExpansionService:
         assert result.latency_ms >= 0.0
 
 
+class _ScriptedProvider:
+    """Her denemede önceden yazılmış adayları veren sahte sağlayıcı."""
+
+    name = "scripted"
+
+    def __init__(self, *rounds: list[str]) -> None:
+        self.rounds = rounds
+        self.attempts: list[int] = []
+
+    async def expand(self, request: ExpansionRequest) -> list[Candidate]:
+        self.attempts.append(request.attempt)
+        texts = self.rounds[request.attempt] if request.attempt < len(self.rounds) else []
+        return [Candidate(text=t, score=-float(i)) for i, t in enumerate(texts)]
+
+
+class TestRefill:
+    """Geri kontrolden sonra 5'ten az aday kalınca ek istek gider."""
+
+    async def test_refills_until_top_k_valid(self) -> None:
+        provider = _ScriptedProvider(
+            ["Su istiyorum.", "Su içmek istiyorum.", "Sıcak içecek.", "Çay istiyorum."],
+            ["Sabun istiyorum.", "Su istiyorum.", "Sus işte."],
+        )
+        service = ExpansionService(provider)
+        result = await service.expand(ExpansionRequest(abbreviation="s i", scheme="S1", top_k=4))
+
+        assert provider.attempts == [0, 1]
+        # Önceki denemenin geçerli adayları önde, tekrar eden aday tek kez.
+        assert [c.text for c in result.candidates] == [
+            "Su istiyorum.",
+            "Sıcak içecek.",
+            "Sabun istiyorum.",
+            "Sus işte.",
+        ]
+        assert all(c.valid for c in result.candidates)
+
+    async def test_no_refill_when_enough_valid(self) -> None:
+        provider = _ScriptedProvider(["Su istiyorum.", "Sıcak içecek."], ["Sus işte."])
+        service = ExpansionService(provider)
+        await service.expand(ExpansionRequest(abbreviation="s i", scheme="S1", top_k=2))
+        assert provider.attempts == [0]
+
+    async def test_refills_are_capped(self) -> None:
+        provider = _ScriptedProvider(["Su istiyorum.", "Çay istiyorum."], [], ["Sus işte."])
+        service = ExpansionService(provider, max_refills=1)
+        result = await service.expand(ExpansionRequest(abbreviation="s i", scheme="S1", top_k=3))
+
+        assert provider.attempts == [0, 1]
+        # Geçersiz aday kayıt için listede kalır ama geçerlilerin arkasında.
+        assert [(c.text, c.valid) for c in result.candidates] == [
+            ("Su istiyorum.", True),
+            ("Çay istiyorum.", False),
+        ]
+
+    async def test_zero_refills_keeps_old_behaviour(self) -> None:
+        provider = _ScriptedProvider(["Çay istiyorum."], ["Su istiyorum."])
+        service = ExpansionService(provider, max_refills=0)
+        await service.expand(ExpansionRequest(abbreviation="s i", scheme="S1"))
+        assert provider.attempts == [0]
+
+    def test_negative_refills_rejected(self) -> None:
+        with pytest.raises(ValueError):
+            ExpansionService(MockProvider(), max_refills=-1)
+
+    async def test_ngram_refill_gives_the_next_candidates(self) -> None:
+        provider = NGramProvider()
+        provider.fit(["Su istiyorum", "Su içiyorum", "Sabun istiyorum", "Sıcak içecek"])
+        first = await provider.expand(ExpansionRequest(abbreviation="s i", top_k=2))
+        second = await provider.expand(ExpansionRequest(abbreviation="s i", top_k=2, attempt=1))
+
+        assert len(first) == 2
+        assert second
+        assert not {c.text for c in first} & {c.text for c in second}
+
+
 class TestNGramProvider:
     async def test_produces_candidates_after_fitting(self) -> None:
         provider = NGramProvider()
@@ -383,6 +458,18 @@ class TestLlamaCppProvider:
         assert all(body["prompt"] == build_prompt("s i", scheme="S1") for body in seen)
         assert {body["temperature"] for body in seen} == {0.0, 0.7}
         assert all(body["stop"] == ["\n"] for body in seen)
+
+    async def test_refill_samples_with_new_seeds(self) -> None:
+        """Aynı tohum aynı cümleyi verir; ek istek yeni tohumlarla örneklenmeli."""
+        seen: list[dict[str, object]] = []
+        replies = ["Su istiyorum.", "Su içiyorum.", "Sabun istiyorum.", "Sıcak içecek."]
+        provider = LlamaCppProvider(transport=self._server(replies, seen))
+        await provider.expand(ExpansionRequest(abbreviation="s i", top_k=2))
+        refill = await provider.expand(ExpansionRequest(abbreviation="s i", top_k=2, attempt=1))
+
+        assert [c.text for c in refill] == ["Sabun istiyorum.", "Sıcak içecek."]
+        assert sorted(int(str(body["seed"])) for body in seen) == [0, 1, 2, 3]
+        assert {body["temperature"] for body in seen[2:]} == {0.7}
 
     async def test_duplicates_and_blank_lines_are_dropped(self) -> None:
         seen: list[dict[str, object]] = []

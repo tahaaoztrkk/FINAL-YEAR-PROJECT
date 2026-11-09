@@ -122,6 +122,8 @@ kaydedilmez.
 **Adaylar geri kontrolden geçer.** Sunucu, üretilen her cümlenin kısaltmasını
 yeniden hesaplar ve girdiyle karşılaştırır. Eşleşmeyenler `valid: false`
 işaretlenir; arayüz bunları göstermez ama değerlendirme için kayıtta kalırlar.
+Geçerli aday `top_k`'dan azsa sunucu yanıt vermeden önce modelden ek aday
+ister; bu yüzden bazı `candidates` yanıtları normalden geç gelebilir.
 
 ## Örnek oturum
 

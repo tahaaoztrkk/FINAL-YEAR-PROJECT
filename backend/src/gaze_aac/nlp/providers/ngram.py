@@ -114,9 +114,12 @@ class NGramProvider:
         finished = [(words, score + self._log_prob(words[-1], "</s>")) for words, score in beam]
         finished.sort(key=lambda item: -item[1])
 
+        # Ek istekte (``attempt`` > 0) sıradaki adaylar verilir: model
+        # belirlenimcidir, aynı dilimi tekrar vermek ek isteği boşa harcar.
+        start = request.attempt * request.top_k
         return [
             Candidate(text=self._render(words), score=float(score))
-            for words, score in finished[: request.top_k]
+            for words, score in finished[start : start + request.top_k]
         ]
 
     def _render(self, words: list[str]) -> str:

@@ -98,7 +98,10 @@ ağırlıklar üstünde ölçmek daha temiz bir sonuç verir.
 **Geri kontrol adımı.** Model Türkçede kolayca "yakın ama yanlış" cümle
 üretir ("su istiyorum" yerine "su içmek istiyorum"). Üretilen cümlenin
 kısaltmasını yeniden hesaplayıp karşılaştırmak, birkaç satırla doğruluğu
-belirgin artırır.
+belirgin artırır. Eleme sonrası `top_k`'dan az geçerli aday kalırsa servis
+sağlayıcıdan bir kez daha aday ister (`EXPANDER_MAX_REFILLS`, varsayılan 1);
+örnekleyen sağlayıcılar yeni tohum kullanır, belirlenimci olanlar sıradaki
+adayları verir. Ek isteğin süresi ölçülen gecikmeye dahildir.
 
 **Sunucuda oturum durumu.** Kalibrasyon modeli bir scikit-learn nesnesidir,
 tarayıcıya taşınamaz. Bu, çok süreçli dağıtımı zorlaştırır — ama bu projenin

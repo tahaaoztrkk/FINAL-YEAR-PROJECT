@@ -57,6 +57,12 @@ class Settings(BaseSettings):
     # Genişletici
     expander_provider: ExpanderProvider = "mock"
     expander_top_k: int = Field(default=5, ge=1, le=10)
+    expander_max_refills: int = Field(
+        default=1,
+        ge=0,
+        le=3,
+        description="Geri kontrolden sonra top_k'dan az geçerli aday kalırsa en fazla kaç ek istek",
+    )
     expander_timeout_s: float = 2.0
 
     hf_model_id: str = "ytu-ce-cosmos/Turkish-Gemma-9b-v0.1"

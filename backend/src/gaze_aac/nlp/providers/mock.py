@@ -87,4 +87,6 @@ class MockProvider:
                 # erken öneri olarak işe yarar.
                 prefix.append(Candidate(text=sentence, score=0.5))
 
-        return (exact + prefix)[: request.top_k]
+        # Ek istekte sıradaki adaylar verilir (bkz. ``NGramProvider``).
+        start = request.attempt * request.top_k
+        return (exact + prefix)[start : start + request.top_k]
