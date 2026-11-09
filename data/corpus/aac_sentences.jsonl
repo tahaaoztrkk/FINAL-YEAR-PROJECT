@@ -41,7 +41,7 @@
 {"text": "Sesi biraz kısar mısın?", "category": "temel_ihtiyac", "group": "ses_kismak"}
 {"text": "Sesi biraz açar mısın?", "category": "temel_ihtiyac", "split": "val"}
 {"text": "Biraz müzik dinlemek istiyorum.", "category": "temel_ihtiyac", "split": "val"}
-{"text": "Telefonumu verir misin?", "category": "temel_ihtiyac"}
+{"text": "Telefonumu verir misin?", "category": "temel_ihtiyac", "group": "tel_ver"}
 {"text": "Kitabımı getirir misin?", "category": "temel_ihtiyac"}
 {"text": "Gazete okumak istiyorum.", "category": "temel_ihtiyac"}
 {"text": "Dışarı çıkmak istiyorum.", "category": "temel_ihtiyac", "group": "disari_cikmak", "split": "test"}
@@ -86,7 +86,7 @@
 {"text": "Ağrı kesici alabilir miyim?", "category": "agri_saglik"}
 {"text": "Ağrım çok şiddetli.", "category": "agri_saglik", "group": "agri_var"}
 {"text": "Bugün ağrım yok.", "category": "agri_saglik"}
-{"text": "Doktor ne dedi?", "category": "agri_saglik"}
+{"text": "Doktor ne dedi?", "category": "agri_saglik", "group": "doktor_ne_dedi"}
 {"text": "Tahlil sonuçları çıktı mı?", "category": "agri_saglik"}
 {"text": "Yarın hastaneye gitmek istemiyorum.", "category": "agri_saglik"}
 {"text": "Fizik tedaviye gitmek istemiyorum.", "category": "agri_saglik"}
@@ -148,25 +148,25 @@
 {"text": "Bahçeye çıkmak istiyorum.", "category": "pozisyon_bakim", "group": "disari_cikmak", "split": "test"}
 {"text": "Bugün kendimi iyi hissediyorum.", "category": "duygu", "split": "test"}
 {"text": "Çok yorgunum.", "category": "duygu", "split": "val"}
-{"text": "Seni özledim.", "category": "duygu"}
+{"text": "Seni özledim.", "category": "duygu", "group": "ozlem"}
 {"text": "Canım sıkılıyor.", "category": "duygu", "group": "sikilmak"}
 {"text": "Mutluyum.", "category": "duygu", "group": "mutluluk"}
-{"text": "Üzgünüm.", "category": "duygu"}
-{"text": "Korkuyorum.", "category": "duygu"}
+{"text": "Üzgünüm.", "category": "duygu", "group": "uzgun"}
+{"text": "Korkuyorum.", "category": "duygu", "group": "korku"}
 {"text": "Endişeliyim.", "category": "duygu"}
 {"text": "Biraz yalnız kalmak istiyorum.", "category": "duygu", "group": "yalniz_kalmak"}
 {"text": "Yalnız kalmak istemiyorum.", "category": "duygu"}
 {"text": "Yanımda kalır mısın?", "category": "duygu", "split": "test"}
-{"text": "Bana kızgın mısın?", "category": "duygu"}
+{"text": "Bana kızgın mısın?", "category": "duygu", "group": "kizgin", "split": "test"}
 {"text": "Sana kızgın değilim.", "category": "duygu"}
 {"text": "Kendimi çaresiz hissediyorum.", "category": "duygu"}
 {"text": "Bugün moralim bozuk.", "category": "duygu", "split": "val"}
 {"text": "Bugün moralim çok iyi.", "category": "duygu", "group": "mutluluk"}
-{"text": "Seni seviyorum.", "category": "duygu"}
+{"text": "Seni seviyorum.", "category": "duygu", "group": "sevgi"}
 {"text": "Seninle gurur duyuyorum.", "category": "duygu"}
 {"text": "Beni anladığın için teşekkürler.", "category": "duygu"}
 {"text": "Beni dinlediğin için sağ ol.", "category": "duygu"}
-{"text": "Sinirlendim.", "category": "duygu"}
+{"text": "Sinirlendim.", "category": "duygu", "group": "sinir"}
 {"text": "Sabırsızlanıyorum.", "category": "duygu"}
 {"text": "Heyecanlıyım.", "category": "duygu"}
 {"text": "Çok sevindim.", "category": "duygu", "group": "mutluluk"}
@@ -179,8 +179,8 @@
 {"text": "Kendimi güvende hissetmiyorum.", "category": "duygu"}
 {"text": "Ağlamak istiyorum.", "category": "duygu"}
 {"text": "Gülmek iyi geldi.", "category": "duygu"}
-{"text": "Bana sarılır mısın?", "category": "duygu"}
-{"text": "Elimi tutar mısın?", "category": "duygu"}
+{"text": "Bana sarılır mısın?", "category": "duygu", "group": "sarilmak"}
+{"text": "Elimi tutar mısın?", "category": "duygu", "group": "el_tutmak"}
 {"text": "Benimle biraz konuşur musun?", "category": "duygu"}
 {"text": "Konuşmak istemiyorum.", "category": "duygu"}
 {"text": "Bugün kimseyi görmek istemiyorum.", "category": "duygu", "group": "yalniz_kalmak"}
@@ -201,15 +201,15 @@
 {"text": "Bugün kim gelecek?", "category": "soru", "group": "ziyaretci"}
 {"text": "Hava nasıl?", "category": "soru"}
 {"text": "Yarın ne yapacağız?", "category": "soru"}
-{"text": "Bugün günlerden ne?", "category": "soru"}
-{"text": "Bugün ayın kaçı?", "category": "soru"}
+{"text": "Bugün günlerden ne?", "category": "soru", "group": "gun"}
+{"text": "Bugün ayın kaçı?", "category": "soru", "group": "tarih"}
 {"text": "Neredesin?", "category": "soru"}
 {"text": "Nereye gidiyorsun?", "category": "soru", "split": "test"}
 {"text": "Ne zaman döneceksin?", "category": "soru", "group": "ne_zaman_gelmek", "split": "val"}
 {"text": "Ne yiyeceğiz?", "category": "soru", "split": "val"}
 {"text": "Akşam yemeğinde ne var?", "category": "soru"}
 {"text": "Annem aradı mı?", "category": "soru"}
-{"text": "Kimse aradı mı?", "category": "soru"}
+{"text": "Kimse aradı mı?", "category": "soru", "group": "arayan"}
 {"text": "Mesajım var mı?", "category": "soru"}
 {"text": "Doktor ne zaman gelecek?", "category": "soru"}
 {"text": "Hemşire nerede?", "category": "soru"}
@@ -222,7 +222,7 @@
 {"text": "Haberlerde ne var?", "category": "soru", "split": "test"}
 {"text": "Bunu nereden aldın?", "category": "soru"}
 {"text": "Ne düşünüyorsun?", "category": "soru"}
-{"text": "Nasılsın?", "category": "soru"}
+{"text": "Nasılsın?", "category": "soru", "group": "nasilsin"}
 {"text": "İşler nasıl gidiyor?", "category": "soru"}
 {"text": "Okul nasıl geçti?", "category": "soru"}
 {"text": "Çocuklar nasıl?", "category": "soru"}
@@ -246,13 +246,13 @@
 {"text": "Bahçedeki çiçekler açtı mı?", "category": "soru"}
 {"text": "Bayramda kim gelecek?", "category": "soru", "split": "test"}
 {"text": "Beni yarın da ziyaret eder misin?", "category": "soru"}
-{"text": "Teşekkür ederim.", "category": "sosyal"}
+{"text": "Teşekkür ederim.", "category": "sosyal", "group": "tesekkur"}
 {"text": "Evet, lütfen.", "category": "sosyal"}
-{"text": "Hayır, istemiyorum.", "category": "sosyal"}
+{"text": "Hayır, istemiyorum.", "category": "sosyal", "group": "ret"}
 {"text": "Günaydın.", "category": "sosyal"}
 {"text": "İyi geceler.", "category": "sosyal"}
 {"text": "Merhaba.", "category": "sosyal"}
-{"text": "Hoş geldin.", "category": "sosyal"}
+{"text": "Hoş geldin.", "category": "sosyal", "group": "hos_geldin", "split": "test"}
 {"text": "Güle güle.", "category": "sosyal", "group": "vedalasma"}
 {"text": "Görüşürüz.", "category": "sosyal", "group": "vedalasma"}
 {"text": "Kendine iyi bak.", "category": "sosyal"}
@@ -260,7 +260,7 @@
 {"text": "Özür dilerim.", "category": "sosyal", "group": "ozur"}
 {"text": "Kusura bakma.", "category": "sosyal", "group": "ozur"}
 {"text": "Bir dakika bekler misin?", "category": "sosyal"}
-{"text": "Henüz bitirmedim.", "category": "sosyal"}
+{"text": "Henüz bitirmedim.", "category": "sosyal", "group": "bitirmedim"}
 {"text": "Bitirdim.", "category": "sosyal"}
 {"text": "Evet.", "category": "sosyal", "group": "onay"}
 {"text": "Hayır.", "category": "sosyal", "group": "ret"}
@@ -278,24 +278,24 @@
 {"text": "Doğum günün kutlu olsun.", "category": "sosyal"}
 {"text": "Bayramın kutlu olsun.", "category": "sosyal"}
 {"text": "Afiyet olsun.", "category": "sosyal"}
-{"text": "Eline sağlık.", "category": "sosyal"}
+{"text": "Eline sağlık.", "category": "sosyal", "group": "eline_saglik"}
 {"text": "Çok güzel olmuş.", "category": "sosyal", "split": "test"}
 {"text": "Harika bir haber.", "category": "sosyal"}
 {"text": "Tebrik ederim.", "category": "sosyal"}
 {"text": "Başın sağ olsun.", "category": "sosyal"}
-{"text": "Selamımı söyle.", "category": "sosyal"}
+{"text": "Selamımı söyle.", "category": "sosyal", "group": "selam"}
 {"text": "Annemle konuşmak istiyorum.", "category": "sosyal"}
 {"text": "Kızımı aramak istiyorum.", "category": "sosyal"}
 {"text": "Oğluma mesaj yazmak istiyorum.", "category": "sosyal"}
 {"text": "Telefonu hoparlöre alır mısın?", "category": "sosyal", "split": "val"}
-{"text": "Görüntülü arayalım.", "category": "sosyal"}
-{"text": "Şaka yapıyorum.", "category": "sosyal"}
+{"text": "Görüntülü arayalım.", "category": "sosyal", "group": "goruntulu"}
+{"text": "Şaka yapıyorum.", "category": "sosyal", "group": "saka"}
 {"text": "Çok komiksin.", "category": "sosyal", "split": "test"}
-{"text": "Bunu sonra konuşalım.", "category": "sosyal"}
+{"text": "Bunu sonra konuşalım.", "category": "sosyal", "group": "sonra_konusalim"}
 {"text": "Benim adıma teşekkür eder misin?", "category": "sosyal"}
 {"text": "Beni ziyarete geldiğin için teşekkürler.", "category": "sosyal"}
-{"text": "Yine gel.", "category": "sosyal"}
-{"text": "Seni görmek çok güzel.", "category": "sosyal"}
+{"text": "Yine gel.", "category": "sosyal", "group": "yine_gel", "split": "test"}
+{"text": "Seni görmek çok güzel.", "category": "sosyal", "group": "gormek"}
 {"text": "Su içmek istiyorum.", "category": "temel_ihtiyac", "group": "su_istemek"}
 {"text": "Bir bardak su verir misin?", "category": "temel_ihtiyac", "group": "su_istemek"}
 {"text": "Boğazım kurudu, su verir misin?", "category": "temel_ihtiyac", "group": "su_istemek"}
@@ -531,7 +531,7 @@
 {"text": "Bu programı sevmiyorum.", "category": "temel_ihtiyac"}
 {"text": "Yarışmayı açar mısın?", "category": "temel_ihtiyac"}
 {"text": "Televizyon izlemekten sıkıldım.", "category": "temel_ihtiyac"}
-{"text": "Telefonu kulağıma tutar mısın?", "category": "temel_ihtiyac"}
+{"text": "Telefonu kulağıma tutar mısın?", "category": "temel_ihtiyac", "group": "tel_kulak"}
 {"text": "Tableti verir misin?", "category": "temel_ihtiyac"}
 {"text": "Tableti bana doğru çevir.", "category": "temel_ihtiyac"}
 {"text": "İnternet çekmiyor.", "category": "temel_ihtiyac"}
@@ -1148,3 +1148,634 @@
 {"text": "Lambayı yatağın yanına al.", "category": "pozisyon_bakim"}
 {"text": "Kapıyı kilitleme.", "category": "pozisyon_bakim"}
 {"text": "Beni pencereye doğru çevirir misin?", "category": "pozisyon_bakim"}
+{"text": "Çok mutlu oldum.", "category": "duygu", "group": "mutluluk"}
+{"text": "Bu habere çok sevindim.", "category": "duygu"}
+{"text": "Seni görünce çok sevindim.", "category": "duygu"}
+{"text": "İçim açıldı.", "category": "duygu"}
+{"text": "Güneşi görünce keyiflendim.", "category": "duygu"}
+{"text": "Gülmekten karnım ağrıdı.", "category": "duygu"}
+{"text": "Bu şarkı beni mutlu ediyor.", "category": "duygu"}
+{"text": "Torunumu görünce dünyalar benim oldu.", "category": "duygu"}
+{"text": "Bugün güzel bir gün geçirdim.", "category": "duygu"}
+{"text": "Bu anı hiç unutmayacağım.", "category": "duygu"}
+{"text": "Hayat güzel.", "category": "duygu"}
+{"text": "Küçük şeylerle mutlu oluyorum.", "category": "duygu"}
+{"text": "Yanımda olman bana iyi geliyor.", "category": "duygu"}
+{"text": "Seninle konuşmak bana iyi geldi.", "category": "duygu"}
+{"text": "Sesini duymak bana iyi geldi.", "category": "duygu", "split": "test"}
+{"text": "Çok eğlendim.", "category": "duygu"}
+{"text": "Bugün kahkahalarla güldüm.", "category": "duygu"}
+{"text": "İçimde bir huzur var.", "category": "duygu"}
+{"text": "Kendimi hafiflemiş hissediyorum.", "category": "duygu"}
+{"text": "Bunu duyunca gözlerim doldu, sevinçten.", "category": "duygu", "split": "test"}
+{"text": "Sürpriz beni çok mutlu etti.", "category": "duygu"}
+{"text": "Çok üzgünüm.", "category": "duygu", "group": "uzgun"}
+{"text": "İçim sıkışıyor.", "category": "duygu"}
+{"text": "Ağlamaklıyım.", "category": "duygu"}
+{"text": "Gözlerim doldu.", "category": "duygu"}
+{"text": "Biraz ağladım.", "category": "duygu"}
+{"text": "Ağlarsam kızma.", "category": "duygu"}
+{"text": "Bu hastalık beni çok üzüyor.", "category": "duygu"}
+{"text": "Eskisi gibi olamayacağım için üzülüyorum.", "category": "duygu", "split": "test"}
+{"text": "Yürüyemediğim için üzülüyorum.", "category": "duygu", "split": "test"}
+{"text": "Konuşamamak çok zor.", "category": "duygu"}
+{"text": "Her şey çok zor geliyor.", "category": "duygu"}
+{"text": "Bugün zor bir gün.", "category": "duygu"}
+{"text": "Kalbim kırıldı.", "category": "duygu"}
+{"text": "Bu söz beni kırdı.", "category": "duygu"}
+{"text": "Kırgınım.", "category": "duygu", "split": "test"}
+{"text": "Kimse beni anlamıyor.", "category": "duygu", "split": "test"}
+{"text": "Eski günleri özlüyorum.", "category": "duygu"}
+{"text": "Eskiden her şeyi kendim yapardım.", "category": "duygu"}
+{"text": "Bazen çok yalnız hissediyorum.", "category": "duygu", "split": "test"}
+{"text": "Hiçbir şey yapmak istemiyorum.", "category": "duygu", "split": "test"}
+{"text": "Kendimi boşlukta hissediyorum.", "category": "duygu"}
+{"text": "Hayattan bir şey beklemiyorum.", "category": "duygu"}
+{"text": "Gelecekten korkuyorum.", "category": "duygu"}
+{"text": "Çok korktum.", "category": "duygu", "group": "korku"}
+{"text": "Karanlıktan korkuyorum.", "category": "duygu"}
+{"text": "Yalnız kalmaktan korkuyorum.", "category": "duygu"}
+{"text": "Hastaneden korkuyorum.", "category": "duygu"}
+{"text": "Ameliyattan korkuyorum.", "category": "duygu"}
+{"text": "Boğulmaktan korkuyorum.", "category": "duygu"}
+{"text": "Ölmekten korkuyorum.", "category": "duygu"}
+{"text": "Size yük olmaktan korkuyorum.", "category": "duygu"}
+{"text": "Düşmekten korkuyorum.", "category": "duygu"}
+{"text": "Kafam çok karışık.", "category": "duygu", "split": "test"}
+{"text": "Aklım hep sende.", "category": "duygu"}
+{"text": "Çocuklar için endişeleniyorum.", "category": "duygu"}
+{"text": "Sonuçlardan endişe ediyorum.", "category": "duygu"}
+{"text": "İçimde kötü bir his var.", "category": "duygu"}
+{"text": "Bir şey olacak diye korkuyorum.", "category": "duygu"}
+{"text": "Kalbim küt küt atıyor.", "category": "duygu"}
+{"text": "Panik oldum.", "category": "duygu"}
+{"text": "Sakinleşmem lazım.", "category": "duygu"}
+{"text": "Beni sakinleştir.", "category": "duygu"}
+{"text": "Derin bir nefes alayım.", "category": "duygu"}
+{"text": "Bana bir şey olmayacak, değil mi?", "category": "duygu"}
+{"text": "Korkma deme, korkuyorum.", "category": "duygu"}
+{"text": "Gerginim.", "category": "duygu"}
+{"text": "Bugün çok gerildim.", "category": "duygu"}
+{"text": "Gece aklıma kötü şeyler geliyor.", "category": "duygu"}
+{"text": "Çok sinirliyim.", "category": "duygu", "group": "sinir"}
+{"text": "Beni sinirlendirme.", "category": "duygu"}
+{"text": "Buna çok kızdım.", "category": "duygu"}
+{"text": "Bu beni deli ediyor.", "category": "duygu"}
+{"text": "Artık sabrım kalmadı.", "category": "duygu"}
+{"text": "Bekletilmekten bıktım.", "category": "duygu"}
+{"text": "Hep aynı şeyleri soruyorlar.", "category": "duygu"}
+{"text": "Beni dinlemiyorsunuz.", "category": "duygu"}
+{"text": "Benim yerime karar vermeyin.", "category": "duygu"}
+{"text": "Benimle çocukmuşum gibi konuşma.", "category": "duygu"}
+{"text": "Bana acıyarak bakmayın.", "category": "duygu"}
+{"text": "Haksızlık bu.", "category": "duygu"}
+{"text": "Bağırmak istiyorum.", "category": "duygu"}
+{"text": "Kızdım ama geçer.", "category": "duygu"}
+{"text": "Sinirim geçti.", "category": "duygu"}
+{"text": "Öfkemi sana yansıttım, kusura bakma.", "category": "duygu"}
+{"text": "Her şeye sinirleniyorum.", "category": "duygu"}
+{"text": "Kendime kızıyorum.", "category": "duygu", "split": "test"}
+{"text": "Seni çok özledim.", "category": "duygu", "group": "ozlem"}
+{"text": "Kardeşimi özledim.", "category": "duygu"}
+{"text": "Torunlarımı özledim.", "category": "duygu"}
+{"text": "Eski evimi özledim.", "category": "duygu"}
+{"text": "Köyümü özledim.", "category": "duygu"}
+{"text": "İşimi özledim.", "category": "duygu"}
+{"text": "Arkadaşlarımla oturmayı özledim.", "category": "duygu"}
+{"text": "Denizi özledim.", "category": "duygu"}
+{"text": "Yürümeyi özledim.", "category": "duygu"}
+{"text": "Kendi sesimi özledim.", "category": "duygu"}
+{"text": "Sesini duymayı özledim.", "category": "duygu", "split": "test"}
+{"text": "Beni unutmayın.", "category": "duygu"}
+{"text": "Kimse aramıyor.", "category": "duygu", "group": "aranmamak"}
+{"text": "Arayan soran yok.", "category": "duygu", "group": "aranmamak"}
+{"text": "Gidince çok yalnız kalıyorum.", "category": "duygu"}
+{"text": "Sen gidince ev boşalıyor.", "category": "duygu"}
+{"text": "Ziyaretçi gelmeyince canım sıkılıyor.", "category": "duygu"}
+{"text": "Seni çok seviyorum.", "category": "duygu", "group": "sevgi"}
+{"text": "Sizi çok seviyorum.", "category": "duygu", "group": "sevgi"}
+{"text": "İyi ki varsın.", "category": "duygu"}
+{"text": "İyi ki yanımdasın.", "category": "duygu"}
+{"text": "Sen olmasan ne yapardım?", "category": "duygu"}
+{"text": "Benim için çok değerlisin.", "category": "duygu"}
+{"text": "Sana çok güveniyorum.", "category": "duygu"}
+{"text": "Bana sarıl.", "category": "duygu", "group": "sarilmak"}
+{"text": "Elini bırakma.", "category": "duygu", "group": "el_tutmak"}
+{"text": "Saçımı okşar mısın?", "category": "duygu", "split": "test"}
+{"text": "Alnımdan öp.", "category": "duygu"}
+{"text": "Yanağını öpmek istiyorum.", "category": "duygu"}
+{"text": "Başını omzuma koy.", "category": "duygu"}
+{"text": "Çocuklarımla gurur duyuyorum.", "category": "duygu"}
+{"text": "Beni hiç yalnız bırakmadın.", "category": "duygu"}
+{"text": "Bana çok emek veriyorsun.", "category": "duygu"}
+{"text": "Senin için endişeleniyorum.", "category": "duygu"}
+{"text": "Kendini yorma.", "category": "duygu"}
+{"text": "Sen de dinlenmelisin.", "category": "duygu"}
+{"text": "Senin de mutlu olmanı istiyorum.", "category": "duygu"}
+{"text": "Her şey için teşekkür ederim.", "category": "duygu"}
+{"text": "Bana yaptıklarını unutmayacağım.", "category": "duygu"}
+{"text": "Sana borçluyum.", "category": "duygu"}
+{"text": "Sabrın için teşekkür ederim.", "category": "duygu"}
+{"text": "İyi ki benimle ilgileniyorsun.", "category": "duygu"}
+{"text": "Sizin gibi bir ailem olduğu için şanslıyım.", "category": "duygu"}
+{"text": "Bana bakan herkese minnettarım.", "category": "duygu"}
+{"text": "Hemşirelere teşekkür etmek istiyorum.", "category": "duygu"}
+{"text": "Emeğine sağlık.", "category": "duygu"}
+{"text": "Utanıyorum.", "category": "duygu"}
+{"text": "Bu durumdan utanıyorum.", "category": "duygu"}
+{"text": "Size zahmet veriyorum.", "category": "duygu"}
+{"text": "Sana bu kadar iş çıkardığım için üzgünüm.", "category": "duygu"}
+{"text": "Kendimi suçlu hissediyorum.", "category": "duygu", "split": "test"}
+{"text": "Benim yüzümden yoruldun.", "category": "duygu"}
+{"text": "Benim yüzümden hayatın değişti.", "category": "duygu"}
+{"text": "Başkalarının beni böyle görmesini istemiyorum.", "category": "duygu"}
+{"text": "Misafir gelince utanıyorum.", "category": "duygu"}
+{"text": "Kimse bana yardım ederken bakmasın.", "category": "duygu"}
+{"text": "Umudumu kaybetmiyorum.", "category": "duygu"}
+{"text": "Her şey yoluna girecek.", "category": "duygu"}
+{"text": "Güçlü olmaya çalışıyorum.", "category": "duygu"}
+{"text": "Pes etmeyeceğim.", "category": "duygu"}
+{"text": "Bugünü yaşamak istiyorum.", "category": "duygu"}
+{"text": "Elimden geleni yapıyorum.", "category": "duygu"}
+{"text": "Bunu birlikte atlatacağız.", "category": "duygu"}
+{"text": "Durumumu kabullendim.", "category": "duygu"}
+{"text": "Her gün biraz daha alışıyorum.", "category": "duygu"}
+{"text": "Allah'a şükür.", "category": "duygu", "split": "test"}
+{"text": "İnşallah daha iyi olur.", "category": "duygu"}
+{"text": "Dua et benim için.", "category": "duygu", "group": "dua"}
+{"text": "Benim için dua edin.", "category": "duygu", "group": "dua"}
+{"text": "Hayallerim var.", "category": "duygu"}
+{"text": "Torunumun düğününü görmek istiyorum.", "category": "duygu"}
+{"text": "Bir gün yine denize gitmek istiyorum.", "category": "duygu"}
+{"text": "Yeni şeyler öğrenmek istiyorum.", "category": "duygu"}
+{"text": "Cihazla konuşabildiğim için mutluyum.", "category": "duygu", "split": "test"}
+{"text": "Konuşabilmek bana özgürlük veriyor.", "category": "duygu"}
+{"text": "Bıktım artık.", "category": "duygu", "group": "bikkinlik"}
+{"text": "Her şeyden bıktım.", "category": "duygu", "group": "bikkinlik"}
+{"text": "Hastalıktan bıktım.", "category": "duygu"}
+{"text": "Yatmaktan sıkıldım.", "category": "duygu"}
+{"text": "Hep aynı odadayım.", "category": "duygu"}
+{"text": "Günler hiç geçmiyor.", "category": "duygu", "group": "zaman"}
+{"text": "Zaman geçmek bilmiyor.", "category": "duygu", "group": "zaman"}
+{"text": "Konuşacak gücüm yok.", "category": "duygu"}
+{"text": "Kimseyle uğraşamam.", "category": "duygu"}
+{"text": "Sadece sessizlik istiyorum.", "category": "duygu"}
+{"text": "Bunu ben seçmek istiyorum.", "category": "duygu"}
+{"text": "Kendi kararlarımı vermek istiyorum.", "category": "duygu"}
+{"text": "Fikrimi sorun.", "category": "duygu"}
+{"text": "Bana da danışın.", "category": "duygu"}
+{"text": "Benim de söyleyeceklerim var.", "category": "duygu"}
+{"text": "Beni bekleyin, yazıyorum.", "category": "duygu", "group": "yaziyorum"}
+{"text": "Lütfen sözümü kesme.", "category": "duygu"}
+{"text": "Cümlemi bitirmeme izin ver.", "category": "duygu", "group": "bitirmedim"}
+{"text": "Benim adıma cevap verme.", "category": "duygu"}
+{"text": "Bana gerçeği söyle.", "category": "duygu"}
+{"text": "Benden bir şey saklamayın.", "category": "duygu", "split": "test"}
+{"text": "Bunu konuşmaya hazır değilim.", "category": "duygu"}
+{"text": "Bu konuyu açmak istemiyorum.", "category": "duygu"}
+{"text": "Bunu düşünmek bile istemiyorum.", "category": "duygu"}
+{"text": "Bunu sonra konuşalım mı?", "category": "duygu", "group": "sonra_konusalim"}
+{"text": "Benimle dalga geçme.", "category": "duygu"}
+{"text": "Bana şaka yapma, ciddiyim.", "category": "duygu", "split": "test"}
+{"text": "Şaka yaptım, kızma.", "category": "duygu", "group": "saka"}
+{"text": "Gençliğimi hatırladım.", "category": "duygu"}
+{"text": "Bu fotoğraf bana eski günleri hatırlattı.", "category": "duygu", "split": "test"}
+{"text": "Annemin yemeklerini hatırladım.", "category": "duygu"}
+{"text": "Babamın sesini hatırladım.", "category": "duygu"}
+{"text": "Düğünümüzü hatırlıyor musun?", "category": "duygu"}
+{"text": "Çocukluğumu düşündüm.", "category": "duygu", "split": "test"}
+{"text": "O günler çok güzeldi.", "category": "duygu"}
+{"text": "Keşke zamanı geri alabilsem.", "category": "duygu"}
+{"text": "O yaz hiç unutulmaz.", "category": "duygu"}
+{"text": "Askerlik anılarımı anlatayım.", "category": "duygu", "split": "test"}
+{"text": "Bu şarkı bana gençliğimi hatırlatıyor.", "category": "duygu"}
+{"text": "Bugün hangi gün?", "category": "soru", "group": "gun"}
+{"text": "Bugün tarih ne?", "category": "soru", "group": "tarih"}
+{"text": "Hangi aydayız?", "category": "soru"}
+{"text": "Saat kaçta uyandım?", "category": "soru"}
+{"text": "Saat kaçta yatacağız?", "category": "soru"}
+{"text": "Ezan saat kaçta?", "category": "soru"}
+{"text": "Akşam olmuş mu?", "category": "soru"}
+{"text": "Ramazan ne zaman başlıyor?", "category": "soru"}
+{"text": "Bayram hangi gün?", "category": "soru", "split": "test"}
+{"text": "Doğum günüm ne zaman?", "category": "soru"}
+{"text": "Annemin doğum günü ne zaman?", "category": "soru"}
+{"text": "Okullar ne zaman açılıyor?", "category": "soru"}
+{"text": "Tatil ne zaman başlıyor?", "category": "soru"}
+{"text": "Saatler ileri mi alındı?", "category": "soru", "split": "test"}
+{"text": "Takvime baktın mı?", "category": "soru"}
+{"text": "Yarın günlerden ne?", "category": "soru"}
+{"text": "Hafta sonu ne yapacağız?", "category": "soru"}
+{"text": "Bu hafta neler var?", "category": "soru"}
+{"text": "Bugün hava güzel mi?", "category": "soru"}
+{"text": "Dışarısı sıcak mı?", "category": "soru"}
+{"text": "Kar yağıyor mu?", "category": "soru"}
+{"text": "Rüzgâr var mı?", "category": "soru"}
+{"text": "Yarın hava nasıl olacak?", "category": "soru"}
+{"text": "Hava bozacak mı?", "category": "soru"}
+{"text": "Güneş açtı mı?", "category": "soru"}
+{"text": "Yollar kaygan mı?", "category": "soru"}
+{"text": "Dışarıda ne sesi bu?", "category": "soru"}
+{"text": "Kapıya kim geldi?", "category": "soru"}
+{"text": "Zil mi çaldı?", "category": "soru"}
+{"text": "Telefon mu çalıyor?", "category": "soru"}
+{"text": "Çocuklar okuldan geldi mi?", "category": "soru"}
+{"text": "Torunum nasıl?", "category": "soru"}
+{"text": "Torunum ne zaman doğacak?", "category": "soru"}
+{"text": "Oğlum işe gitti mi?", "category": "soru"}
+{"text": "Kızım aradı mı?", "category": "soru"}
+{"text": "Annem nasıl?", "category": "soru"}
+{"text": "Babam nasıl?", "category": "soru"}
+{"text": "Kardeşim ne yapıyor?", "category": "soru"}
+{"text": "Eşin nasıl?", "category": "soru"}
+{"text": "Annenin durumu nasıl?", "category": "soru"}
+{"text": "Komşular nasıl?", "category": "soru"}
+{"text": "Teyzem iyileşti mi?", "category": "soru"}
+{"text": "Düğün ne zaman?", "category": "soru"}
+{"text": "Nişana gidecek misiniz?", "category": "soru"}
+{"text": "Kimin bebeği oldu?", "category": "soru"}
+{"text": "Amcamdan haber var mı?", "category": "soru"}
+{"text": "Ailede herkes iyi mi?", "category": "soru"}
+{"text": "Çocuklar kavga etti mi?", "category": "soru"}
+{"text": "Torunum sınavı geçti mi?", "category": "soru"}
+{"text": "Oğlumun işi ne durumda?", "category": "soru"}
+{"text": "Sen yemek yedin mi?", "category": "soru"}
+{"text": "Sen nasılsın bugün?", "category": "soru", "group": "nasilsin"}
+{"text": "Uyuyabildin mi?", "category": "soru"}
+{"text": "Yorgun musun?", "category": "soru"}
+{"text": "Bugün neler yaptın?", "category": "soru"}
+{"text": "İşte günün nasıl geçti?", "category": "soru"}
+{"text": "Neden bu kadar sessizsin?", "category": "soru"}
+{"text": "Hasta mısın?", "category": "soru"}
+{"text": "Neden üzgünsün?", "category": "soru"}
+{"text": "Kızgın mısın?", "category": "soru", "group": "kizgin", "split": "test"}
+{"text": "Bana kırıldın mı?", "category": "soru"}
+{"text": "Benden sıkıldın mı?", "category": "soru"}
+{"text": "Seni üzdüm mü?", "category": "soru"}
+{"text": "Dinlenebildin mi?", "category": "soru", "split": "test"}
+{"text": "Biraz oturmak ister misin?", "category": "soru"}
+{"text": "Bir şey ister misin?", "category": "soru", "split": "test"}
+{"text": "Bugün dışarı çıktın mı?", "category": "soru"}
+{"text": "Akşam nereye gideceksin?", "category": "soru"}
+{"text": "Bu gece burada mı kalacaksın?", "category": "soru"}
+{"text": "Kira ödendi mi?", "category": "soru"}
+{"text": "Elektrik faturası geldi mi?", "category": "soru"}
+{"text": "Maaşım yattı mı?", "category": "soru"}
+{"text": "Bankadan mesaj geldi mi?", "category": "soru"}
+{"text": "Hesapta ne kadar para var?", "category": "soru"}
+{"text": "Market alışverişi yapıldı mı?", "category": "soru"}
+{"text": "Evde ekmek var mı?", "category": "soru"}
+{"text": "Buzdolabında ne var?", "category": "soru"}
+{"text": "Çamaşırlar yıkandı mı?", "category": "soru"}
+{"text": "Bulaşık makinesi bitti mi?", "category": "soru"}
+{"text": "Kombi neden çalışmıyor?", "category": "soru"}
+{"text": "Su kesik mi?", "category": "soru"}
+{"text": "Elektrik mi kesildi?", "category": "soru"}
+{"text": "Tamirci ne zaman gelecek?", "category": "soru"}
+{"text": "Araba muayeneden geçti mi?", "category": "soru"}
+{"text": "Kargo geldi mi?", "category": "soru"}
+{"text": "Postada bir şey var mı?", "category": "soru"}
+{"text": "Kapıyı kilitledin mi?", "category": "soru"}
+{"text": "Ocağı kapattın mı?", "category": "soru", "split": "test"}
+{"text": "Pencereleri kapattın mı?", "category": "soru"}
+{"text": "Anahtarı nereye koydun?", "category": "soru"}
+{"text": "Kedinin maması var mı?", "category": "soru"}
+{"text": "Köpeği gezdirdin mi?", "category": "soru"}
+{"text": "Çiçekleri suladın mı?", "category": "soru"}
+{"text": "İlacımı verdin mi?", "category": "soru"}
+{"text": "Hangi ilacı verdin?", "category": "soru"}
+{"text": "Sonuçlar ne zaman çıkar?", "category": "soru"}
+{"text": "Doktor bir şey söyledi mi?", "category": "soru", "group": "doktor_ne_dedi"}
+{"text": "Bu ilaç neye iyi geliyor?", "category": "soru"}
+{"text": "Neden bu ilacı değiştirdiler?", "category": "soru"}
+{"text": "Tansiyonum normal mi?", "category": "soru"}
+{"text": "Kilom arttı mı?", "category": "soru"}
+{"text": "Yaram nasıl görünüyor?", "category": "soru"}
+{"text": "Sırtımda kızarıklık var mı?", "category": "soru"}
+{"text": "Cihazın ayarları doğru mu?", "category": "soru", "split": "test"}
+{"text": "Oksijen tüpü ne zaman değişecek?", "category": "soru"}
+{"text": "Raporum çıktı mı?", "category": "soru"}
+{"text": "İlaçlar eczanede var mı?", "category": "soru"}
+{"text": "Sigorta ödüyor mu?", "category": "soru"}
+{"text": "Kontrole kim götürecek?", "category": "soru"}
+{"text": "Ambulans ne zaman gelir?", "category": "soru"}
+{"text": "Bunu yapmak acıtır mı?", "category": "soru"}
+{"text": "Bugün ne yapalım?", "category": "soru"}
+{"text": "Akşam ne yapıyoruz?", "category": "soru"}
+{"text": "Yarın dışarı çıkabilir miyiz?", "category": "soru"}
+{"text": "Hafta sonu kim burada?", "category": "soru", "split": "test"}
+{"text": "Bu yaz nereye gideceğiz?", "category": "soru"}
+{"text": "Tatile gidecek misiniz?", "category": "soru"}
+{"text": "Benim için ne planladınız?", "category": "soru"}
+{"text": "Ne karar verdiniz?", "category": "soru"}
+{"text": "Benim fikrimi sordunuz mu?", "category": "soru", "split": "test"}
+{"text": "Ne zaman konuşacağız?", "category": "soru"}
+{"text": "Bunu kim halledecek?", "category": "soru"}
+{"text": "Kimden yardım isteyelim?", "category": "soru"}
+{"text": "Nasıl yapacağız?", "category": "soru"}
+{"text": "Hangisi daha iyi sence?", "category": "soru"}
+{"text": "Sence doğru mu?", "category": "soru"}
+{"text": "Ne yapmamı istersin?", "category": "soru", "split": "test"}
+{"text": "Başka bir yolu var mı?", "category": "soru"}
+{"text": "Bunu neden yapıyoruz?", "category": "soru"}
+{"text": "Buna gerek var mı?", "category": "soru"}
+{"text": "Ne kadar tutar?", "category": "soru"}
+{"text": "Ne izliyorsun?", "category": "soru", "split": "test"}
+{"text": "Ne okuyorsun?", "category": "soru"}
+{"text": "Kiminle konuşuyordun?", "category": "soru"}
+{"text": "Telefonda kim vardı?", "category": "soru", "group": "arayan"}
+{"text": "Kim aradı?", "category": "soru", "group": "arayan"}
+{"text": "Ne dedi?", "category": "soru"}
+{"text": "Bana ne getirdin?", "category": "soru"}
+{"text": "Elindeki ne?", "category": "soru"}
+{"text": "Bu kimin?", "category": "soru"}
+{"text": "Bunu kim yaptı?", "category": "soru"}
+{"text": "Bu ne işe yarıyor?", "category": "soru"}
+{"text": "Bu nasıl çalışıyor?", "category": "soru", "split": "test"}
+{"text": "Bu kaça aldın?", "category": "soru"}
+{"text": "Hangi renk aldın?", "category": "soru"}
+{"text": "Neye gülüyorsun?", "category": "soru"}
+{"text": "Neden fısıldıyorsunuz?", "category": "soru"}
+{"text": "Benden bir şey mi saklıyorsunuz?", "category": "soru"}
+{"text": "Ne konuşuyorsunuz?", "category": "soru"}
+{"text": "Bana anlatır mısın?", "category": "soru"}
+{"text": "Gerçekten mi?", "category": "soru"}
+{"text": "Emin misin?", "category": "soru"}
+{"text": "Şaka mı yapıyorsun?", "category": "soru"}
+{"text": "Bunu nereden duydun?", "category": "soru", "split": "test"}
+{"text": "Kim söyledi?", "category": "soru"}
+{"text": "Neden böyle düşünüyorsun?", "category": "soru"}
+{"text": "Sen ne düşünüyorsun bu konuda?", "category": "soru"}
+{"text": "Bunu hatırlıyor musun?", "category": "soru"}
+{"text": "Onun adı neydi?", "category": "soru"}
+{"text": "Bu film kaç yılında çıktı?", "category": "soru"}
+{"text": "Bu oyuncu kimdi?", "category": "soru"}
+{"text": "Bu dizi kaç bölüm?", "category": "soru"}
+{"text": "Bizim takım kaçıncı sırada?", "category": "soru"}
+{"text": "Seçim ne zaman?", "category": "soru"}
+{"text": "Benzin ne kadar olmuş?", "category": "soru"}
+{"text": "Ekmek kaç lira olmuş?", "category": "soru"}
+{"text": "Dolar ne kadar?", "category": "soru"}
+{"text": "Deprem mi oldu?", "category": "soru"}
+{"text": "Beni anlayabiliyor musun?", "category": "soru"}
+{"text": "Yazdığımı okuyabiliyor musun?", "category": "soru"}
+{"text": "Ekranı görebiliyor musun?", "category": "soru", "split": "test"}
+{"text": "Sesi duyuyor musun?", "category": "soru"}
+{"text": "Cihaz doğru mu yazdı?", "category": "soru"}
+{"text": "Bu kelimeyi nasıl yazarım?", "category": "soru", "split": "test"}
+{"text": "Bana bir cümle önerir misin?", "category": "soru"}
+{"text": "Mesajımı gönderdin mi?", "category": "soru"}
+{"text": "Cevap geldi mi?", "category": "soru"}
+{"text": "Görüntülü arayabilir miyiz?", "category": "soru", "group": "goruntulu"}
+{"text": "İnternet var mı?", "category": "soru"}
+{"text": "Şifre neydi?", "category": "soru"}
+{"text": "Telefonum nerede?", "category": "soru"}
+{"text": "Şarj aleti nerede?", "category": "soru"}
+{"text": "Tableti kim aldı?", "category": "soru"}
+{"text": "Fotoğrafları bana gösterir misin?", "category": "soru"}
+{"text": "Videoyu tekrar açar mısın?", "category": "soru", "split": "test"}
+{"text": "Yeni bir uygulama yükleyebilir misin?", "category": "soru", "split": "test"}
+{"text": "Ne?", "category": "soru"}
+{"text": "Kim?", "category": "soru"}
+{"text": "Nerede?", "category": "soru"}
+{"text": "Neden?", "category": "soru"}
+{"text": "Nasıl?", "category": "soru"}
+{"text": "Hangisi?", "category": "soru"}
+{"text": "Ne zaman?", "category": "soru", "split": "test"}
+{"text": "Kaç tane?", "category": "soru"}
+{"text": "Kimin için?", "category": "soru"}
+{"text": "Ne için?", "category": "soru"}
+{"text": "Peki ya sen?", "category": "soru"}
+{"text": "Olur mu?", "category": "soru", "split": "test"}
+{"text": "Var mı?", "category": "soru"}
+{"text": "Yok mu?", "category": "soru"}
+{"text": "Bitti mi?", "category": "soru"}
+{"text": "Hazır mısın?", "category": "soru"}
+{"text": "Geliyor musun?", "category": "soru"}
+{"text": "Bekler misin?", "category": "soru", "split": "test"}
+{"text": "Anladın mı?", "category": "soru"}
+{"text": "Duydun mu?", "category": "soru"}
+{"text": "İyi günler.", "category": "sosyal"}
+{"text": "Tünaydın.", "category": "sosyal"}
+{"text": "Hayırlı sabahlar.", "category": "sosyal"}
+{"text": "Selamünaleyküm.", "category": "sosyal"}
+{"text": "Aleykümselam.", "category": "sosyal"}
+{"text": "Hoş bulduk.", "category": "sosyal"}
+{"text": "Gel, otur.", "category": "sosyal"}
+{"text": "Buyrun, içeri gelin.", "category": "sosyal"}
+{"text": "Seni bekliyordum.", "category": "sosyal"}
+{"text": "Erken geldin.", "category": "sosyal"}
+{"text": "Gidiyor musun?", "category": "sosyal"}
+{"text": "Şimdiden mi gidiyorsun?", "category": "sosyal"}
+{"text": "Biraz daha otur.", "category": "sosyal"}
+{"text": "Yolun açık olsun.", "category": "sosyal"}
+{"text": "Allah'a emanet ol.", "category": "sosyal"}
+{"text": "Dikkatli git.", "category": "sosyal"}
+{"text": "Varınca haber ver.", "category": "sosyal"}
+{"text": "Eve varınca ara.", "category": "sosyal"}
+{"text": "Yarın görüşürüz.", "category": "sosyal"}
+{"text": "Haftaya görüşürüz.", "category": "sosyal"}
+{"text": "Hoşça kal.", "category": "sosyal", "split": "test"}
+{"text": "Tatlı rüyalar.", "category": "sosyal"}
+{"text": "Rahat uyu.", "category": "sosyal", "split": "test"}
+{"text": "Sabah görüşürüz.", "category": "sosyal"}
+{"text": "Herkese selam söyle.", "category": "sosyal", "group": "selam"}
+{"text": "Annene selam söyle.", "category": "sosyal", "group": "selam"}
+{"text": "Çocukları öp benim için.", "category": "sosyal"}
+{"text": "Peki.", "category": "sosyal", "group": "onay"}
+{"text": "Anlaştık.", "category": "sosyal", "group": "onay"}
+{"text": "Olur, öyle yapalım.", "category": "sosyal", "group": "onay"}
+{"text": "Kesinlikle.", "category": "sosyal"}
+{"text": "Elbette.", "category": "sosyal"}
+{"text": "Tabii ki.", "category": "sosyal"}
+{"text": "Evet, doğru.", "category": "sosyal"}
+{"text": "Haklısın.", "category": "sosyal", "split": "test"}
+{"text": "Sana katılıyorum.", "category": "sosyal"}
+{"text": "Ben de öyle düşünüyorum.", "category": "sosyal"}
+{"text": "İyi fikir.", "category": "sosyal"}
+{"text": "Fark etmez.", "category": "sosyal"}
+{"text": "Sen bilirsin.", "category": "sosyal"}
+{"text": "Nasıl istersen.", "category": "sosyal"}
+{"text": "Bana uyar.", "category": "sosyal"}
+{"text": "Hayır, teşekkürler.", "category": "sosyal", "group": "ret"}
+{"text": "İstemiyorum, sağ ol.", "category": "sosyal", "group": "ret"}
+{"text": "Hiç sanmıyorum.", "category": "sosyal"}
+{"text": "Katılmıyorum.", "category": "sosyal"}
+{"text": "Öyle değil.", "category": "sosyal"}
+{"text": "Yanlış anladın.", "category": "sosyal"}
+{"text": "Bence hayır.", "category": "sosyal"}
+{"text": "Şimdi olmaz.", "category": "sosyal", "split": "test"}
+{"text": "Bugün olmaz.", "category": "sosyal"}
+{"text": "Asla.", "category": "sosyal"}
+{"text": "Bir düşüneyim.", "category": "sosyal"}
+{"text": "Kararsızım.", "category": "sosyal"}
+{"text": "Hem evet hem hayır.", "category": "sosyal"}
+{"text": "Duruma göre.", "category": "sosyal"}
+{"text": "Bakarız.", "category": "sosyal"}
+{"text": "Sonra karar verelim.", "category": "sosyal"}
+{"text": "Hatırlamıyorum.", "category": "sosyal"}
+{"text": "Unuttum.", "category": "sosyal"}
+{"text": "Aklıma gelmiyor.", "category": "sosyal"}
+{"text": "Çok teşekkür ederim.", "category": "sosyal", "group": "tesekkur"}
+{"text": "Çok sağ ol.", "category": "sosyal", "group": "tesekkur"}
+{"text": "Çok naziksin.", "category": "sosyal"}
+{"text": "Zahmet ettin.", "category": "sosyal"}
+{"text": "Hiç zahmet etmeseydin.", "category": "sosyal"}
+{"text": "Ne gerek vardı?", "category": "sosyal"}
+{"text": "Rica etsem yardım eder misin?", "category": "sosyal"}
+{"text": "Lütfen.", "category": "sosyal"}
+{"text": "Lütfen acele et.", "category": "sosyal"}
+{"text": "Lütfen bekle.", "category": "sosyal"}
+{"text": "Lütfen tekrar et.", "category": "sosyal", "group": "anlamamak"}
+{"text": "Lütfen yavaş.", "category": "sosyal", "split": "test"}
+{"text": "Sorun değil.", "category": "sosyal"}
+{"text": "Önemli değil.", "category": "sosyal"}
+{"text": "Dert etme.", "category": "sosyal", "split": "test"}
+{"text": "Boş ver.", "category": "sosyal"}
+{"text": "Olur böyle şeyler.", "category": "sosyal", "split": "test"}
+{"text": "Kusura bakmayın.", "category": "sosyal"}
+{"text": "Affedersin.", "category": "sosyal"}
+{"text": "Pardon, yanlış seçtim.", "category": "sosyal"}
+{"text": "Yanlışlıkla bastım.", "category": "sosyal"}
+{"text": "Onu demek istemedim.", "category": "sosyal"}
+{"text": "Özür dilerim, sinirliydim.", "category": "sosyal"}
+{"text": "Seni kırdıysam özür dilerim.", "category": "sosyal"}
+{"text": "Bağışla beni.", "category": "sosyal"}
+{"text": "Yeni yılın kutlu olsun.", "category": "sosyal"}
+{"text": "Mutlu yıllar.", "category": "sosyal"}
+{"text": "Nice yıllara.", "category": "sosyal"}
+{"text": "İyi bayramlar.", "category": "sosyal"}
+{"text": "Hayırlı ramazanlar.", "category": "sosyal", "split": "test"}
+{"text": "Hayırlı cumalar.", "category": "sosyal"}
+{"text": "Kandiliniz mübarek olsun.", "category": "sosyal"}
+{"text": "Allah kabul etsin.", "category": "sosyal", "split": "test"}
+{"text": "Allah razı olsun.", "category": "sosyal"}
+{"text": "Sağlıkla kullan.", "category": "sosyal"}
+{"text": "Güle güle kullan.", "category": "sosyal"}
+{"text": "Güle güle giy.", "category": "sosyal"}
+{"text": "Hayırlı olsun.", "category": "sosyal"}
+{"text": "Allah mesut etsin.", "category": "sosyal"}
+{"text": "Bir yastıkta kocayın.", "category": "sosyal"}
+{"text": "Allah analı babalı büyütsün.", "category": "sosyal"}
+{"text": "Gözün aydın.", "category": "sosyal"}
+{"text": "Hayırlı uğurlu olsun.", "category": "sosyal"}
+{"text": "Başarılar dilerim.", "category": "sosyal"}
+{"text": "Sınavında başarılar.", "category": "sosyal"}
+{"text": "Bol şans.", "category": "sosyal"}
+{"text": "İyi yolculuklar.", "category": "sosyal"}
+{"text": "İyi tatiller.", "category": "sosyal"}
+{"text": "İyi eğlenceler.", "category": "sosyal"}
+{"text": "Ellerine sağlık.", "category": "sosyal", "group": "eline_saglik"}
+{"text": "Ağzına sağlık.", "category": "sosyal", "split": "test"}
+{"text": "Sağlığına dikkat et.", "category": "sosyal"}
+{"text": "Allah rahmet eylesin.", "category": "sosyal"}
+{"text": "Mekânı cennet olsun.", "category": "sosyal"}
+{"text": "Sabırlar dilerim.", "category": "sosyal"}
+{"text": "Allah beterinden saklasın.", "category": "sosyal"}
+{"text": "Harika.", "category": "sosyal"}
+{"text": "Bu renk sana çok yakışmış.", "category": "sosyal"}
+{"text": "Çok iyi iş çıkardın.", "category": "sosyal"}
+{"text": "Aferin sana.", "category": "sosyal"}
+{"text": "Bravo.", "category": "sosyal"}
+{"text": "Helal olsun.", "category": "sosyal"}
+{"text": "Maşallah.", "category": "sosyal"}
+{"text": "İnanılmaz.", "category": "sosyal"}
+{"text": "Vay be.", "category": "sosyal"}
+{"text": "Hadi ya.", "category": "sosyal"}
+{"text": "Yok artık.", "category": "sosyal"}
+{"text": "Şaşırdım.", "category": "sosyal"}
+{"text": "Buna sevindim.", "category": "sosyal", "split": "test"}
+{"text": "Çok yazık.", "category": "sosyal"}
+{"text": "Ne kötü.", "category": "sosyal"}
+{"text": "Eyvah.", "category": "sosyal"}
+{"text": "Olamaz.", "category": "sosyal"}
+{"text": "Neyse ki.", "category": "sosyal"}
+{"text": "Oh, şükür.", "category": "sosyal"}
+{"text": "Çok tatlısın.", "category": "sosyal"}
+{"text": "Çok akıllısın.", "category": "sosyal"}
+{"text": "Seni dinlemek güzel.", "category": "sosyal"}
+{"text": "Ne kadar büyümüşsün.", "category": "sosyal"}
+{"text": "Hiç değişmemişsin.", "category": "sosyal"}
+{"text": "Bir saniye.", "category": "sosyal"}
+{"text": "Bekle, yazıyorum.", "category": "sosyal", "group": "yaziyorum"}
+{"text": "Daha bitirmedim.", "category": "sosyal", "group": "bitirmedim"}
+{"text": "Sözümü bitireyim.", "category": "sosyal", "group": "bitirmedim"}
+{"text": "Bir şey söyleyeceğim.", "category": "sosyal"}
+{"text": "Sana bir şey anlatacağım.", "category": "sosyal"}
+{"text": "Dinliyorum.", "category": "sosyal", "split": "test"}
+{"text": "Devam et.", "category": "sosyal"}
+{"text": "Sonra?", "category": "sosyal"}
+{"text": "Anlat bakalım.", "category": "sosyal"}
+{"text": "Konuyu değiştirelim.", "category": "sosyal", "group": "konu"}
+{"text": "Başka bir şey konuşalım.", "category": "sosyal", "group": "konu"}
+{"text": "Bunu konuşmayalım.", "category": "sosyal"}
+{"text": "Tamam, anladım.", "category": "sosyal"}
+{"text": "Şimdi anladım.", "category": "sosyal"}
+{"text": "Pek anlamadım.", "category": "sosyal", "group": "anlamamak"}
+{"text": "Tekrar anlatır mısın?", "category": "sosyal", "group": "anlamamak"}
+{"text": "Ne dediğini duyamadım.", "category": "sosyal", "group": "anlamamak"}
+{"text": "Daha yüksek sesle konuş.", "category": "sosyal"}
+{"text": "Yavaş konuş, anlayamıyorum.", "category": "sosyal"}
+{"text": "Bana bakarak konuş.", "category": "sosyal"}
+{"text": "Evet ya da hayır diye sor.", "category": "sosyal"}
+{"text": "Sorunu tek tek sor.", "category": "sosyal"}
+{"text": "Bir dakika düşüneyim.", "category": "sosyal"}
+{"text": "Doğru tahmin ettin.", "category": "sosyal"}
+{"text": "Hayır, o değil.", "category": "sosyal"}
+{"text": "Ona yakın.", "category": "sosyal"}
+{"text": "Neredeyse.", "category": "sosyal"}
+{"text": "İlk harfi bu.", "category": "sosyal"}
+{"text": "Baştan başlayalım.", "category": "sosyal"}
+{"text": "Telefonu bana ver.", "category": "sosyal", "group": "tel_ver"}
+{"text": "Telefonu kulağıma tut.", "category": "sosyal", "group": "tel_kulak"}
+{"text": "Görüntülü arama yapalım.", "category": "sosyal", "group": "goruntulu"}
+{"text": "Ona mesaj atar mısın?", "category": "sosyal"}
+{"text": "Ona benim adıma yaz.", "category": "sosyal"}
+{"text": "Ona iyi olduğumu söyle.", "category": "sosyal"}
+{"text": "Ona merak etmemesini söyle.", "category": "sosyal", "split": "test"}
+{"text": "Akşam arasın.", "category": "sosyal"}
+{"text": "Sonra arayacağımı söyle.", "category": "sosyal"}
+{"text": "Şimdi konuşamam.", "category": "sosyal"}
+{"text": "Kim arıyor?", "category": "sosyal"}
+{"text": "Açma, sonra ararım.", "category": "sosyal"}
+{"text": "Telefonu kapat.", "category": "sosyal"}
+{"text": "Telefonu sessize al.", "category": "sosyal", "split": "test"}
+{"text": "Grupta ne yazıyorlar?", "category": "sosyal"}
+{"text": "Gelen fotoğrafları göster.", "category": "sosyal"}
+{"text": "Bu fotoğrafı ona gönder.", "category": "sosyal"}
+{"text": "Doğum günü mesajı yazalım.", "category": "sosyal"}
+{"text": "Bayram mesajı göndermek istiyorum.", "category": "sosyal"}
+{"text": "Herkese teşekkür mesajı yazalım.", "category": "sosyal"}
+{"text": "Misafire çay ikram et.", "category": "sosyal"}
+{"text": "Misafire bir şey ikram ettin mi?", "category": "sosyal"}
+{"text": "Onlara oturacak yer göster.", "category": "sosyal"}
+{"text": "Ceketini alayım.", "category": "sosyal"}
+{"text": "Hoş geldiniz, buyurun.", "category": "sosyal", "group": "hos_geldin", "split": "test"}
+{"text": "Rahatınıza bakın.", "category": "sosyal"}
+{"text": "Sizi gördüğüme çok sevindim.", "category": "sosyal", "group": "gormek"}
+{"text": "Uzun zamandır görüşemedik.", "category": "sosyal"}
+{"text": "Ne zamandır gelmiyordun.", "category": "sosyal"}
+{"text": "Gelmene çok sevindim.", "category": "sosyal", "group": "gormek"}
+{"text": "Bugün kimseyi kabul etmek istemiyorum.", "category": "sosyal", "group": "yalniz_kalmak"}
+{"text": "Ziyaret kısa olsun, yoruldum.", "category": "sosyal"}
+{"text": "Biraz sonra dinlenmem lazım.", "category": "sosyal"}
+{"text": "Yine bekleriz.", "category": "sosyal", "group": "yine_gel", "split": "test"}
+{"text": "Bir dahakine çocukları da getir.", "category": "sosyal", "split": "test"}
+{"text": "Çocuklar gürültü yapabilir, sorun değil.", "category": "sosyal"}
+{"text": "Bu fıkrayı daha önce duymuştum.", "category": "sosyal"}
+{"text": "Bir fıkra anlat.", "category": "sosyal"}
+{"text": "Benimle uğraşma.", "category": "sosyal"}
+{"text": "Kandırdım seni.", "category": "sosyal", "group": "saka"}
+{"text": "Ciddi değilim.", "category": "sosyal", "group": "saka"}
+{"text": "Yine başladın.", "category": "sosyal"}
+{"text": "Sen hiç değişmezsin.", "category": "sosyal"}
+{"text": "Bilmiş gibi konuşma.", "category": "sosyal"}
+{"text": "Yaşlandık artık.", "category": "sosyal", "split": "test"}
+{"text": "Eski kafalıyım ben.", "category": "sosyal"}
+{"text": "Senin yaşında ben de öyleydim.", "category": "sosyal", "split": "test"}
+{"text": "Gençlik işte.", "category": "sosyal"}
+{"text": "Ne yapalım, hayat bu.", "category": "sosyal"}
+{"text": "Olan oldu.", "category": "sosyal"}
+{"text": "Geçmişe mazi derler.", "category": "sosyal"}
+{"text": "Bu da geçer.", "category": "sosyal", "split": "test"}
+{"text": "Hayırlısı.", "category": "sosyal"}
