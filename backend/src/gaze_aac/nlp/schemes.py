@@ -21,6 +21,9 @@ from __future__ import annotations
 import re
 import unicodedata
 from abc import ABC, abstractmethod
+from collections.abc import Sequence
+
+from .morphology import ZemberekTagger
 
 # Türkçe'ye özgü küçültme: I -> ı, İ -> i. str.lower() bunu yanlış yapar.
 _UPPER_TR = "ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZQWX"
@@ -64,9 +67,19 @@ class AbbreviationScheme(ABC):
     def abbreviate_word(self, word: str) -> str:
         """Tek kelimenin kısaltması."""
 
+    def abbreviate_words(self, words: Sequence[str]) -> list[str]:
+        """Kelime listesinin kısaltmaları.
+
+        Varsayılan olarak her kelime tek başına kısaltılır. Kısaltması cümle
+        bağlamına bağlı olan şemalar (S4) bunu ezer; cümle düzeyindeki bütün
+        işlemler buradan geçer, böylece eğitim çifti ile geri kontrol aynı
+        kısaltmayı görür.
+        """
+        return [self.abbreviate_word(w) for w in words]
+
     def abbreviate(self, sentence: str) -> str:
         """Cümlenin tamamının kısaltması, kelimeler boşlukla ayrılmış."""
-        return " ".join(self.abbreviate_word(w) for w in tokenize(sentence))
+        return " ".join(self.abbreviate_words(tokenize(sentence)))
 
     def abbreviate_revealing(self, sentence: str, revealed: int) -> str:
         """İlk ``revealed`` kelimesi açık yazılmış kısaltma: ``"su i"``.
@@ -76,9 +89,10 @@ class AbbreviationScheme(ABC):
         yerden alır, yoksa model hiç görmediği bir girdiyle ölçülür.
         """
         words = tokenize(sentence)
+        abbreviations = self.abbreviate_words(words)
         return " ".join(
-            word if index < revealed else self.abbreviate_word(word)
-            for index, word in enumerate(words)
+            word if index < revealed else abbreviation
+            for index, (word, abbreviation) in enumerate(zip(words, abbreviations, strict=True))
         )
 
     def matches(self, sentence: str, abbreviation: str) -> bool:
@@ -99,9 +113,10 @@ class AbbreviationScheme(ABC):
         pieces = normalize_abbreviation(abbreviation).split()
         if len(words) != len(pieces):
             return False
+        abbreviations = self.abbreviate_words(words)
         return all(
-            piece in (word, normalize_abbreviation(self.abbreviate_word(word)))
-            for word, piece in zip(words, pieces, strict=True)
+            piece in (word, normalize_abbreviation(abbreviation))
+            for word, abbreviation, piece in zip(words, abbreviations, pieces, strict=True)
         )
 
     def keystrokes(self, sentence: str) -> int:
@@ -196,9 +211,10 @@ SUFFIX_TAGS: dict[str, str] = {
     "ACC": "belirtme (-i)",
 }
 
-# Kural tabanlı yaklaşık çözümleme. Morfolojik olarak doğru analiz için
-# Zemberek kullanılır (morphology.py); bu tablo Zemberek yokken de şemanın
-# çalışmasını ve testlerin hızlı kalmasını sağlar.
+# Kural tabanlı yaklaşık çözümleme. Asıl çözümleme Zemberek ile yapılır
+# (morphology.py); bu tablo yalnızca Zemberek'in tanımadığı kelimelerde
+# (özel ad, yazım hatası) kullanılır. Yalnızca kelime sonuna baktığı için
+# tek başına güvenilmez: "masa" sonundaki "a" yüzünden DAT alır.
 _SUFFIX_RULES: tuple[tuple[str, str], ...] = (
     ("miyorum", "NEG+PROG+1S"),
     ("miyor", "NEG+PROG"),
@@ -277,19 +293,35 @@ class SuffixTaggedScheme(AbbreviationScheme):
     def __init__(self, tagger: object | None = None) -> None:
         """
         Args:
-            tagger: ``tag(word) -> str`` arayüzü olan çözümleyici. Verilmezse
-                kural tabanlı tahmin kullanılır.
+            tagger: ``tag(word) -> str`` arayüzü olan çözümleyici; varsa
+                ``tag_sentence(words) -> list[str]`` ile cümle bağlamı da
+                kullanılır. Verilmezse kural tabanlı tahmin kullanılır.
         """
         self._tagger = tagger
+
+    @property
+    def tagger(self) -> object | None:
+        return self._tagger
 
     def _tag(self, word: str) -> str:
         if self._tagger is not None and hasattr(self._tagger, "tag"):
             return str(self._tagger.tag(word))
         return guess_suffix_tag(word)
 
-    def abbreviate_word(self, word: str) -> str:
-        tag = self._tag(word)
+    def _tags(self, words: Sequence[str]) -> list[str]:
+        if self._tagger is not None and hasattr(self._tagger, "tag_sentence"):
+            return [str(tag) for tag in self._tagger.tag_sentence(words)]
+        return [self._tag(word) for word in words]
+
+    @staticmethod
+    def _join(word: str, tag: str) -> str:
         return f"{word[:1]}-{tag}" if tag else word[:1]
+
+    def abbreviate_word(self, word: str) -> str:
+        return self._join(word, self._tag(word))
+
+    def abbreviate_words(self, words: Sequence[str]) -> list[str]:
+        return [self._join(w, t) for w, t in zip(words, self._tags(words), strict=True)]
 
     def keystrokes(self, sentence: str) -> int:
         """Etiket tek seçimle girilir, harf harf değil.
@@ -298,9 +330,8 @@ class SuffixTaggedScheme(AbbreviationScheme):
         kelime başına 1 harf + (varsa) etiket sayısı kadar seçimdir.
         """
         total = 0
-        for word in tokenize(sentence):
+        for tag in self._tags(tokenize(sentence)):
             total += 1
-            tag = self._tag(word)
             if tag:
                 total += len(tag.split("+"))
         return total
@@ -328,6 +359,18 @@ def get_scheme(scheme_id: str) -> AbbreviationScheme:
         raise KeyError(f"Bilinmeyen şema: {scheme_id!r}. Tanımlı olanlar: {known}") from exc
 
 
+def warm_up_schemes() -> None:
+    """Çözümleyici kullanan şemaları (S4 -> Zemberek) şimdi yükler.
+
+    Zemberek'in yüklenmesi birkaç saniye sürer; ilk S4 isteğine kalırsa o
+    isteğin gecikmesine eklenir.
+    """
+    for scheme in _REGISTRY.values():
+        warm_up = getattr(getattr(scheme, "tagger", None), "warm_up", None)
+        if callable(warm_up):
+            warm_up()
+
+
 def all_schemes() -> list[AbbreviationScheme]:
     """Kayıtlı tüm şemalar, kimlik sırasına göre."""
     return [_REGISTRY[k] for k in sorted(_REGISTRY)]
@@ -336,4 +379,4 @@ def all_schemes() -> list[AbbreviationScheme]:
 register(InitialScheme())
 register(TwoLetterScheme())
 register(FirstLastScheme())
-register(SuffixTaggedScheme())
+register(SuffixTaggedScheme(ZemberekTagger(SUFFIX_TAGS, fallback=guess_suffix_tag)))

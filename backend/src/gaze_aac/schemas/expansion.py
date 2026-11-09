@@ -29,6 +29,14 @@ class ExpansionRequest(BaseModel):
     scheme: str = "S1"
     context: str | None = None
     top_k: int = Field(default=5, ge=1, le=10)
+    attempt: int = Field(
+        default=0,
+        ge=0,
+        description=(
+            "Aynı kısaltma için kaçıncı ek istek. 0'dan büyükse sağlayıcı önceki "
+            "isteklerde vermediği adayları üretmeye çalışır."
+        ),
+    )
 
 
 class ExpansionResult(BaseModel):

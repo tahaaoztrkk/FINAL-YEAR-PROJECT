@@ -13,6 +13,8 @@ Aday başına bir istek gider ve istekler aynı anda yollanır. Sunucu
 ``--parallel`` ile birden fazla yuvayla başlatılırsa bunları tek toplu işte
 üretir; beş adayın süresi tek adayın süresine yakın olur. İlk aday açgözlü
 (sıcaklık 0) üretilir, gerisi örneklemeyle; tekrar eden adaylar atılır.
+Ek isteklerde (``attempt`` > 0) açgözlü aday yeniden üretilmez, bütün adaylar
+yeni tohumlarla örneklenir.
 """
 
 from __future__ import annotations
@@ -47,14 +49,19 @@ class LlamaCppProvider:
         self._transport = transport
         self.model_id: str | None = None
 
-    def payload(self, prompt: str, index: int) -> dict[str, Any]:
-        """Tek aday için istek gövdesi. ``index`` 0 ise açgözlü üretim."""
+    def payload(self, prompt: str, index: int, attempt: int = 0, top_k: int = 1) -> dict[str, Any]:
+        """Tek aday için istek gövdesi.
+
+        İlk istekte ``index`` 0 açgözlü üretimdir. Tohum her istek ve aday
+        için farklıdır: aynı tohum aynı cümleyi verir, ek istek boşa gider.
+        """
+        greedy = attempt == 0 and index == 0
         return {
             "prompt": prompt,
             "n_predict": self.max_tokens,
-            "temperature": 0.0 if index == 0 else self.temperature,
+            "temperature": 0.0 if greedy else self.temperature,
             "top_p": 0.9,
-            "seed": index,
+            "seed": attempt * top_k + index,
             # Aday tek satırdır.
             "stop": ["\n"],
             # Aynı istemin önbelleğe alınmış hali sonraki adaylarda kullanılır.
@@ -68,7 +75,10 @@ class LlamaCppProvider:
         async with httpx.AsyncClient(timeout=self.timeout_s, transport=self._transport) as client:
             responses = await asyncio.gather(
                 *(
-                    client.post(f"{self.base_url}/completion", json=self.payload(prompt, index))
+                    client.post(
+                        f"{self.base_url}/completion",
+                        json=self.payload(prompt, index, request.attempt, request.top_k),
+                    )
                     for index in range(request.top_k)
                 )
             )

@@ -157,13 +157,19 @@ class HuggingFaceProvider:
         """
         self._load()
 
-    def _generate(self, prompt: str, top_k: int) -> list[Candidate]:
+    def _generate(self, prompt: str, top_k: int, attempt: int = 0) -> list[Candidate]:
         import torch
 
         model, tokenizer = self._load()
         inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
 
-        settings = generation_kwargs(self.decoding, top_k, self.max_new_tokens, self.num_beams)
+        decoding = self.decoding
+        if attempt > 0:
+            # Ek istek: ışın araması aynı istemde aynı adayları verir. Yeni
+            # aday için örnekleme gerekir; tohum her denemede farklıdır.
+            decoding = "sample"
+            torch.manual_seed(attempt)
+        settings = generation_kwargs(decoding, top_k, self.max_new_tokens, self.num_beams)
         with torch.no_grad():
             output = model.generate(
                 **inputs,
@@ -196,4 +202,4 @@ class HuggingFaceProvider:
     async def expand(self, request: ExpansionRequest) -> list[Candidate]:
         prompt = build_prompt(request.abbreviation, scheme=request.scheme, context=request.context)
         # Üretim CPU/GPU'yu bloklar; olay döngüsünü serbest bırak.
-        return await asyncio.to_thread(self._generate, prompt, request.top_k)
+        return await asyncio.to_thread(self._generate, prompt, request.top_k, request.attempt)

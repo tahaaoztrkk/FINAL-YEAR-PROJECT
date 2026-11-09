@@ -23,6 +23,7 @@ from .api.routes import health as health_routes
 from .api.ws import router as ws_router
 from .config import get_settings
 from .nlp.expander import ExpansionService, build_provider
+from .nlp.schemes import warm_up_schemes
 from .utils.logging import get_logger, setup_logging
 
 logger = get_logger(__name__)
@@ -35,7 +36,9 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     setup_logging(settings.debug)
 
     provider = build_provider(settings.expander_provider, settings)
-    app.state.expansion = ExpansionService(provider)
+    # S4 geri kontrolü Zemberek'i kullanır; yüklemesi ilk isteğe kalmasın.
+    warm_up_schemes()
+    app.state.expansion = ExpansionService(provider, max_refills=settings.expander_max_refills)
 
     logger.info(
         "Hazır | bakış kaynağı=%s | genişletici=%s | dwell=%d ms",

@@ -27,6 +27,7 @@ class NGramProvider:
     def __init__(self, corpus_path: Path | None = None, beam_width: int = 20) -> None:
         self.beam_width = beam_width
         self._unigram: Counter[str] = Counter()
+        self._tokenized: list[list[str]] = []
         self._bigram: dict[str, Counter[str]] = defaultdict(Counter)
         self._by_abbrev: dict[str, dict[str, list[str]]] = {}
         # Kelime dizisi derlemdeki bir cümleyle birebir aynıysa, noktalaması
@@ -37,8 +38,9 @@ class NGramProvider:
 
     def fit(self, sentences: list[str]) -> None:
         """Derlemden sayımları çıkarır."""
-        for sentence in sentences:
-            words = tokenize(sentence)
+        tokenized = [tokenize(sentence) for sentence in sentences]
+        self._tokenized.extend(tokenized)
+        for sentence, words in zip(sentences, tokenized, strict=True):
             self._originals.setdefault(tuple(words), sentence.strip())
             previous = "<s>"
             for word in words:
@@ -47,15 +49,20 @@ class NGramProvider:
                 previous = word
             self._bigram[previous]["</s>"] += 1
 
-        # Her şema için "bu kısaltma parçasına uyan kelimeler" dizini.
+        # Her şema için "bu kısaltma parçasına uyan kelimeler" dizini. Kelimeler
+        # cümle içinde kısaltılır: S4'te etiket bağlama bağlıdır ("yüzü" isim
+        # de olabilir), geri kontrol de adayı cümle içinde etiketler.
         self._by_abbrev = {}
         for scheme in ("S1", "S2", "S3", "S4"):
             handler = get_scheme(scheme)
             index: dict[str, list[str]] = defaultdict(list)
-            for word in self._unigram:
-                # Anahtar normalleştirilir: S4 etiketleri büyük harfle üretilir,
-                # sorgu parçaları ise küçültülmüş gelir.
-                index[normalize_abbreviation(handler.abbreviate_word(word))].append(word)
+            for words in self._tokenized:
+                for word, abbreviation in zip(words, handler.abbreviate_words(words), strict=True):
+                    # Anahtar normalleştirilir: S4 etiketleri büyük harfle
+                    # üretilir, sorgu parçaları ise küçültülmüş gelir.
+                    key = normalize_abbreviation(abbreviation)
+                    if word not in index[key]:
+                        index[key].append(word)
             self._by_abbrev[scheme] = dict(index)
 
     def fit_from_file(self, corpus_path: Path) -> None:
@@ -114,9 +121,12 @@ class NGramProvider:
         finished = [(words, score + self._log_prob(words[-1], "</s>")) for words, score in beam]
         finished.sort(key=lambda item: -item[1])
 
+        # Ek istekte (``attempt`` > 0) sıradaki adaylar verilir: model
+        # belirlenimcidir, aynı dilimi tekrar vermek ek isteği boşa harcar.
+        start = request.attempt * request.top_k
         return [
             Candidate(text=self._render(words), score=float(score))
-            for words, score in finished[: request.top_k]
+            for words, score in finished[start : start + request.top_k]
         ]
 
     def _render(self, words: list[str]) -> str:

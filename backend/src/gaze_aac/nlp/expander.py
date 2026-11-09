@@ -47,8 +47,17 @@ def back_check(candidates: list[Candidate], request: ExpansionRequest) -> list[C
 class ExpansionService:
     """Sağlayıcıyı çağırır, geri kontrolü uygular, süreyi ölçer."""
 
-    def __init__(self, provider: ExpansionProvider) -> None:
+    def __init__(self, provider: ExpansionProvider, max_refills: int = 1) -> None:
+        """
+        Args:
+            provider: Adayları üreten sağlayıcı.
+            max_refills: Geri kontrolden sonra ``top_k``'dan az geçerli aday
+                kalırsa sağlayıcıya en fazla kaç ek istek gideceği.
+        """
+        if max_refills < 0:
+            raise ValueError("max_refills negatif olamaz")
         self._provider = provider
+        self.max_refills = max_refills
 
     @property
     def provider(self) -> ExpansionProvider:
@@ -59,13 +68,37 @@ class ExpansionService:
         return self._provider.name
 
     async def expand(self, request: ExpansionRequest) -> ExpansionResult:
-        """Kısaltmayı genişletir ve doğrulanmış adayları döner."""
-        started = time.perf_counter()
-        raw = await self._provider.expand(request)
-        checked = back_check(raw, request)
+        """Kısaltmayı genişletir ve doğrulanmış adayları döner.
 
-        # Geçerli adaylar öne, kendi içlerinde puana göre sıralanır.
-        ordered = sorted(checked, key=lambda c: (not c.valid, -c.score))
+        Arayüz geçersiz adayları gizler. Model beş adaydan üçünü kısaltmaya
+        uymayan cümleler olarak üretirse kullanıcı iki seçenek görür; doğru
+        cümle o turda hiç çıkmayabilir. Bu yüzden geçerli aday ``top_k``'dan
+        azsa sağlayıcıdan ``attempt`` artırılarak ek aday istenir. Ek istek
+        süreye eklenir, ölçülen gecikme bunu içerir.
+        """
+        started = time.perf_counter()
+        # (deneme sırası, aday): önceki denemenin adayı sonrakinin önünde kalır,
+        # çünkü puanlar ayrı çağrılardan gelir ve karşılaştırılamaz.
+        collected: list[tuple[int, Candidate]] = []
+        seen: set[str] = set()
+        for attempt in range(self.max_refills + 1):
+            current = request if attempt == 0 else request.model_copy(update={"attempt": attempt})
+            raw = await self._provider.expand(current)
+            for candidate in back_check(raw, request):
+                if candidate.text in seen:
+                    continue
+                seen.add(candidate.text)
+                collected.append((attempt, candidate))
+            if sum(c.valid for _, c in collected) >= request.top_k:
+                break
+
+        # Geçerli adaylar öne; kendi içlerinde önce deneme sırası, sonra puan.
+        ordered = [
+            candidate
+            for _, candidate in sorted(
+                collected, key=lambda item: (not item[1].valid, item[0], -item[1].score)
+            )
+        ]
 
         return ExpansionResult(
             candidates=ordered[: request.top_k],
