@@ -160,12 +160,15 @@ def main() -> None:
     val.save(settings.val_path)
     test.save(settings.test_path)
     print(f"\nBölündü: eğitim={len(train)} doğrulama={len(val)} test={len(test)}")
+    with_context = [sum(1 for e in part.entries if e.context) for part in (train, val, test)]
+    print("  bağlamlı cümle: eğitim={} doğrulama={} test={}".format(*with_context))
 
     pairs = build_training_pairs(train, reveal_share=args.reveal_share)
     write_pairs(pairs, settings.pairs_path)
     mixed = sum(1 for pair in pairs if pair["revealed"])
     print(f"{len(pairs)} eğitim çifti yazıldı: {settings.pairs_path}")
     print(f"  {mixed} tanesinde ilk kelimeler açık yazılmış (ör. 'su i')")
+    print(f"  {sum(1 for pair in pairs if pair['context'])} tanesinin isteminde bağlam var")
     print("\nTest kümesini Ocak'a kadar açmayın.")
 
 

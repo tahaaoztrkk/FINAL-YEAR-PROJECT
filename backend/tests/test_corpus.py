@@ -150,6 +150,28 @@ class TestTrainingPairs:
             assert record["abbreviation"] == expected
             assert record["prompt"] == build_prompt(expected, scheme=scheme.id)
 
+    def test_sentence_with_context_appears_with_and_without_it(self) -> None:
+        """Simülasyon her cümleyi iki koşulda da ölçer; model ikisini de görmeli."""
+        corpus = Corpus(
+            [CorpusEntry(text="Ilık olsun.", context="Suyu nasıl istersin?"), *self.corpus.entries]
+        )
+        records = build_training_pairs(corpus, reveal_share=0.0)
+        ilik = [r for r in records if r["sentence"] == "Ilık olsun."]
+
+        assert len(records) == 3 * 4 + 4
+        assert sorted(str(r["context"]) for r in ilik) == [""] * 4 + ["Suyu nasıl istersin?"] * 4
+        for record in ilik:
+            assert ("Bağlam: Suyu nasıl istersin?" in str(record["prompt"])) == bool(
+                record["context"]
+            )
+
+    def test_revealed_record_keeps_the_context(self) -> None:
+        corpus = Corpus([CorpusEntry(text="Biraz ılık olsun.", context="Su nasıl olsun?")])
+        records = build_training_pairs(corpus, reveal_share=1.0)
+        mixed = [r for r in records if r["revealed"]]
+        assert mixed
+        assert all(r["context"] == "Su nasıl olsun?" for r in mixed)
+
     def test_same_seed_same_records(self) -> None:
         first = build_training_pairs(self.corpus, reveal_share=0.5, seed=3)
         second = build_training_pairs(self.corpus, reveal_share=0.5, seed=3)

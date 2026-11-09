@@ -316,6 +316,12 @@ def build_training_pairs(
     kullanıcı böyle devam eder ve simülasyon bunu ölçer; model bu biçimi
     eğitimde hiç görmezse sonraki turlarda ne yapacağını bilemez.
     ``revealed`` alanı açık yazılan kelime sayısıdır, saf kısaltmada 0'dır.
+
+    Bağlamı (karşı tarafın son cümlesi) olan cümle iki kez yer alır: bağlamsız
+    ve bağlamlı. Simülasyon her cümleyi iki koşulda da ölçer; model bağlamlı
+    cümleyi yalnızca bağlamla görürse bağlamsız koşulda haksız yere zorlanır.
+    Açık kelimeli kayıt, bağlam varsa bağlamla üretilir. ``context`` alanı
+    istemde bağlam olup olmadığını gösterir.
     """
     if not 0.0 <= reveal_share <= 1.0:
         raise ValueError("reveal_share 0 ile 1 arasında olmalı")
@@ -331,22 +337,25 @@ def build_training_pairs(
             abbreviation = handler.abbreviate(entry.text)
             if not abbreviation.strip():
                 continue
-            records.append(_training_record(entry, scheme_id, abbreviation, revealed=0))
+            records.append(_training_record(entry, scheme_id, abbreviation, 0, None))
+            if entry.context:
+                records.append(_training_record(entry, scheme_id, abbreviation, 0, entry.context))
 
             if word_count > 1 and rng.random() < reveal_share:
                 revealed = rng.randint(1, min(word_count - 1, MAX_REVEALED_WORDS))
                 mixed = handler.abbreviate_revealing(entry.text, revealed)
-                records.append(_training_record(entry, scheme_id, mixed, revealed=revealed))
+                records.append(_training_record(entry, scheme_id, mixed, revealed, entry.context))
 
     return records
 
 
 def _training_record(
-    entry: CorpusEntry, scheme_id: str, abbreviation: str, revealed: int
+    entry: CorpusEntry, scheme_id: str, abbreviation: str, revealed: int, context: str | None
 ) -> TrainingRecord:
     record: TrainingRecord = {
-        **build_training_record(abbreviation, entry.text, scheme_id, context=entry.context)
+        **build_training_record(abbreviation, entry.text, scheme_id, context=context)
     }
+    record["context"] = context or ""
     record["scheme"] = scheme_id
     record["abbreviation"] = abbreviation
     record["sentence"] = entry.text
