@@ -105,6 +105,11 @@ def similarity(a: str, b: str) -> tuple[float, float]:
     return word_share, char_ratio
 
 
+def _is_near(a: str, b: str) -> bool:
+    word_share, char_ratio = similarity(a, b)
+    return word_share >= NEAR_WORD_SHARE or char_ratio >= NEAR_CHAR_RATIO
+
+
 def _checked_split(value: object, path: Path, line_number: int) -> str:
     split = str(value or "")
     if split and split not in SPLITS:
@@ -185,7 +190,8 @@ class Corpus:
 
         ``split`` alanı dolu cümleler (ve gruptaşları) o kümede kalır. Test
         kümesi sabitlenmişse yeni cümleler yalnızca eğitim ve doğrulamaya
-        dağıtılır.
+        dağıtılır; yeni bir partinin test payı eklenirken ``pin_groups`` ile
+        ayrılır (elle yazılmış 31 cümle + her partinin ~%10'u).
         """
         if not 0 < train < 1 or not 0 <= val < 1 or train + val >= 1:
             raise ValueError("Oranlar 0–1 arasında olmalı ve toplamı 1'den küçük kalmalı")
@@ -226,6 +232,37 @@ class Corpus:
                 parts[2].extend(members)
         return Corpus(parts[0]), Corpus(parts[1]), Corpus(parts[2])
 
+    def pin_groups(
+        self, entries: list[CorpusEntry], split: str, share: float, seed: int = 42
+    ) -> list[CorpusEntry]:
+        """``entries`` içinden anlam grubu düzeyinde ``share`` kadarını ``split``'e sabitler.
+
+        Yeni bir parti derleme eklenirken test payını ayırmak için: cümleler
+        henüz hiçbir eğitimde görülmemişken teste alınır. Gruptaşları (partide
+        olmasalar da) birlikte sabitlenir. Sabitlenen cümleleri döner.
+        """
+        if split not in SPLITS or not 0 < share < 1:
+            raise ValueError(f"split {SPLITS} içinden, share 0–1 arasında olmalı")
+        members: dict[str, list[CorpusEntry]] = {}
+        for entry in self.entries:
+            members.setdefault(entry.split_key, []).append(entry)
+        keys = sorted({entry.split_key for entry in entries if not entry.split})
+        keys = [key for key in keys if not any(m.split for m in members[key])]
+        random.Random(seed).shuffle(keys)
+        target = max(1, round(len(entries) * share)) if keys else 0
+        pinned: list[CorpusEntry] = []
+        for key in keys:
+            if len(pinned) >= target:
+                break
+            # Teste giren cümlenin eğitimde kalan bir kopyası olmamalı.
+            outside = [e for e in self.entries if e.split_key != key and e.split != split]
+            if any(_is_near(m.text, o.text) for m in members[key] for o in outside):
+                continue
+            for member in members[key]:
+                member.split = split
+                pinned.append(member)
+        return pinned
+
     def near_duplicates(self, fixed_split: str = "test") -> list[NearDuplicate]:
         """``fixed_split`` kümesine sabitli cümlelere fazla benzeyen serbest cümleler.
 
@@ -252,8 +289,8 @@ class Corpus:
             for target in targets:
                 if entry.group and entry.group == target.group:
                     continue
-                word_share, char_ratio = similarity(entry.text, target.text)
-                if word_share >= NEAR_WORD_SHARE or char_ratio >= NEAR_CHAR_RATIO:
+                if _is_near(entry.text, target.text):
+                    word_share, char_ratio = similarity(entry.text, target.text)
                     found.append(NearDuplicate(entry, target, word_share, char_ratio))
         return found
 

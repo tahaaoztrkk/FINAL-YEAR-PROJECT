@@ -6,6 +6,7 @@ biri eğitime, diğeri doğrulamaya düşerse model ezberden kazanmış görün�
 
 from __future__ import annotations
 
+import random
 from pathlib import Path
 
 import pytest
@@ -15,6 +16,41 @@ from gaze_aac.data.corpus import Corpus, CorpusEntry, build_training_pairs
 from gaze_aac.nlp.prompts import build_prompt
 from gaze_aac.nlp.schemes import get_scheme
 from gaze_aac.study.protocol import StudyMaterials
+
+# Ekibin elle yazdığı test cümleleri. Derlem büyürken hepsi testte kalmalı.
+HAND_WRITTEN_TEST = (
+    "Acıktım.",
+    "Ateşim var gibi.",
+    "Bacağımı biraz oynatır mısın?",
+    "Bahçeye çıkmak istiyorum.",
+    "Bayramda kim gelecek?",
+    "Bir sorun mu var?",
+    "Biraz daha yemek istiyorum.",
+    "Biraz temiz hava almak istiyorum.",
+    "Bu ne kadar sürecek?",
+    "Bugün kendimi iyi hissediyorum.",
+    "Doydum, teşekkürler.",
+    "Dışarı çıkmak istiyorum.",
+    "Haberlerde ne var?",
+    "Ilık su istiyorum.",
+    "Kafamı sağa çevirir misin?",
+    "Kahve içebilir miyim?",
+    "Kolumu düzeltir misin?",
+    "Kulağım ağrıyor.",
+    "Kusacak gibiyim.",
+    "Midem bulanıyor.",
+    "Ne oldu?",
+    "Neden geç kaldın?",
+    "Nefes almakta zorlanıyorum.",
+    "Nefesim daralıyor.",
+    "Nereye gidiyorsun?",
+    "Oturmak istiyorum.",
+    "Yanımda kalır mısın?",
+    "Yatak ıslandı.",
+    "Yüzümü kurular mısın?",
+    "Çok güzel olmuş.",
+    "Çok komiksin.",
+)
 
 
 def _corpus_with_groups() -> Corpus:
@@ -188,7 +224,8 @@ class TestFixedSplit:
 
     def test_repo_corpus_keeps_hand_written_test_set(self) -> None:
         corpus = Corpus.load(Settings().source_corpus_path)
-        assert sum(e.split == "test" for e in corpus.entries) == 31
+        test = {e.text for e in corpus.entries if e.split == "test"}
+        assert set(HAND_WRITTEN_TEST) <= test
 
 
 class TestNearDuplicates:
@@ -252,3 +289,46 @@ class TestNearDuplicates:
         settings = Settings()
         study = StudyMaterials.load(settings.study_sentences_path).all_sentences()
         assert Corpus.load(settings.source_corpus_path).near_copies_of(study) == []
+
+
+class TestPinGroups:
+    def test_pins_about_the_share_and_keeps_groups_together(self) -> None:
+        # Birbirine benzemeyen uydurma kelimeler; benzer cümleler teste alınmaz.
+        rng = random.Random(0)
+
+        def word() -> str:
+            return "".join(rng.choice("abcdefghijklmnoprstuvyz") for _ in range(10))
+
+        old = [CorpusEntry(text=word()) for _ in range(50)]
+        new = [CorpusEntry(text=word(), group=f"g{i // 2}") for i in range(100)]
+        corpus = Corpus([*old, *new])
+        pinned = corpus.pin_groups(new, "test", 0.1)
+        assert len(pinned) == 10
+        assert all(e in new for e in pinned)
+        groups = {e.group for e in pinned}
+        assert all(e.split == "test" for e in new if e.group in groups)
+
+    def test_group_member_outside_the_batch_moves_too(self) -> None:
+        old = CorpusEntry(text="Su istiyorum.", group="su")
+        new = [CorpusEntry(text="Susadım.", group="su")]
+        corpus = Corpus([old, *new])
+        corpus.pin_groups(new, "test", 0.5)
+        assert old.split == "test"
+
+    def test_sentence_with_a_copy_left_in_training_is_not_pinned(self) -> None:
+        old = CorpusEntry(text="Perdeyi kapatır mısın?")
+        new = [
+            CorpusEntry(text="Pencereyi kapatır mısın?"),
+            CorpusEntry(text="Kalemimi verir misin?"),
+        ]
+        corpus = Corpus([old, *new])
+        pinned = corpus.pin_groups(new, "test", 0.5)
+        assert [e.text for e in pinned] == ["Kalemimi verir misin?"]
+
+    def test_already_fixed_groups_are_left_alone(self) -> None:
+        fixed = CorpusEntry(text="Su istiyorum.", group="su", split="val")
+        new = [CorpusEntry(text="Susadım.", group="su"), CorpusEntry(text="Tamam.")]
+        corpus = Corpus([fixed, *new])
+        pinned = corpus.pin_groups(new, "test", 0.5)
+        assert [e.text for e in pinned] == ["Tamam."]
+        assert fixed.split == "val"
