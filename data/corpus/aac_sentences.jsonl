@@ -96,13 +96,13 @@
 {"text": "Boynum tutuldu.", "category": "agri_saglik"}
 {"text": "Yutkunmakta zorlanıyorum.", "category": "agri_saglik"}
 {"text": "Doktorla konuşmak istiyorum.", "category": "agri_saglik", "split": "val"}
-{"text": "Pozisyonumu değiştirir misin?", "category": "pozisyon_bakim"}
-{"text": "Yatağımı yukarı kaldırır mısın?", "category": "pozisyon_bakim"}
-{"text": "Üşüyorum, battaniye alır mısın?", "category": "pozisyon_bakim"}
+{"text": "Pozisyonumu değiştirir misin?", "category": "pozisyon_bakim", "group": "pozisyon_degistir"}
+{"text": "Yatağımı yukarı kaldırır mısın?", "category": "pozisyon_bakim", "group": "yatak_kaldir"}
+{"text": "Üşüyorum, battaniye alır mısın?", "category": "pozisyon_bakim", "group": "battaniye"}
 {"text": "Gözlüğümü takar mısın?", "category": "pozisyon_bakim"}
 {"text": "Yastığımı düzeltir misin?", "category": "pozisyon_bakim", "split": "val"}
 {"text": "Yatağı biraz indirir misin?", "category": "pozisyon_bakim", "split": "val"}
-{"text": "Beni sağ tarafıma çevirir misin?", "category": "pozisyon_bakim"}
+{"text": "Beni sağ tarafıma çevirir misin?", "category": "pozisyon_bakim", "group": "sag_donmek"}
 {"text": "Beni sol tarafıma çevirir misin?", "category": "pozisyon_bakim"}
 {"text": "Sırt üstü yatmak istiyorum.", "category": "pozisyon_bakim"}
 {"text": "Oturmak istiyorum.", "category": "pozisyon_bakim", "split": "test"}
@@ -133,7 +133,7 @@
 {"text": "Yatak ıslandı.", "category": "pozisyon_bakim", "split": "test"}
 {"text": "Sandalyem rahat değil.", "category": "pozisyon_bakim"}
 {"text": "Biraz öne eğilmek istiyorum.", "category": "pozisyon_bakim"}
-{"text": "Beni biraz yukarı çeker misin?", "category": "pozisyon_bakim"}
+{"text": "Beni biraz yukarı çeker misin?", "category": "pozisyon_bakim", "group": "yukari_cekmek"}
 {"text": "Kayıyorum, beni tutar mısın?", "category": "pozisyon_bakim"}
 {"text": "Ekranı biraz yaklaştırır mısın?", "category": "pozisyon_bakim"}
 {"text": "Ekranı biraz uzaklaştırır mısın?", "category": "pozisyon_bakim"}
@@ -903,7 +903,6 @@
 {"text": "Egzersizlerimi yapmak istiyorum.", "category": "agri_saglik"}
 {"text": "Bugün egzersiz yapamayacağım.", "category": "agri_saglik", "split": "test"}
 {"text": "Kollarımı esnetir misin?", "category": "agri_saglik"}
-{"text": "Bacaklarımı esnetir misin?", "category": "agri_saglik"}
 {"text": "Bacaklarıma masaj yapar mısın?", "category": "agri_saglik"}
 {"text": "Halsizim.", "category": "agri_saglik"}
 {"text": "Hiç gücüm yok.", "category": "agri_saglik"}
@@ -937,3 +936,215 @@
 {"text": "Kâbus görüp uyandım.", "category": "agri_saglik"}
 {"text": "Gece çok terledim.", "category": "agri_saglik", "group": "terleme"}
 {"text": "Sabah başım ağrıyarak uyandım.", "category": "agri_saglik"}
+{"text": "Uzun zamandır aynı pozisyondayım.", "category": "pozisyon_bakim", "group": "pozisyon_degistir"}
+{"text": "Beni biraz döndürür müsün?", "category": "pozisyon_bakim", "group": "pozisyon_degistir"}
+{"text": "Beni yan yatırır mısın?", "category": "pozisyon_bakim", "group": "yan_yatmak"}
+{"text": "Yan yatmak istiyorum.", "category": "pozisyon_bakim", "group": "yan_yatmak"}
+{"text": "Yüzüstü yatamıyorum.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Sağ tarafıma dönmek istiyorum.", "category": "pozisyon_bakim", "group": "sag_donmek"}
+{"text": "Sol tarafım ağrıdı, beni çevir.", "category": "pozisyon_bakim"}
+{"text": "Sırtımın arkasına yastık koyar mısın?", "category": "pozisyon_bakim"}
+{"text": "Dizlerimin arasına yastık koyar mısın?", "category": "pozisyon_bakim"}
+{"text": "Topuklarımın altına yastık koyar mısın?", "category": "pozisyon_bakim"}
+{"text": "Yastığı başımın altından çek.", "category": "pozisyon_bakim"}
+{"text": "İkinci bir yastık istiyorum.", "category": "pozisyon_bakim"}
+{"text": "Yastık çok alçak.", "category": "pozisyon_bakim"}
+{"text": "Yastığı ters çevirir misin?", "category": "pozisyon_bakim"}
+{"text": "Kalçam yatağa batıyor.", "category": "pozisyon_bakim"}
+{"text": "Belimin altı boşta kaldı.", "category": "pozisyon_bakim"}
+{"text": "Aşağı kaydım, beni yukarı al.", "category": "pozisyon_bakim", "group": "yukari_cekmek"}
+{"text": "Yatağın ortasına çeker misin?", "category": "pozisyon_bakim"}
+{"text": "Yatağın kenarına çok yakınım.", "category": "pozisyon_bakim"}
+{"text": "Düşeceğim gibi hissediyorum.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Yatak korkuluğunu kaldırır mısın?", "category": "pozisyon_bakim"}
+{"text": "Yatak korkuluğunu indirir misin?", "category": "pozisyon_bakim"}
+{"text": "Çarşaf altımda buruştu.", "category": "pozisyon_bakim"}
+{"text": "Çarşafı gerer misin?", "category": "pozisyon_bakim"}
+{"text": "Altımdaki bezi düzeltir misin?", "category": "pozisyon_bakim"}
+{"text": "Havalı yatağın motoru çalışmıyor.", "category": "pozisyon_bakim"}
+{"text": "Havalı yatak çok sert.", "category": "pozisyon_bakim"}
+{"text": "Havalı yatak çok yumuşak.", "category": "pozisyon_bakim"}
+{"text": "Bu pozisyon rahat.", "category": "pozisyon_bakim"}
+{"text": "Böyle kalayım.", "category": "pozisyon_bakim"}
+{"text": "Biraz daha sağa.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Biraz daha sola.", "category": "pozisyon_bakim"}
+{"text": "Biraz daha yukarı.", "category": "pozisyon_bakim"}
+{"text": "Biraz daha aşağı.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Tamam, böyle iyi.", "category": "pozisyon_bakim"}
+{"text": "Bir saat sonra beni yine çevir.", "category": "pozisyon_bakim"}
+{"text": "Beni çevirirken yavaş ol.", "category": "pozisyon_bakim"}
+{"text": "Beni çevirirken kolumu altımda bırakma.", "category": "pozisyon_bakim"}
+{"text": "Yatağın baş tarafını kaldırır mısın?", "category": "pozisyon_bakim", "group": "yatak_kaldir"}
+{"text": "Yatağın ayak tarafını kaldırır mısın?", "category": "pozisyon_bakim"}
+{"text": "Yatağın ayak tarafını indirir misin?", "category": "pozisyon_bakim"}
+{"text": "Yatağı düz yap.", "category": "pozisyon_bakim"}
+{"text": "Yatak çok dik oldu.", "category": "pozisyon_bakim"}
+{"text": "Yatak kumandası nerede?", "category": "pozisyon_bakim"}
+{"text": "Yatak kumandası elimin altında olsun.", "category": "pozisyon_bakim"}
+{"text": "Yatak hareket etmiyor.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Koltuğa geçmek istiyorum.", "category": "pozisyon_bakim"}
+{"text": "Beni koltuğa alır mısın?", "category": "pozisyon_bakim"}
+{"text": "Sandalyeden yatağa geçelim.", "category": "pozisyon_bakim"}
+{"text": "Yatağa yatırır mısın?", "category": "pozisyon_bakim"}
+{"text": "Kaldırma cihazını getirir misin?", "category": "pozisyon_bakim"}
+{"text": "Askıyı düzgün tak.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Askı beni sıkıyor.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Kaldırırken korkuyorum.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Kaldırırken iki kişi olun.", "category": "pozisyon_bakim"}
+{"text": "Yavaş indir.", "category": "pozisyon_bakim"}
+{"text": "Ayaklarım yere değsin.", "category": "pozisyon_bakim"}
+{"text": "Ayaklarım boşta kaldı.", "category": "pozisyon_bakim"}
+{"text": "Koltukta öne kaydım.", "category": "pozisyon_bakim"}
+{"text": "Koltuğa geri yasla beni.", "category": "pozisyon_bakim"}
+{"text": "Koltuğun arkasını yatırır mısın?", "category": "pozisyon_bakim"}
+{"text": "Uzun süre oturunca yoruluyorum.", "category": "pozisyon_bakim"}
+{"text": "Masaya yanaşmak istiyorum.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Salona geçmek istiyorum.", "category": "pozisyon_bakim"}
+{"text": "Beni mutfağa götürür müsün?", "category": "pozisyon_bakim"}
+{"text": "Odama dönmek istiyorum.", "category": "pozisyon_bakim"}
+{"text": "Televizyonun karşısına geçelim.", "category": "pozisyon_bakim"}
+{"text": "Tekerlekli sandalyenin frenini kontrol eder misin?", "category": "pozisyon_bakim"}
+{"text": "Freni çek.", "category": "pozisyon_bakim"}
+{"text": "Freni bırak.", "category": "pozisyon_bakim"}
+{"text": "Ayaklığı indirir misin?", "category": "pozisyon_bakim"}
+{"text": "Ayaklığı kaldırır mısın?", "category": "pozisyon_bakim"}
+{"text": "Ayaklarımı ayaklığa koyar mısın?", "category": "pozisyon_bakim"}
+{"text": "Sandalyenin minderi kaydı.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Sandalyenin minderini değiştir.", "category": "pozisyon_bakim"}
+{"text": "Kafalığı ayarlar mısın?", "category": "pozisyon_bakim"}
+{"text": "Kafalık çok geride.", "category": "pozisyon_bakim"}
+{"text": "Başım öne düşüyor.", "category": "pozisyon_bakim"}
+{"text": "Boyunluğumu takar mısın?", "category": "pozisyon_bakim"}
+{"text": "Boyunluğumu çıkarır mısın?", "category": "pozisyon_bakim"}
+{"text": "Kemeri takar mısın?", "category": "pozisyon_bakim"}
+{"text": "Kemer çok sıkı.", "category": "pozisyon_bakim"}
+{"text": "Kol dayanağına kolumu koy.", "category": "pozisyon_bakim"}
+{"text": "Sandalyeyi biraz geriye yatır.", "category": "pozisyon_bakim"}
+{"text": "Sandalyenin şarjı bitiyor.", "category": "pozisyon_bakim"}
+{"text": "Sandalyeyi şarja tak.", "category": "pozisyon_bakim"}
+{"text": "Joystick'i elime yaklaştır.", "category": "pozisyon_bakim"}
+{"text": "Yavaş it, sarsılıyorum.", "category": "pozisyon_bakim"}
+{"text": "Kapıdan geçerken dikkat et.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Rampadan yavaş in.", "category": "pozisyon_bakim"}
+{"text": "Elimi göğsümün üstüne koy.", "category": "pozisyon_bakim"}
+{"text": "Elimi yanıma indirir misin?", "category": "pozisyon_bakim"}
+{"text": "Kolumu yastığın üstüne koyar mısın?", "category": "pozisyon_bakim"}
+{"text": "Elimi avucuma kıvrık bırakma.", "category": "pozisyon_bakim"}
+{"text": "Parmaklarımı açar mısın?", "category": "pozisyon_bakim"}
+{"text": "El ateli takar mısın?", "category": "pozisyon_bakim"}
+{"text": "El atelini çıkarır mısın?", "category": "pozisyon_bakim"}
+{"text": "Ayak atelini takar mısın?", "category": "pozisyon_bakim"}
+{"text": "Ayak ateli sürtüyor.", "category": "pozisyon_bakim"}
+{"text": "Ayaklarımı yukarı kaldırır mısın?", "category": "pozisyon_bakim"}
+{"text": "Bacak bacak üstüne atmak istiyorum.", "category": "pozisyon_bakim"}
+{"text": "Bacaklarım birbirine değiyor.", "category": "pozisyon_bakim"}
+{"text": "Ayağım yatağın ucuna değiyor.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Ayağım battaniyenin altında sıkıştı.", "category": "pozisyon_bakim"}
+{"text": "Başımı biraz öne eğer misin?", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Başım geriye düştü.", "category": "pozisyon_bakim"}
+{"text": "Çenemi destekler misin?", "category": "pozisyon_bakim"}
+{"text": "Başımın altındaki havluyu düzelt.", "category": "pozisyon_bakim"}
+{"text": "Battaniyeyi üstüme örter misin?", "category": "pozisyon_bakim", "group": "battaniye"}
+{"text": "Battaniyeyi ayaklarıma kadar indir.", "category": "pozisyon_bakim"}
+{"text": "Battaniye çok ağır.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "İnce bir örtü istiyorum.", "category": "pozisyon_bakim"}
+{"text": "Yorganı değiştirelim.", "category": "pozisyon_bakim"}
+{"text": "Omuzlarım açıkta kaldı.", "category": "pozisyon_bakim"}
+{"text": "Elektrikli battaniyeyi açar mısın?", "category": "pozisyon_bakim"}
+{"text": "Elektrikli battaniyeyi kapatır mısın?", "category": "pozisyon_bakim"}
+{"text": "Hırkamı çıkarır mısın?", "category": "pozisyon_bakim"}
+{"text": "Ceketimi giydirir misin?", "category": "pozisyon_bakim"}
+{"text": "Kalın bir şey giymek istiyorum.", "category": "pozisyon_bakim"}
+{"text": "İnce bir şey giymek istiyorum.", "category": "pozisyon_bakim"}
+{"text": "Atkımı takar mısın?", "category": "pozisyon_bakim"}
+{"text": "Beremi takar mısın?", "category": "pozisyon_bakim"}
+{"text": "Terledim, üstümü aç.", "category": "pozisyon_bakim"}
+{"text": "Pijamamı değiştirir misin?", "category": "pozisyon_bakim", "group": "kiyafet"}
+{"text": "Bugün ne giysem?", "category": "pozisyon_bakim"}
+{"text": "Mavi gömleğimi giymek istiyorum.", "category": "pozisyon_bakim"}
+{"text": "Eşofmanımı giydirir misin?", "category": "pozisyon_bakim"}
+{"text": "Pantolonumu giydirir misin?", "category": "pozisyon_bakim"}
+{"text": "Pantolonum çok dar.", "category": "pozisyon_bakim"}
+{"text": "Düğmelerimi ilikler misin?", "category": "pozisyon_bakim"}
+{"text": "Fermuarı çeker misin?", "category": "pozisyon_bakim"}
+{"text": "Kemerimi gevşetir misin?", "category": "pozisyon_bakim"}
+{"text": "Ayakkabılarımı giydirir misin?", "category": "pozisyon_bakim"}
+{"text": "Ayakkabılarımı çıkarır mısın?", "category": "pozisyon_bakim"}
+{"text": "Ayakkabım vuruyor.", "category": "pozisyon_bakim"}
+{"text": "Terliklerimi ayağıma geçirir misin?", "category": "pozisyon_bakim"}
+{"text": "Kıyafetimin etiketi batıyor.", "category": "pozisyon_bakim"}
+{"text": "Yakam batıyor.", "category": "pozisyon_bakim"}
+{"text": "Kolum kıyafetin içinde sıkıştı.", "category": "pozisyon_bakim"}
+{"text": "Kıyafetimi düzeltir misin?", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Üstüm yukarı sıyrıldı.", "category": "pozisyon_bakim"}
+{"text": "Önlüğü çıkarır mısın?", "category": "pozisyon_bakim"}
+{"text": "Saatimi çıkarır mısın?", "category": "pozisyon_bakim"}
+{"text": "Kolyemi takar mısın?", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Küpelerimi takar mısın?", "category": "pozisyon_bakim"}
+{"text": "Gözlüğümü yanıma koy.", "category": "pozisyon_bakim"}
+{"text": "Gözlüğüm buğulandı.", "category": "pozisyon_bakim"}
+{"text": "Gözlüğüm burnumdan kaydı.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Okuma gözlüğümü verir misin?", "category": "pozisyon_bakim"}
+{"text": "Gözlüğümün vidası gevşemiş.", "category": "pozisyon_bakim"}
+{"text": "İşitme cihazımı takar mısın?", "category": "pozisyon_bakim"}
+{"text": "İşitme cihazımı çıkarır mısın?", "category": "pozisyon_bakim"}
+{"text": "İşitme cihazının pili bitti.", "category": "pozisyon_bakim"}
+{"text": "Gözümü kapatmakta zorlanıyorum.", "category": "pozisyon_bakim"}
+{"text": "Göz bandımı takar mısın?", "category": "pozisyon_bakim"}
+{"text": "Göz merhemimi sürer misin?", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Sırtımı ovar mısın?", "category": "pozisyon_bakim"}
+{"text": "Kollarımı ovar mısın?", "category": "pozisyon_bakim"}
+{"text": "Ayak bileklerimi ovar mısın?", "category": "pozisyon_bakim"}
+{"text": "Ayaklarımı ılık suya sokar mısın?", "category": "pozisyon_bakim"}
+{"text": "Koltuk altlarımı siler misin?", "category": "pozisyon_bakim"}
+{"text": "Boynumu siler misin?", "category": "pozisyon_bakim"}
+{"text": "Ayak parmaklarımın arasını kurula.", "category": "pozisyon_bakim"}
+{"text": "Topuklarımı kontrol eder misin?", "category": "pozisyon_bakim"}
+{"text": "Sırtımı kontrol eder misin, kızarıklık var mı?", "category": "pozisyon_bakim"}
+{"text": "Ağzımı nemlendirir misin?", "category": "pozisyon_bakim"}
+{"text": "Ağzımı bir pamukla temizler misin?", "category": "pozisyon_bakim"}
+{"text": "Dişlerimi diş ipiyle temizler misin?", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Saçımı arkaya atar mısın?", "category": "pozisyon_bakim"}
+{"text": "Saçıma toka takar mısın?", "category": "pozisyon_bakim"}
+{"text": "Sakalımı düzeltir misin?", "category": "pozisyon_bakim"}
+{"text": "Burnumun kıllarını alır mısın?", "category": "pozisyon_bakim"}
+{"text": "Kulağımın arkasını sil.", "category": "pozisyon_bakim"}
+{"text": "Tırnaklarıma törpü vurur musun?", "category": "pozisyon_bakim"}
+{"text": "Ekranı tam karşıma koy.", "category": "pozisyon_bakim"}
+{"text": "Ekran çok aşağıda.", "category": "pozisyon_bakim"}
+{"text": "Ekran çok yukarıda.", "category": "pozisyon_bakim"}
+{"text": "Ekranı biraz sola çevir.", "category": "pozisyon_bakim"}
+{"text": "Ekranı biraz sağa çevir.", "category": "pozisyon_bakim"}
+{"text": "Ekran yansıyor, göremiyorum.", "category": "pozisyon_bakim"}
+{"text": "Ekranın parlaklığını azalt.", "category": "pozisyon_bakim"}
+{"text": "Ekranın parlaklığını artır.", "category": "pozisyon_bakim"}
+{"text": "Kamera yüzümü tam görmüyor.", "category": "pozisyon_bakim"}
+{"text": "Kamerayı biraz yukarı kaldır.", "category": "pozisyon_bakim"}
+{"text": "Kameranın önünde bir şey var.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Işık kameraya vuruyor.", "category": "pozisyon_bakim"}
+{"text": "İmleç gözümü takip etmiyor.", "category": "pozisyon_bakim"}
+{"text": "İmleç kayıyor.", "category": "pozisyon_bakim"}
+{"text": "Seçimler çok hızlı oluyor.", "category": "pozisyon_bakim"}
+{"text": "Seçimler çok yavaş oluyor.", "category": "pozisyon_bakim"}
+{"text": "Bekleme süresini uzatır mısın?", "category": "pozisyon_bakim"}
+{"text": "Bekleme süresini kısaltır mısın?", "category": "pozisyon_bakim"}
+{"text": "Harfler çok küçük.", "category": "pozisyon_bakim"}
+{"text": "Cihazı kapatır mısın, gözlerim yoruldu.", "category": "pozisyon_bakim"}
+{"text": "Cihazı açar mısın, bir şey söyleyeceğim.", "category": "pozisyon_bakim"}
+{"text": "Tablet standı yamuldu.", "category": "pozisyon_bakim"}
+{"text": "Tableti biraz uzaklaştır.", "category": "pozisyon_bakim"}
+{"text": "Bana zil verir misin, gerekirse çalarım.", "category": "pozisyon_bakim"}
+{"text": "Göz takibi çalışmıyor.", "category": "pozisyon_bakim"}
+{"text": "Harf tahtasıyla konuşalım.", "category": "pozisyon_bakim"}
+{"text": "Evet için göz kırpacağım.", "category": "pozisyon_bakim"}
+{"text": "Hayır için gözlerimi yukarı kaldıracağım.", "category": "pozisyon_bakim"}
+{"text": "Sandalyeyi yanıma çek.", "category": "pozisyon_bakim"}
+{"text": "Masayı yatağın üstüne getir.", "category": "pozisyon_bakim", "split": "test"}
+{"text": "Masayı kaldırır mısın?", "category": "pozisyon_bakim"}
+{"text": "Çöp kutusunu yanıma koy.", "category": "pozisyon_bakim"}
+{"text": "Yatağın yanındaki dolabı aç.", "category": "pozisyon_bakim"}
+{"text": "Yatağın yanını boşalt.", "category": "pozisyon_bakim"}
+{"text": "Odadaki halıyı kaldıralım, tekerlek takılıyor.", "category": "pozisyon_bakim"}
+{"text": "Lambayı yatağın yanına al.", "category": "pozisyon_bakim"}
+{"text": "Kapıyı kilitleme.", "category": "pozisyon_bakim"}
+{"text": "Beni pencereye doğru çevirir misin?", "category": "pozisyon_bakim"}
