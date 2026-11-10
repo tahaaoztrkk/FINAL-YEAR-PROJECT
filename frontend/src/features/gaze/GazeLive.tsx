@@ -9,9 +9,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
+  BlinkGate,
+  Median5,
   OneEuro,
+  PITCH,
+  YAW,
+  blinkThreshold,
   fitLinear,
   irisFeatures,
+  openness,
   predictLinear,
   type GazeSample,
   type LinearGazeModel,
@@ -33,6 +39,34 @@ const GRID: readonly Point[] = [0.1, 0.5, 0.9].flatMap((y) =>
   [0.1, 0.5, 0.9].map((x): Point => [x, y]),
 );
 const CENTER: Point = [0.5, 0.5];
+
+// Baş pozları: model başın nereye döndüğünü ancak bunları görürse öğrenir.
+const HEAD_POINTS: readonly Point[] = [
+  [0.1, 0.1],
+  [0.9, 0.1],
+  CENTER,
+  [0.1, 0.9],
+  [0.9, 0.9],
+];
+const HEAD_POSES = ['sağa', 'sola', 'yukarı', 'aşağı'] as const;
+const POSE_PROMPT_MS = 3000;
+
+// Kalibrasyonda görülen baş aralığının bu oranı kadar dışına tolerans.
+const HEAD_RANGE_MARGIN = 0.3;
+// Bu kadar kare üst üste göz kapalı görünürse uyarı çıkar (~0,5 sn).
+const CLOSED_WARNING_FRAMES = 15;
+
+interface HeadRange {
+  yaw: [number, number];
+  pitch: [number, number];
+}
+
+function rangeOf(values: number[]): [number, number] {
+  const low = Math.min(...values);
+  const high = Math.max(...values);
+  const margin = (high - low) * HEAD_RANGE_MARGIN;
+  return [low - margin, high + margin];
+}
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
@@ -56,6 +90,7 @@ export function GazeLive() {
   const [point, setPoint] = useState<Point | null>(null);
   const [collecting, setCollecting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [prompt, setPrompt] = useState<string | null>(null);
 
   const collectRef = useRef<{ target: Point; samples: GazeSample[] } | null>(null);
   const modelRef = useRef<LinearGazeModel | null>(null);
@@ -63,6 +98,11 @@ export function GazeLive() {
   const liveRef = useRef(false);
   const busyRef = useRef(false);
   const filterRef = useRef({ x: new OneEuro(), y: new OneEuro() });
+  const medianRef = useRef({ x: new Median5(), y: new Median5() });
+  const gateRef = useRef<BlinkGate | null>(null);
+  const headRangeRef = useRef<HeadRange | null>(null);
+  const closedFramesRef = useRef(0);
+  const bannerRef = useRef<HTMLParagraphElement>(null);
   const cursorRef = useRef<HTMLDivElement>(null);
   const tilesRef = useRef<(HTMLDivElement | null)[]>([]);
   const activeTileRef = useRef(-1);
@@ -70,13 +110,20 @@ export function GazeLive() {
   // Her karede React durumu değil, doğrudan DOM güncellenir: 30 Hz render
   // imleci gecikmeli gösterirdi.
   const onFrame = useCallback((frame: FaceFrame) => {
-    if (!frame.landmarks) {
+    // İmleç durduğunda nedeni ekranda yazar; sessizce donmak en kötüsü.
+    const hold = (text: string) => {
       if (cursorRef.current) cursorRef.current.style.opacity = '0.25';
+      if (bannerRef.current && bannerRef.current.textContent !== text) {
+        bannerRef.current.textContent = text;
+      }
+    };
+
+    if (!frame.landmarks) {
+      hold('Yüzün bulunamıyor: kameranın görüş alanına ve yakınına gel.');
       return;
     }
     const features = irisFeatures(frame.landmarks);
-    // Kırpışta tahmin aşağı sıçrar; o kareler atlanır, imleç yerinde kalır.
-    if (features.confidence < MIN_CONFIDENCE) return;
+    if (features.confidence < MIN_CONFIDENCE && !liveRef.current) return;
 
     const collect = collectRef.current;
     if (collect) {
@@ -89,10 +136,40 @@ export function GazeLive() {
 
     const model = modelRef.current;
     if (!model || !liveRef.current) return;
+
+    // Kırpışta tahmin sıçrar: o kareler atlanır, imleç yerinde kalır.
+    if (!gateRef.current?.accept(openness(features.values))) {
+      closedFramesRef.current += 1;
+      if (closedFramesRef.current >= CLOSED_WARNING_FRAMES) hold('Gözlerin kapalı görünüyor.');
+      return;
+    }
+    closedFramesRef.current = 0;
+
+    // Kalibrasyonda görülmemiş baş pozunda model yalnızca uydurur.
+    const range = headRangeRef.current;
+    const yaw = features.values[YAW] ?? 0;
+    const pitch = features.values[PITCH] ?? 0;
+    if (
+      range &&
+      (yaw < range.yaw[0] || yaw > range.yaw[1] || pitch < range.pitch[0] || pitch > range.pitch[1])
+    ) {
+      hold('Başın kalibrasyondaki konumdan çok uzaklaştı: biraz geri getir.');
+      return;
+    }
+    if (bannerRef.current && bannerRef.current.textContent !== '') {
+      bannerRef.current.textContent = '';
+    }
+
     const [rawX, rawY] = predictLinear(model, features.values);
     const [shiftX, shiftY] = shiftRef.current;
-    const x = filterRef.current.x.apply(clamp01(rawX + shiftX), frame.t);
-    const y = filterRef.current.y.apply(clamp01(rawY + shiftY), frame.t);
+    const x = filterRef.current.x.apply(
+      medianRef.current.x.apply(clamp01(rawX + shiftX)),
+      frame.t,
+    );
+    const y = filterRef.current.y.apply(
+      medianRef.current.y.apply(clamp01(rawY + shiftY)),
+      frame.t,
+    );
 
     const cursor = cursorRef.current;
     if (cursor) {
@@ -139,6 +216,9 @@ export function GazeLive() {
   const goLive = () => {
     filterRef.current.x.reset();
     filterRef.current.y.reset();
+    medianRef.current.x.reset();
+    medianRef.current.y.reset();
+    closedFramesRef.current = 0;
     // Hücreler kalibrasyon sırasında DOM'dan kalkar; eski vurgu geçersizdir.
     activeTileRef.current = -1;
     liveRef.current = true;
@@ -158,9 +238,21 @@ export function GazeLive() {
     await document.documentElement.requestFullscreen().catch(() => undefined);
     await sleep(800);
 
-    const samples: GazeSample[] = [];
-    for (const target of shuffled(GRID)) samples.push(...(await collectAt(target)));
+    const collected: GazeSample[] = [];
+    for (const target of shuffled(GRID)) collected.push(...(await collectAt(target)));
+
+    for (const pose of HEAD_POSES) {
+      setPoint(null);
+      setPrompt(`Başını hafifçe ${pose} çevir, öyle kal. Gözlerinle noktalara bakmaya devam et.`);
+      await sleep(POSE_PROMPT_MS);
+      setPrompt(null);
+      for (const target of shuffled(HEAD_POINTS)) collected.push(...(await collectAt(target)));
+    }
     busyRef.current = false;
+
+    // Kalibrasyon sırasındaki kırpışlar modele girmesin.
+    const threshold = blinkThreshold(collected);
+    const samples = collected.filter((sample) => openness(sample.features) >= threshold);
 
     if (samples.length < MIN_SAMPLES) {
       setPoint(null);
@@ -169,6 +261,11 @@ export function GazeLive() {
       return;
     }
     modelRef.current = fitLinear(samples);
+    gateRef.current = new BlinkGate(threshold);
+    headRangeRef.current = {
+      yaw: rangeOf(samples.map((sample) => sample.features[YAW] ?? 0)),
+      pitch: rangeOf(samples.map((sample) => sample.features[PITCH] ?? 0)),
+    };
     goLive();
   };
 
@@ -233,8 +330,9 @@ export function GazeLive() {
         <>
           <h1>Nereye bakıyorum?</h1>
           <p>
-            Önce dokuz noktaya yalnızca gözlerinle bakacaksın, yaklaşık yirmi saniye. Başını olabildiğince
-            sabit tut. Sonra imleç baktığın yeri gösterecek.
+            Yaklaşık 75 saniye sürer. Önce başın sabitken dokuz noktaya, sonra ekrandaki yazının
+            istediği gibi başını hafifçe çevirip beşer noktaya bakacaksın. Sonra imleç baktığın
+            yeri gösterecek.
           </p>
           <p>
             Durum:{' '}
@@ -303,6 +401,18 @@ export function GazeLive() {
                 }}
               />
               <p
+                ref={bannerRef}
+                style={{
+                  position: 'absolute',
+                  top: 16,
+                  width: '100%',
+                  textAlign: 'center',
+                  color: 'var(--warn)',
+                  fontSize: 24,
+                  margin: 0,
+                }}
+              />
+              <p
                 style={{
                   position: 'absolute',
                   bottom: 8,
@@ -316,6 +426,12 @@ export function GazeLive() {
                 tam ekrandan çık
               </p>
             </>
+          )}
+
+          {prompt && (
+            <h2 style={{ position: 'absolute', top: '40%', width: '100%', textAlign: 'center' }}>
+              {prompt}
+            </h2>
           )}
 
           {point && (

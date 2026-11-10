@@ -3,9 +3,9 @@
  *
  * features.py'deki iris ve göz açıklığı hesabının aynısı, üstüne
  * StandardScaler + Ridge(alpha=1) ile doğrusal eşleme. 10 Kasım ölçümlerinde
- * baş öznitelikleri olmadan 1. derece model en iyi sonucu verdi: kalibrasyonda
- * baş neredeyse sabit olduğu için baş öznitelikleri küçük bir harekette
- * tahmini ekran dışına fırlatıyor.
+ * 1. derece model en iyi sonucu verdi. Baş öznitelikleri ancak kalibrasyonda
+ * baş farklı pozlarda tutulursa işe yarıyor: baş sabitken öğrenilen model
+ * küçük bir baş hareketinde tahmini ekran dışına fırlatıyor.
  *
  * Yalnızca denemelik: asıl eşleme sunucudaki GazeMapper'da kalır.
  */
@@ -63,10 +63,31 @@ function eyeOpenness(points: Landmarks, eye: Eye): number {
   return width > 1e-6 ? distance(at(points, eye.top), at(points, eye.bottom)) / width : 0;
 }
 
+/** features.py, ``_head_pose``: yaw ve pitch. */
+function headPose(points: Landmarks): [number, number] {
+  const left = at(points, 234);
+  const right = at(points, 454);
+  const nose = at(points, 1);
+  const chin = at(points, 152);
+  const forehead = at(points, 10);
+  const faceWidth = distance(right, left) + 1e-9;
+  const faceHeight = distance(chin, forehead) + 1e-9;
+  const yaw = (nose.x - (left.x + right.x) / 2) / faceWidth;
+  const pitch = (nose.y - (forehead.y + chin.y) / 2) / faceHeight;
+  return [yaw, pitch];
+}
+
 export interface IrisFeatures {
-  /** left_iris_rel_x, left_iris_rel_y, right_iris_rel_x, right_iris_rel_y, iki göz açıklığı. */
+  /** FEATURE_NAMES'in ilk sekizi: dört iris konumu, iki göz açıklığı, yaw, pitch. */
   values: number[];
   confidence: number;
+}
+
+export const YAW = 6;
+export const PITCH = 7;
+
+export function openness(features: readonly number[]): number {
+  return ((features[4] ?? 0) + (features[5] ?? 0)) / 2;
 }
 
 export function irisFeatures(points: Landmarks): IrisFeatures {
@@ -74,8 +95,9 @@ export function irisFeatures(points: Landmarks): IrisFeatures {
   const [rx, ry] = relativeIris(points, RIGHT_IRIS, RIGHT);
   const leftOpen = eyeOpenness(points, LEFT);
   const rightOpen = eyeOpenness(points, RIGHT);
+  const [yaw, pitch] = headPose(points);
   return {
-    values: [lx, ly, rx, ry, leftOpen, rightOpen],
+    values: [lx, ly, rx, ry, leftOpen, rightOpen, yaw, pitch],
     confidence: clip(Math.min(leftOpen, rightOpen) / 0.2, 0, 1),
   };
 }
@@ -196,6 +218,62 @@ export function predictLinear(model: LinearGazeModel, features: readonly number[
     y += z * (model.weightsY[d] ?? 0);
   });
   return [x, y];
+}
+
+function medianOf(values: readonly number[]): number {
+  const sorted = [...values].sort((a, b) => a - b);
+  return sorted[Math.floor(sorted.length / 2)] ?? 0;
+}
+
+/**
+ * Kırpış eşiği, kalibrasyondan.
+ *
+ * Aşağı bakınca göz kapağı doğal olarak iner; eşik genel ortalamadan
+ * hesaplanırsa ekranın altına bakmak kırpış sayılır ve imleç donar. Bu yüzden
+ * en alt sıradaki noktaların açıklığı temel alınır.
+ */
+export function blinkThreshold(samples: readonly GazeSample[]): number {
+  const bottom = samples.filter((sample) => sample.y >= 0.85);
+  return 0.85 * medianOf((bottom.length > 0 ? bottom : samples).map((s) => openness(s.features)));
+}
+
+const BLINK_HOLD_FRAMES = 3;
+
+/** Kırpış karelerini ve göz yeniden açılırken gelen birkaç kareyi eler. */
+export class BlinkGate {
+  private hold = 0;
+  private readonly threshold: number;
+
+  constructor(threshold: number) {
+    this.threshold = threshold;
+  }
+
+  accept(value: number): boolean {
+    if (value < this.threshold) {
+      this.hold = BLINK_HOLD_FRAMES;
+      return false;
+    }
+    if (this.hold > 0) {
+      this.hold -= 1;
+      return false;
+    }
+    return true;
+  }
+}
+
+/** Kısa kayan medyan: filtreden kaçan tek tük sıçramaları yutar (~66 ms gecikme). */
+export class Median5 {
+  private buffer: number[] = [];
+
+  apply(value: number): number {
+    this.buffer.push(value);
+    if (this.buffer.length > 5) this.buffer.shift();
+    return medianOf(this.buffer);
+  }
+
+  reset(): void {
+    this.buffer = [];
+  }
 }
 
 function alpha(cutoff: number, dt: number): number {
