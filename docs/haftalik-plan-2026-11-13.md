@@ -150,7 +150,7 @@ Gelecek haftaya kalabilecek kalıcı yol (Berkay'la karar verildikten sonra):
 **Bitti:** Kalibrasyondan sonra yalnızca gözle bir cümle söyletildi, ekran
 kaydıyla.
 
-### Kişi 2 — dil modeli, derlem, değerlendirme
+### Kişi 2 — Taha (dil modeli, derlem, değerlendirme)
 
 **Soru:** Gerçek model kısaltmayı açabiliyor mu, hangi şema daha iyi?
 
@@ -163,7 +163,7 @@ kaydıyla.
 
 **Bitti:** Her şema için ilk-1, ilk-5, KSR ve gecikme p50/p95 tablosu.
 
-### Kişi 4 — deney ve rapor
+### Kişi 4 — Polat (deney ve rapor)
 
 **Soru:** Deney yapılabilir mi, takvim tutuyor mu?
 
@@ -216,4 +216,3 @@ Karar kapısına göre yedek yollar:
   kararı — Berkay ve Yusuf.
 - Bu haftanın bitti ölçütlerindeki eşikler — ekip, pazartesi.
 - Tuş boyutu ve ızgara düzeni, göz ölçümlerinden sonra — Yusuf ve Berkay.
-- Kişi 2 ve Kişi 4'ün isimleri bu dosyaya eklenecek.
