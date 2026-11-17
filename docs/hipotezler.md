@@ -204,6 +204,10 @@ geometrik ortalaması ve %95 GA.
 - **H-B2:** SUS puanları üzerinde 68'e karşı tek örneklem t-testi (normallik yoksa tek örneklem Wilcoxon). `study.py` şu an
   yalnızca "68 üstü yüzde"yi veriyor; bu test eklenecek.
 - **H-B3:** `duzeltme` ortalamaları üzerinde `paired_comparison`.
+- **Atlanan cümleler için duyarlılık analizi:** Atlanan cümleler ana analizde ortalamaya girmez. Atlamalar daha çok yavaş
+  koşulda (büyük olasılıkla A) olacağı için bu, o koşulun hızını olduğundan iyi gösterir. H-B1, atlanan her cümleye
+  **180 sn** (atlama sınırı) verilmiş hâliyle bir kez daha test edilir. Birincil sonuç ana analizdir; iki sonuç birlikte
+  raporlanır ve koşul başına atlama sayısı verilir.
 - Holm düzeltmesi `study.py`'de yok; H-B2 ve H-B3'e uygulanacak.
 
 ### 3.4 Güç
@@ -224,7 +228,11 @@ testi yapılmaz; H-B1–H-B3 "test edilemedi" olarak raporlanır ve yalnızca be
 - **Koşullar:** A harf harf (aynı arayüz, aynı ızgara, dil modeli yok), B kısaltma + aday listesi (S1). Dwell süresi iki koşulda da
   **700 ms** (`DWELL_MS`), hedef boyutu, kamera ve çene desteği aynı.
 - **Sıra:** Katılımcı kodundan çıkar: tek numara A→B, çift numara B→A. Deneyi yürüten seçmez. Dengeli olması için **katılımcı
-  sayısı çift** tutulur (12 ya da 14).
+  sayısı çift** tutulur (12 ya da 14). Dışlanan katılımcının kodu yeniden kullanılmaz; **dahil edilen** katılımcılarda A→B ve
+  B→A sayısı eşit olana kadar katılımcı alınır.
+- **Deneyi yürüten:** Bütün oturumları aynı kişi (Polat) yürütür ve okunacak metinler sabittir (`docs/oturum-yonergesi.md`).
+- **Serbest deneme:** Kalibrasyondan sonra, iki koşulda ortak olan becerilerle (grup/harf seçme, Sil) 2 dakikalık deneme; deney
+  cümlelerinde geçmeyen bir kelimeyle.
 - **Cümle setleri:** 1. blok hep 1. seti, 2. blok hep 2. seti alır; böylece her koşul katılımcıların yarısında bir seti görür.
   Her koşul 2 alıştırma cümlesiyle açılır, ardından 10 ölçülen cümle gelir.
 - **Set dengesi (kontrol edildi):** 1. set 39 kelime / 248 karakter, 2. set 38 kelime / 249 karakter.
@@ -279,3 +287,4 @@ katılımcılarla kullanılmaz ve kayıtları repoya girmez.
 |---|---|---|---|---|
 | 2026-11-08 | 1.1, 5 | İlk taslak; birincil hipotez (H-A1), kalibrasyon eşiği (2,5°) ve gözlük kuralı kararlaştırıldı | — | Evet (veri yok) |
 | 2026-11-11 | 0, 1.1, 2.1–2.4, 3.2, 4, 5 | PR #14–#20 sonrası güncelleme: S4'te 8 etiket ve Zemberek; bulunamayan cümlenin maliyeti; ilk-1 yalnızca ilk denemeden; bağlam alanı; sızıntı denetimi; küme boyutları. Kalibrasyon hatası doğrulama noktalarından tanımlandı; `?olcum` ekip içiyle sınırlandı. | Kodda verilen kararları ön kayda işlemek; Berkay'ın eğitim noktası hatası notu; etik kurul durumu (askıda) eklendi | Evet (simülasyonun yalnızca n-gram doğrulama sonuçları görüldü; model ve test sonuçları görülmedi) |
+| 2026-11-17 | 3.3, 4 | Atlanan cümleler için 180 sn duyarlılık analizi; dışlananın yerine eşit sıra kuralı; tek deneyi yürüten; 2 dk serbest deneme | Oturum yönergesi (PR #22) yazılırken çıkan tasarım kararları | Evet (katılımcı verisi yok) |
