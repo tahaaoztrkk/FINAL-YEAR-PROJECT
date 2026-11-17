@@ -3,7 +3,8 @@
 **Sorumlu:** Polat Elmas · **Durum:** TASLAK (17 Kasım) · **Dayandığı belgeler:** `docs/hipotezler.md` (ön kayıt),
 `data/study/anket_formu.md`, `docs/setup.md` → "Kullanıcı testi"
 
-Bu belge bir oturumu baştan sona, her katılımcıda **aynı şekilde** yürütmek içindir. Deneyi yürüten kişi okunacak
+Bu belge bir oturumu baştan sona, her katılımcıda **aynı şekilde** yürütmek içindir. **Bütün oturumları aynı kişi (Polat)
+yürütür**; böylece deneyi yürütenden gelebilecek farklar sabit kalır. Deneyi yürüten kişi okunacak
 metinleri (» ile başlayan satırlar) olduğu gibi okur; kendi sözleriyle açıklama eklemez. Katılımcılar arasındaki tek fark
 sistemin koda göre belirlediği koşul sırası olmalı.
 
@@ -11,7 +12,7 @@ sistemin koda göre belirlediği koşul sırası olmalı.
 
 ---
 
-## 1. Oturumun özeti (35–40 dk)
+## 1. Oturumun özeti (yaklaşık 40 dk)
 
 | # | Adım | Süre | Not |
 |---|---|---|---|
@@ -19,6 +20,7 @@ sistemin koda göre belirlediği koşul sırası olmalı.
 | 2 | Demografi formu | 2 dk | `katilimcilar.csv` alanları |
 | 3 | Eğitim | 5 dk | A ve B koşulları, dwell |
 | 4 | Kalibrasyon | ≤ 3 dk | En fazla 2 tekrar |
+| 4b | Serbest deneme | 2 dk | Yalnızca bakarak seçmeye alışma; iki koşulda ortak |
 | 5 | Blok 1 (2 alıştırma + 10 cümle) | 8–10 dk | Sıra koddan gelir |
 | 6 | Mola + yeniden kalibrasyon | 2–3 dk | Blok 1 B ise SUS-TR burada |
 | 7 | Blok 2 (2 alıştırma + 10 cümle) | 8–10 dk | |
@@ -90,6 +92,7 @@ deneyebilirsiniz."
 geçilir. Hız önemli ama acele etmeyin; yanlış yazarsanız Sil ile düzeltebilirsiniz."
 
 - [ ] Katılımcı anladığını söyledi. Eğitimde **örnek cümle olarak deney cümlelerinden hiçbiri kullanılmaz.**
+- [ ] Ardından kalibrasyon (4.4), sonra serbest deneme (4.4b).
 
 ### 4.4 Kalibrasyon (≤ 3 dk)
 
@@ -102,6 +105,20 @@ geçilir. Hız önemli ama acele etmeyin; yanlış yazarsanız Sil ile düzelteb
       » "Sistem bugün sizin gözünüzü yeterince doğru izleyemedi; bu sizinle değil, sistemle ilgili. Katkınız için teşekkür ederiz."
       Katılımcı **her iki koşuldan** dışlanır, nedeni not formuna yazılır.
       *Eşik: ön kayıtta 2,5°; 20 Kasım karar toplantısındaki ekip ölçümlerine göre kesinleşecek.*
+
+### 4.4b Serbest deneme (2 dk)
+
+Amaç: Bakarak seçmeye alışmanın birinci blokta olmasını önlemek. Yoksa ilk blok yavaş çıkar ve sıra etkisi büyür. Deneme
+yalnızca **iki koşulda ortak olan** becerileri çalıştırır: grup ve harf seçmek, Sil. Kısaltma ve aday listesi burada
+gösterilmez, çünkü bu B koşuluna fazladan alıştırma vermek olur.
+
+» "Şimdi iki dakika serbestçe deneyin. Önce 'evet' kelimesini harf harf yazın, sonra bir harfi Sil ile silin. Kalan sürede
+istediğiniz harflere bakabilirsiniz."
+
+- [ ] Kelimeler (`evet`, gerekirse `tamam`) deney ve alıştırma cümlelerinde geçmez (17 Kasım'da kontrol edildi).
+- [ ] Süre 2 dakikayı geçmez; katılımcı erken bitirirse bekletilmez.
+- [ ] **[EKİPLE — Yusuf]** Serbest deneme `?deney` modunun dışında yapılıyor. Mod değişince kalibrasyon kaybolmamalı ya da
+      deneme `?deney` içinde bir "serbest deneme" adımı olarak yapılabilmeli. Aksi hâlde 4.4 deneme sonrasında tekrarlanır.
 
 ### 4.5 Blok 1 (8–10 dk)
 
@@ -173,7 +190,7 @@ Deneyi yürüten katılımcının yerine karar vermez ve ipucu vermez. Yalnızca
 |---|---|
 | Katılımcı kodu | K__ |
 | Tarih, başlangıç–bitiş saati | |
-| Deneyi yürüten | |
+| Deneyi yürüten | Polat (farklıysa nedeni) |
 | Gözlük / lens | |
 | Kalibrasyon 1: hata (°), deneme sayısı | |
 | Blok 1 koşulu (A/B) | |
