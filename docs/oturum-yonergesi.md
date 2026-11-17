@@ -1,6 +1,6 @@
 # Kullanıcı Testi Oturum Yönergesi ve Kontrol Listesi
 
-**Sorumlu:** Polat Elmas · **Durum:** TASLAK (17 Kasım) · **Dayandığı belgeler:** `docs/hipotezler.md` (ön kayıt),
+**Sorumlu:** Polat Elmas · **Durum:** Hazır, 25 Kasım fare provasında denenecek (17 Kasım) · **Dayandığı belgeler:** `docs/hipotezler.md` (ön kayıt),
 `data/study/anket_formu.md`, `docs/setup.md` → "Kullanıcı testi"
 
 Bu belge bir oturumu baştan sona, her katılımcıda **aynı şekilde** yürütmek içindir. **Bütün oturumları aynı kişi (Polat)
@@ -12,7 +12,7 @@ sistemin koda göre belirlediği koşul sırası olmalı.
 
 ---
 
-## 1. Oturumun özeti (yaklaşık 40 dk)
+## 1. Oturumun özeti (40–45 dk)
 
 | # | Adım | Süre | Not |
 |---|---|---|---|
@@ -31,6 +31,8 @@ sistemin koda göre belirlediği koşul sırası olmalı.
 
 ## 2. Oturumdan bir gün önce
 
+- [ ] Katılım ölçütleri teyit edildi (ön kayıt Bölüm 5): 18 yaş ve üzeri, anadili Türkçe, normal ya da düzeltilmiş görme,
+      bilinen nörolojik ya da göz hareketi bozukluğu yok.
 - [ ] Katılımcıya saat ve yer hatırlatıldı; gözlük ya da lens kullanıyorsa her zamanki gibi gelmesi söylendi.
 - [ ] Katılımcı kodu verildi: bir sonraki boş `K` numarası (`K01`, `K02`…). Kod sırası atlanmaz; tek numaralar A→B, çift
       numaralar B→A ile başlar, dengenin bozulmaması için **katılımcı sayısı çift** tutulur.
@@ -66,8 +68,9 @@ sistemin koda göre belirlediği koşul sırası olmalı.
 
 » "Hoş geldiniz, katıldığınız için teşekkür ederiz. Bugün gözle yazı yazmayı sağlayan bir sistemi deneyeceksiniz. Ölçtüğümüz
 şey sizin başarınız değil, sistemin ne kadar iyi çalıştığı. Kamera yüzünüzü görecek ama **görüntü kaydedilmiyor**; yalnızca
-gözünüzün nereye baktığına dair sayılar kaydediliyor. Oturum yaklaşık 40 dakika sürecek. İstediğiniz an, gerekçe göstermeden
-bırakabilirsiniz; o zaman verileriniz silinir. Formu okuyup sorunuz varsa sorun."
+yüzünüzdeki noktalardan hesaplanan sayılar, ekranda yaptığınız seçimler ve süreler kaydediliyor. Oturum 40–45 dakika sürecek.
+İstediğiniz an, gerekçe göstermeden bırakabilirsiniz; isterseniz o ana kadarki verileriniz de silinir. Formu okuyup sorunuz
+varsa sorun."
 
 - [ ] Onam formu imzalandı. İmzalanmazsa oturum burada biter, hiçbir şey kaydedilmez.
 
@@ -80,10 +83,11 @@ bırakabilirsiniz; o zaman verileriniz silinir. Formu okuyup sorunuz varsa sorun
 
 Ekranda klavye açıkken okunur:
 
-» "Ekrandaki bir kutuya yaklaşık yarım saniyeden biraz fazla bakarsanız o kutu seçilir. Harfler gruplar hâlinde duruyor: önce
+» "Ekrandaki bir kutuya yarım saniyeden biraz uzun bakarsanız o kutu seçilir. Harfler gruplar hâlinde duruyor: önce
 harfin bulunduğu gruba, sonra harfe bakıyorsunuz. Bir yere yalnızca bakmak istiyorsanız gözünüzü fazla bekletmeyin."
 
-» "İki farklı yöntem deneyeceksiniz. **A yönteminde** cümleyi harf harf yazıp Seslendir'e bakıyorsunuz. **B yönteminde**
+» "İki farklı yöntem deneyeceksiniz. **A yönteminde** cümleyi harf harf yazıyorsunuz; kelimeler arasında Boşluk'a, en sonda
+Seslendir'e bakıyorsunuz. **B yönteminde**
 yalnızca kelimelerin ilk harflerini yazıyorsunuz, örneğin 'saat kaç' için *s* ve *k*. Sonra Tamamla'ya bakıyorsunuz;
 sistem birkaç cümle öneriyor, doğru olanı seçiyorsunuz. Doğru cümle listede yoksa bir kelimeyi açık yazıp yeniden
 deneyebilirsiniz."
@@ -95,6 +99,9 @@ geçilir. Hız önemli ama acele etmeyin; yanlış yazarsanız Sil ile düzelteb
       deney ve alıştırma cümlelerindeki hiçbir kelimeyi içermez; 'su istiyorum' gibi bir örnek, dört deney cümlesindeki
       '… istiyorum' kalıbını önceden öğreteceği için kullanılmaz.
 - [ ] Ardından kalibrasyon (4.4), sonra serbest deneme (4.4b).
+- [ ] **[PROVADA DOĞRULANACAK]** Eğitim metni arayüzün bugünkü davranışına göre yazıldı; 25 Kasım fare provasında üç şey
+      denenip metin gerekirse düzeltilir: (1) B'de baş harfler arasında Boşluk gerekiyor mu, (2) aday seçilince cümle
+      kendiliğinden mi seslendiriliyor, (3) hedef cümle ekranın üstünde mi görünüyor.
 
 ### 4.4 Kalibrasyon (≤ 3 dk)
 
@@ -150,7 +157,8 @@ istediğiniz harflere bakabilirsiniz."
 - [ ] Kısa anket (k1–k5), herkes için oturumun en sonunda:
       » "Bu ifadeler bugünkü oturumun tamamı hakkında. A sistemi harf harf yazdığınız, B sistemi kısaltma ve aday listesiyle
       yazdığınız sistem."
-- [ ] Formlarda boş madde kalmadığı katılımcıyla birlikte kontrol edildi (boş SUS maddesi o kişinin SUS puanını düşürür).
+- [ ] Formlarda boş madde kalmadığı katılımcıyla birlikte kontrol edildi (tek bir SUS maddesi boş kalırsa o kişinin SUS puanı
+      hiç hesaplanmaz; `study.load_survey`).
 - [ ] İsteğe bağlı açık uçlu soru soruldu, yanıt not formuna yazıldı.
 
 ### 4.9 Kapanış (1 dk)
@@ -214,4 +222,6 @@ Deneyi yürüten katılımcının yerine karar vermez ve ipucu vermez. Yalnızca
 - **[BEKLENİYOR — Yusuf]** Kalibrasyon ekranı ve doğrulama noktalarından hata hesabı (`purpose: "validate"`).
 - **Etik kurul:** Danışman henüz karar vermedi; en kötü durumda test yalnızca ekip üyeleriyle yapılacak. O durumda da bu
   yönerge aynen uygulanır; ekip üyelerinin sistemi tanıdığı için sonuçları iyimser olabileceği raporda sınırlılık olarak yazılır.
-- 25 Kasım fare provası: 4.4 atlanır (`GAZE_SOURCE=mouse`), geri kalan adımlar ve süreler bu yönergeyle denenir; prova `P` koduyla yapılır.
+- 25 Kasım fare provası: 4.4 atlanır (`GAZE_SOURCE=mouse`), geri kalan adımlar ve süreler bu yönergeyle denenir; prova `P` koduyla
+  yapılır. Okunacak metinler provada **yüksek sesle** okunur; takılınan ya da katılımcının soru sorduğu her yer not edilip
+  metin düzeltilir. Eğitim metnindeki üç arayüz sorusu (4.3) da burada cevaplanır.
