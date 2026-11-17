@@ -1,0 +1,35 @@
+\chapter{System}
+\label{ch:system}
+
+% Describe what exists in the repository, not what was planned.
+% Owners in brackets: ask them to check their section.
+
+\section{Architecture overview}
+\todo{One diagram: browser (MediaPipe, interface) $\leftrightarrow$ FastAPI/WebSocket
+$\leftrightarrow$ expansion service (language model) $\rightarrow$ text-to-speech.}
+
+\section{Gaze tracking}
+% [Berkay] MediaPipe FaceLandmarker, feature vector, calibration (9 points plus
+% validation points), filtering, dwell 700 ms. Report error on validation points only.
+\todo{Gaze tracking pipeline and its measured accuracy.}
+
+\section{Interface}
+% [Yusuf] 4x3 grid, letter groups (two selections per letter), Space, Delete,
+% Complete, candidate list, Speak; S4 suffix tags (8 tags).
+\todo{Interface layout with a screenshot.}
+
+\section{Abbreviation schemes}
+% [Taha] Table: S1 initials, S2 first two letters, S3 first and last letter,
+% S4 initial plus suffix tags (NEG, PAST, FUT, PROG, Q, 1S, 2S, PLUR; Zemberek).
+% Use the worked example from docs/hipotezler.md, Section 2.1, computed by the code.
+\todo{Scheme definitions and the worked example table.}
+
+\section{Expansion model}
+% [Taha] Turkish-Gemma-9b, QLoRA settings, prompt format, top-5 candidates,
+% abbreviation back-check and refill, llama.cpp deployment and latency.
+\todo{Model, fine-tuning and decoding.}
+
+\section{Turkish AAC corpus}
+% [Taha] 2,907 sentences, six categories, dialogue context, group-level split
+% (train 2,321 / validation 291 / test 295), leakage checks.
+\todo{Corpus construction and split.}
