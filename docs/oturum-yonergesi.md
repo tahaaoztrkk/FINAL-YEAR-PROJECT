@@ -84,14 +84,16 @@ Ekranda klavye açıkken okunur:
 harfin bulunduğu gruba, sonra harfe bakıyorsunuz. Bir yere yalnızca bakmak istiyorsanız gözünüzü fazla bekletmeyin."
 
 » "İki farklı yöntem deneyeceksiniz. **A yönteminde** cümleyi harf harf yazıp Seslendir'e bakıyorsunuz. **B yönteminde**
-yalnızca kelimelerin ilk harflerini yazıyorsunuz, örneğin 'su istiyorum' için *s* ve *i*. Sonra Tamamla'ya bakıyorsunuz;
+yalnızca kelimelerin ilk harflerini yazıyorsunuz, örneğin 'saat kaç' için *s* ve *k*. Sonra Tamamla'ya bakıyorsunuz;
 sistem birkaç cümle öneriyor, doğru olanı seçiyorsunuz. Doğru cümle listede yoksa bir kelimeyi açık yazıp yeniden
 deneyebilirsiniz."
 
 » "Her bölümde ekranın üstünde yazmanızı istediğimiz cümle görünecek. Cümle doğru seslendirilince kendiliğinden sıradakine
 geçilir. Hız önemli ama acele etmeyin; yanlış yazarsanız Sil ile düzeltebilirsiniz."
 
-- [ ] Katılımcı anladığını söyledi. Eğitimde **örnek cümle olarak deney cümlelerinden hiçbiri kullanılmaz.**
+- [ ] Katılımcı anladığını söyledi. Eğitimde **örnek cümle olarak deney cümlelerinden hiçbiri kullanılmaz.** Örnek ('saat kaç')
+      deney ve alıştırma cümlelerindeki hiçbir kelimeyi içermez; 'su istiyorum' gibi bir örnek, dört deney cümlesindeki
+      '… istiyorum' kalıbını önceden öğreteceği için kullanılmaz.
 - [ ] Ardından kalibrasyon (4.4), sonra serbest deneme (4.4b).
 
 ### 4.4 Kalibrasyon (≤ 3 dk)
@@ -103,7 +105,8 @@ geçilir. Hız önemli ama acele etmeyin; yanlış yazarsanız Sil ile düzelteb
 - [ ] Doğrulama hatası (kalibrasyona **girmeyen** doğrulama noktalarından, derece) not formuna yazıldı.
 - [ ] Hata eşiği aşarsa yeniden kalibrasyon; **en fazla 2 tekrar.** Üçüncü denemede de aşarsa:
       » "Sistem bugün sizin gözünüzü yeterince doğru izleyemedi; bu sizinle değil, sistemle ilgili. Katkınız için teşekkür ederiz."
-      Katılımcı **her iki koşuldan** dışlanır, nedeni not formuna yazılır.
+      Katılımcı **her iki koşuldan** dışlanır, nedeni not formuna yazılır. Kodu yeniden kullanılmaz. Dahil edilen
+      katılımcılarda A→B (tek kod) ve B→A (çift kod) sayısı eşit olana kadar katılımcı alınmaya devam edilir.
       *Eşik: ön kayıtta 2,5°; 20 Kasım karar toplantısındaki ekip ölçümlerine göre kesinleşecek.*
 
 ### 4.4b Serbest deneme (2 dk)
@@ -165,7 +168,7 @@ Deneyi yürüten katılımcının yerine karar vermez ve ipucu vermez. Yalnızca
 |---|---|
 | Katılımcı "hangi harfe bakmalıyım?" diye sorar | » "Ekrandaki cümleyi yazmaya çalışın; nasıl yazacağınız size kalmış." |
 | B'de doğru cümle listede yok, katılımcı takıldı | » "Bir kelimeyi açık yazıp yeniden deneyebilirsiniz." (Eğitimde söylenen kural; başka ipucu yok.) |
-| Bir cümle **3 dakikada** bitmedi | **Atla.** » "Bu cümleyi geçiyoruz, sorun değil." Not formuna yazılır. |
+| Bir cümle **3 dakikada** bitmedi | **Atla.** » "Bu cümleyi geçiyoruz, sorun değil." Not formuna yazılır. (Analizde atlanan cümleler ayrıca sayılır ve 180 sn verilmiş hâliyle duyarlılık analizi yapılır; ön kayıt Bölüm 3.3.) |
 | Katılımcı gözünün yorulduğunu söyler | Cümle bitince kısa mola verilir; süre not formuna yazılır. |
 | Kamera yüzü kaybediyor, imleç kayıyor | Cümle bitince yeniden kalibrasyon; olay not formuna yazılır. |
 | Yazılım çöker ya da bağlantı kopar | Arayüz yeniden bağlanır, deney kaldığı yerden sürer (yarım cümle baştan başlar). Saat ve olay not formuna yazılır. |
@@ -176,8 +179,9 @@ Deneyi yürüten katılımcının yerine karar vermez ve ipucu vermez. Yalnızca
 ## 6. Oturumdan sonra (10 dk)
 
 - [ ] `data/sessions/<kod>/` altında kayıt dosyası var ve boş değil.
-- [ ] Anket yanıtları `data/sessions/anket.csv` dosyasına, demografi `data/sessions/katilimcilar.csv` dosyasına girildi;
-      ikinci kişi girişleri kâğıtla karşılaştırdı.
+- [ ] Anket ve demografi yanıtları **iki kez** girildi: önce `anket_giris1.csv` / `katilimcilar_giris1.csv`, en az bir saat sonra
+      kâğıda yeniden bakarak `..._giris2.csv` (satır sırası aynı). İki dosya `diff` ile karşılaştırıldı; her fark kâğıttan
+      düzeltildi, ardından dosya `anket.csv` / `katilimcilar.csv` olarak kaydedildi.
 - [ ] Kâğıt formlar kodla etiketlenip kilitli bir yerde saklandı.
 - [ ] Not formundaki olağan dışı her durum (atlama, çökme, yeniden kalibrasyon, dışlama) aynı gün ekip kanalına yazıldı.
 - [ ] Dışlama kararları **ön kayıttaki kurallara göre** verildi; kural dışında hiçbir katılımcı ya da cümle çıkarılmadı.
