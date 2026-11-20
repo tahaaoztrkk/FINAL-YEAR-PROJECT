@@ -91,7 +91,19 @@ def test_cli_writes_report(recording_file: Path, tmp_path: Path) -> None:
     ga.main([str(recording_file), "--distance-cm", "60", "--out", str(out)])
     report = out.read_text(encoding="utf-8")
     assert "olcum-test" in report
-    assert "doğrulama" in report and "baş oynamış" in report
+    assert "baş sabit" in report and "baş oynamış" in report
+    assert "4x3" in report and "3x2" in report
+
+
+def test_grid_hit_rates() -> None:
+    # Yatayda 0.15 hata: 4 sütunda yarım hücre 0.125 (ıska), 3 sütunda 0.167 (isabet).
+    rates = ga.grid_hit_rates([(0.15, 0.0)] * 3 + [(0.0, 0.0)])
+    assert rates[(4, 3)] == pytest.approx(0.25)
+    assert rates[(3, 3)] == pytest.approx(1.0)
+    # Dikeyde 0.2 hata: 3 satırda yarım hücre 0.167 (ıska), 2 satırda 0.25 (isabet).
+    rates = ga.grid_hit_rates([(0.0, 0.2)])
+    assert rates[(3, 3)] == 0.0
+    assert rates[(3, 2)] == 1.0
 
 
 def test_rejects_other_formats(tmp_path: Path) -> None:

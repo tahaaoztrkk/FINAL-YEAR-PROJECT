@@ -36,10 +36,13 @@ from ..schemas.gaze import CalibrationSample
 
 FORMAT = "gaze-aac/gaze-measure@1"
 EVAL_BLOCKS = ("validation", "head_moved")
-BLOCK_LABELS = {"validation": "doğrulama", "head_moved": "baş oynamış"}
+# validation: kalibrasyondaki gibi baş sabit, ızgaraya denk gelmeyen noktalar.
+BLOCK_LABELS = {"validation": "baş sabit", "head_moved": "baş oynamış"}
 # ?bakis ve App'teki ızgara: 4 sütun x 3 satır.
 GRID_COLUMNS = 4
 GRID_ROWS = 3
+# Tuş boyutu kararı için karşılaştırılan düzenler (sütun, satır).
+GRIDS: tuple[tuple[int, int], ...] = ((4, 3), (3, 3), (3, 2), (2, 2))
 
 
 @dataclass(frozen=True)
@@ -70,6 +73,8 @@ class BlockResult:
     horizontal_cm: float
     vertical_cm: float
     cell_hit: float
+    # Hedef hücre merkezinde olsaydı: aynı hata vektörleriyle her düzende isabet.
+    grid_hit: dict[tuple[int, int], float]
 
 
 class _Predictor(Protocol):
@@ -141,6 +146,7 @@ def evaluate_block(
         return None
 
     errors_deg, dx_cm, dy_cm, hits = [], [], [], []
+    offsets: list[tuple[float, float]] = []
     by_target: dict[tuple[float, float], list[tuple[float, float]]] = {}
     for frame in kept:
         px, py = model.predict(frame.features)
@@ -150,6 +156,7 @@ def evaluate_block(
         dy_cm.append(abs(ey))
         errors_deg.append(_deg(math.hypot(ex, ey), distance_cm))
         hits.append(_cell(px, py) == _cell(*frame.target))
+        offsets.append((px - frame.target[0], py - frame.target[1]))
         by_target.setdefault(frame.target, []).append((px, py))
 
     # Nokta ortalaması: titreşim çıkınca kalan sistematik kayma (doğruluk).
@@ -171,7 +178,27 @@ def evaluate_block(
         horizontal_cm=float(np.mean(dx_cm)),
         vertical_cm=float(np.mean(dy_cm)),
         cell_hit=float(np.mean(hits)),
+        grid_hit=grid_hit_rates(offsets),
     )
+
+
+def grid_hit_rates(offsets: Sequence[tuple[float, float]]) -> dict[tuple[int, int], float]:
+    """Hata vektörleri hücre merkezine uygulanırsa her düzende isabet oranı.
+
+    Ölçüm noktaları hücre sınırlarına göre rastgele yerlerde olduğu için ham
+    hücre isabeti düzenler arasında karşılaştırılamaz. Bunun yerine her karenin
+    hatası (normalize dx, dy) hedef hücrenin ortasından itibaren uygulanır:
+    yarım hücre genişliğinden ve yüksekliğinden küçükse isabet. Varsayım: hata
+    ekranın her yerinde benzer (kenarlarda genelde biraz daha büyüktür).
+    """
+    if not offsets:
+        return {grid: 0.0 for grid in GRIDS}
+    dx = np.abs(np.array([o[0] for o in offsets]))
+    dy = np.abs(np.array([o[1] for o in offsets]))
+    return {
+        (columns, rows): float(np.mean((dx < 0.5 / columns) & (dy < 0.5 / rows)))
+        for columns, rows in GRIDS
+    }
 
 
 def analyse(
@@ -210,6 +237,61 @@ def analyse(
     return new, results
 
 
+def _summary(
+    recordings: list[tuple[Recording, GazeMapper, list[BlockResult]]], *, screen_cm: float
+) -> list[str]:
+    """Paylaşılacak özet: kişi başına derece hatası ve ızgara düzenine göre isabet."""
+    lines = [
+        "## Özet (yeni model)",
+        "",
+        "| Kayıt | Gözlük | Baş sabit ° | Baş oynamış ° | Dikey cm (sabit / oynamış) |",
+        "|---|---|---|---|---|",
+    ]
+    rows: dict[str, list[BlockResult]] = {block: [] for block in EVAL_BLOCKS}
+    for recording, _, results in recordings:
+        by_block = {r.block: r for r in results if r.model == "yeni"}
+        for block, result in by_block.items():
+            rows[block].append(result)
+        fixed, moved = by_block.get("validation"), by_block.get("head_moved")
+        lines.append(
+            f"| {recording.name} | {recording.glasses} "
+            f"| {f'{fixed.mean_deg:.2f}' if fixed else '—'} "
+            f"| {f'{moved.mean_deg:.2f}' if moved else '—'} "
+            f"| {f'{fixed.vertical_cm:.2f}' if fixed else '—'} / "
+            f"{f'{moved.vertical_cm:.2f}' if moved else '—'} |"
+        )
+    lines.append("")
+
+    width_px, height_px = recordings[0][0].screen_px
+    aspect = height_px / width_px if width_px else 9 / 16
+    header = " | ".join(
+        f"{c}x{r} ({screen_cm / c:.1f}x{screen_cm * aspect / r:.1f} cm)" for c, r in GRIDS
+    )
+    lines += [
+        "### Tuş boyutu: ızgara düzenine göre isabet",
+        "",
+        "Her karenin hatası hedef hücrenin ortasından uygulandığında aynı hücrede kalma oranı "
+        "(dwell ve yumuşatma yok; ?bakis'teki dwell denemesi bunun üstüne çıkar).",
+        "",
+        f"| Kayıt | Koşul | {header} |",
+        "|---|---|" + "---|" * len(GRIDS),
+    ]
+    for recording, _, results in recordings:
+        for r in results:
+            if r.model != "yeni":
+                continue
+            cells = " | ".join(f"%{100 * r.grid_hit[g]:.0f}" for g in GRIDS)
+            lines.append(f"| {recording.name} | {BLOCK_LABELS[r.block]} | {cells} |")
+    for block, block_rows in rows.items():
+        if len(block_rows) > 1:
+            cells = " | ".join(
+                f"%{100 * float(np.mean([r.grid_hit[g] for r in block_rows])):.0f}" for g in GRIDS
+            )
+            lines.append(f"| **ortalama** | {BLOCK_LABELS[block]} | {cells} |")
+    lines.append("")
+    return lines
+
+
 def format_report(
     recordings: list[tuple[Recording, GazeMapper, list[BlockResult]]],
     *,
@@ -222,9 +304,11 @@ def format_report(
         f"Ekran genişliği {screen_cm:g} cm, mesafe {distance_cm:g} cm "
         f"(bu mesafede 1° ≈ {2 * distance_cm * math.tan(math.radians(0.5)):.2f} cm). "
         f"Hücre isabeti: {GRID_COLUMNS}x{GRID_ROWS} ızgarada tahminin hedefle aynı hücreye "
-        "düştüğü karelerin oranı (dwell yok, ham kare).",
+        "düştüğü karelerin oranı (dwell yok, ham kare). Baş sabit: kalibrasyondaki gibi, "
+        "ızgaraya denk gelmeyen 8 noktada. Baş oynamış: aynı noktalar, baş hafifçe oynatılmış.",
         "",
     ]
+    lines += _summary(recordings, screen_cm=screen_cm)
     for recording, mapper, results in recordings:
         lines += [
             f"## {recording.name}",
@@ -245,20 +329,6 @@ def format_report(
             )
         lines.append("")
 
-    if len(recordings) > 1:
-        lines += ["## Özet (yeni model)", ""]
-        lines += ["| Kayıt | Gözlük | Doğrulama ° | Baş oynamış ° | Hücre isabeti (doğr.) |"]
-        lines += ["|---|---|---|---|---|"]
-        for recording, _, results in recordings:
-            by_block = {r.block: r for r in results if r.model == "yeni"}
-            val, head = by_block.get("validation"), by_block.get("head_moved")
-            lines.append(
-                f"| {recording.name} | {recording.glasses} "
-                f"| {f'{val.mean_deg:.2f}' if val else '—'} "
-                f"| {f'{head.mean_deg:.2f}' if head else '—'} "
-                f"| {f'%{100 * val.cell_hit:.0f}' if val else '—'} |"
-            )
-        lines.append("")
     return "\n".join(lines)
 
 
