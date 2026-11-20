@@ -98,6 +98,9 @@ class SimulationStats:
     # Tek tek model çağrılarının süresi. ``latencies_ms`` cümle başına toplamdır
     # ve açık yazma turlarını da içerir; arayüzdeki bekleme bu değerdir.
     request_latencies_ms: list[float] = field(default_factory=list)
+    # Cümle başına seçim sayısı, ``ranks`` ve ``found_rounds`` ile aynı sırada.
+    # Eşleştirilmiş testler (Wilcoxon, McNemar) bunu kullanır.
+    selections: list[int] = field(default_factory=list)
 
     @property
     def ksr(self) -> float:

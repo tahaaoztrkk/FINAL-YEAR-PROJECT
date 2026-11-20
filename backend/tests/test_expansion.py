@@ -16,9 +16,11 @@ from gaze_aac.evaluation.metrics import (
 from gaze_aac.evaluation.simulate import (
     SimulationCase,
     context_options_for,
+    per_sentence_path,
     run_condition,
     simulate_case,
     warm_up_services,
+    write_per_sentence_csv,
 )
 from gaze_aac.nlp.expander import ExpansionService, back_check, build_provider, default_corpus_path
 from gaze_aac.nlp.providers.hf_local import (
@@ -247,6 +249,60 @@ class TestMetrics:
 
 
 class TestSimulation:
+    async def test_per_sentence_rows_match_totals(self, tmp_path: Path) -> None:
+        import csv
+
+        cases = [
+            SimulationCase(text="Su istiyorum."),
+            SimulationCase(text="Teşekkür ederim."),
+            SimulationCase(text="Bugün kendimi çok yorgun hissediyorum doktor bey."),
+        ]
+        service = ExpansionService(MockProvider())
+        results = [
+            await run_condition(cases, service, "S1", top_k=5),
+            await run_condition(cases, service, "S2", top_k=5),
+        ]
+        path = tmp_path / "simulation_cumleler.csv"
+        write_per_sentence_csv(results, cases, path)
+
+        with path.open(encoding="utf-8") as handle:
+            rows = list(csv.DictReader(handle))
+        assert len(rows) == 2 * len(cases)
+        for stats in results:
+            mine = [r for r in rows if r["sema"] == stats.scheme]
+            assert [int(r["cumle_no"]) for r in mine] == [0, 1, 2]
+            assert sum(int(r["secim"]) for r in mine) == stats.total_selections
+            top1 = sum(r["ilk1"] == "True" for r in mine) / len(mine) * 100
+            assert top1 == pytest.approx(stats.top1)
+
+    async def test_per_sentence_rejects_mismatched_cases(self, tmp_path: Path) -> None:
+        service = ExpansionService(MockProvider())
+        stats = await run_condition([SimulationCase(text="Su istiyorum.")], service, "S1")
+        with pytest.raises(ValueError):
+            write_per_sentence_csv(
+                [stats],
+                [SimulationCase(text="Su istiyorum."), SimulationCase(text="Acıktım.")],
+                tmp_path / "x.csv",
+            )
+
+    def test_per_sentence_path_sits_next_to_summary(self) -> None:
+        assert per_sentence_path(Path("results/simulation.csv")) == Path(
+            "results/simulation_cumleler.csv"
+        )
+
+    async def test_max_rounds_reaches_full_reveal_for_long_sentence(self) -> None:
+        # 6 kelime: 5 denemede en çok 4 kelime açılır; 7 denemede hepsi açılır
+        # ve cümle bulunmasa bile harf harf baştan yazılmaz.
+        text = "Bugün kendimi çok yorgun hissediyorum doktor."
+        service = ExpansionService(MockProvider())
+        short = await run_condition([SimulationCase(text=text)], service, "S1", max_rounds=5)
+        full = await run_condition([SimulationCase(text=text)], service, "S1", max_rounds=7)
+        unlimited = await run_condition([SimulationCase(text=text)], service, "S1", max_rounds=0)
+        assert len(short.selections) == len(full.selections) == 1
+        assert unlimited.selections == full.selections
+        if short.found_rounds[0] is None:
+            assert full.selections[0] <= short.selections[0]
+
     async def test_condition_produces_stats(self) -> None:
         cases = [
             SimulationCase(text="Su istiyorum."),
