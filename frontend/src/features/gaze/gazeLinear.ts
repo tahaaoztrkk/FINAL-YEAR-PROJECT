@@ -1,7 +1,7 @@
 /**
  * Tarayıcıda çalışan canlı bakış tahmini (`?bakis` sayfası için).
  *
- * features.py'deki iris ve göz açıklığı hesabının aynısı, üstüne
+ * features.ts'deki (features.py'nin karşılığı) ilk 8 öznitelik, üstüne
  * StandardScaler + Ridge(alpha=1) ile doğrusal eşleme. 10 Kasım ölçümlerinde
  * 1. derece model en iyi sonucu verdi. Baş öznitelikleri ancak kalibrasyonda
  * baş farklı pozlarda tutulursa işe yarıyor: baş sabitken öğrenilen model
@@ -10,72 +10,7 @@
  * Yalnızca denemelik: asıl eşleme sunucudaki GazeMapper'da kalır.
  */
 
-import type { NormalizedLandmark } from '@mediapipe/tasks-vision';
-
-const LEFT_IRIS = [468, 469, 470, 471, 472];
-const RIGHT_IRIS = [473, 474, 475, 476, 477];
-const LEFT = { inner: 133, outer: 33, top: 159, bottom: 145 };
-const RIGHT = { inner: 362, outer: 263, top: 386, bottom: 374 };
-
-interface Eye {
-  inner: number;
-  outer: number;
-  top: number;
-  bottom: number;
-}
-
-type Landmarks = readonly NormalizedLandmark[];
-
-function at(points: Landmarks, index: number): NormalizedLandmark {
-  const point = points[index];
-  if (!point) throw new Error(`Landmark eksik: ${index}`);
-  return point;
-}
-
-function distance(a: NormalizedLandmark, b: NormalizedLandmark): number {
-  return Math.hypot(a.x - b.x, a.y - b.y, a.z - b.z);
-}
-
-function clip(value: number, low: number, high: number): number {
-  return Math.min(high, Math.max(low, value));
-}
-
-function relativeIris(points: Landmarks, iris: number[], eye: Eye): [number, number] {
-  let cx = 0;
-  let cy = 0;
-  for (const index of iris) {
-    const point = at(points, index);
-    cx += point.x / iris.length;
-    cy += point.y / iris.length;
-  }
-  const inner = at(points, eye.inner);
-  const outer = at(points, eye.outer);
-  const top = at(points, eye.top);
-  const bottom = at(points, eye.bottom);
-  if (distance(inner, outer) < 1e-6 || distance(top, bottom) < 1e-6) return [0.5, 0.5];
-  const relX = (cx - outer.x) / (inner.x - outer.x + 1e-9);
-  const relY = (cy - top.y) / (bottom.y - top.y + 1e-9);
-  return [clip(relX, -1, 2), clip(relY, -1, 2)];
-}
-
-function eyeOpenness(points: Landmarks, eye: Eye): number {
-  const width = distance(at(points, eye.inner), at(points, eye.outer));
-  return width > 1e-6 ? distance(at(points, eye.top), at(points, eye.bottom)) / width : 0;
-}
-
-/** features.py, ``_head_pose``: yaw ve pitch. */
-function headPose(points: Landmarks): [number, number] {
-  const left = at(points, 234);
-  const right = at(points, 454);
-  const nose = at(points, 1);
-  const chin = at(points, 152);
-  const forehead = at(points, 10);
-  const faceWidth = distance(right, left) + 1e-9;
-  const faceHeight = distance(chin, forehead) + 1e-9;
-  const yaw = (nose.x - (left.x + right.x) / 2) / faceWidth;
-  const pitch = (nose.y - (forehead.y + chin.y) / 2) / faceHeight;
-  return [yaw, pitch];
-}
+import { FEATURE_INDEX, extractFeatures, type Landmarks } from './features';
 
 export interface IrisFeatures {
   /** FEATURE_NAMES'in ilk sekizi: dört iris konumu, iki göz açıklığı, yaw, pitch. */
@@ -83,23 +18,21 @@ export interface IrisFeatures {
   confidence: number;
 }
 
-export const YAW = 6;
-export const PITCH = 7;
+export const YAW = FEATURE_INDEX.head_yaw;
+export const PITCH = FEATURE_INDEX.head_pitch;
+const IRIS_FEATURE_COUNT = PITCH + 1;
 
 export function openness(features: readonly number[]): number {
   return ((features[4] ?? 0) + (features[5] ?? 0)) / 2;
 }
 
+/**
+ * features.ts'deki 12 özniteliğin ilk 8'i. 10 Kasım ölçümleri bu 8'le
+ * yapıldı; ?bakis modeli ölçülenden farklılaşmasın diye sınır korunuyor.
+ */
 export function irisFeatures(points: Landmarks): IrisFeatures {
-  const [lx, ly] = relativeIris(points, LEFT_IRIS, LEFT);
-  const [rx, ry] = relativeIris(points, RIGHT_IRIS, RIGHT);
-  const leftOpen = eyeOpenness(points, LEFT);
-  const rightOpen = eyeOpenness(points, RIGHT);
-  const [yaw, pitch] = headPose(points);
-  return {
-    values: [lx, ly, rx, ry, leftOpen, rightOpen, yaw, pitch],
-    confidence: clip(Math.min(leftOpen, rightOpen) / 0.2, 0, 1),
-  };
+  const { values, confidence } = extractFeatures(points);
+  return { values: values.slice(0, IRIS_FEATURE_COUNT), confidence };
 }
 
 export interface GazeSample {
