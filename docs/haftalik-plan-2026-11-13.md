@@ -15,9 +15,8 @@ kararı verilecek.
   kalibrasyonla bu farkın büyük kısmı kapanıyor (2,3–4,5°, tek kişi).
 - **Gözle uçtan uca yazma henüz hiç yapılmadı.** Kamera, arayüze ve
   protokole bağlı değil.
-- **En büyük takvim riski etik kurul.** Onay 4–8 hafta sürüyor; bugün
-  gönderilse bile en erken 11 Aralık. Aralık'taki kullanıcı çalışması
-  şimdiden risk altında.
+- **Etik kurul onayı gerekmiyor** (20 Kasım'da netleşti). Kullanıcı
+  çalışmasının takvimi artık yalnızca uçtan uca sürümün hazır olmasına bağlı.
 
 ## 2. Son durum: GitHub hareketleri (27 Ekim – 13 Kasım)
 
@@ -94,7 +93,7 @@ main'in son 20 commit'ini içermiyor.
 | Göz takibi | İsabet yeterli mi? | 3 kişide (biri gözlüklü) 700 ms dwell ile 10 denemede en az 8 doğru tuş |
 | Uçtan uca | Gözle tam bir cümle yazılabiliyor mu? | Kalibrasyondan sonra yalnızca gözle kısaltma → aday → seslendirme |
 | Dil modeli | Gerçek model kısaltmayı açabiliyor mu? | En az bir şemada ilk-5 > %60, dizüstünde gecikme p95 < 2 sn |
-| Deney | Deney yapılabilir mi? | Etik kurul başvurusu gönderildi, 1 kişilik pilot ölçüldü |
+| Deney | Deney yapılabilir mi? | Ön kayıt main'de, 1 kişilik pilot ölçüldü |
 
 Sayılar başlangıç önerisidir, ekipçe pazartesi netleştirilmeli.
 
@@ -167,22 +166,20 @@ kaydıyla.
 
 **Soru:** Deney yapılabilir mi, takvim tutuyor mu?
 
-1. Etik kurul başvurusunu bu hafta göndermek. Görüntü diske yazılmıyor,
-   yalnızca landmark ve zaman damgası kaydediliyor; başvurudaki madde kodla
-   uyumlu.
+1. Ön kayıt, oturum yönergesi ve `docs/architecture.md`'deki etik kurul
+   ifadelerini çıkarmak. Onam formu kalır.
 2. `docs/hipotez-onkayit` dalını gözden geçirip PR'la main'e almak. Ön kayıt
    veriden önce kilitlenmeli.
 3. Yusuf'un uçtan uca sürümüyle 1 kişilik pilot: harf harf yazma (A) ile
    kısaltma (B), `?deney` moduyla; dakikada kelime ve düzeltme sayısı.
 4. CLAUDE.md'yi güncellemek (test sayısı, derlem boyutu, durum bölümü).
 
-**Bitti:** Başvuru gönderildi, pilot ölçümü var, ön kayıt main'de.
+**Bitti:** Pilot ölçümü var, ön kayıt main'de.
 
 ## 6. Bağımlılıklar ve riskler
 
 | Risk | Etki | Önlem |
 |---|---|---|
-| Etik kurul onayı 4–8 hafta | Aralık çalışması kayabilir | Bu hafta gönder; hızlandırılmış inceleme sor; yedek tarih Ocak başı |
 | Dikey bakış hatası tuşun yarısına yakın | Yanlış tuş seçimi | Daha büyük tuşlar, 3×2 ızgara ya da yalnızca grup adımında durmak (T9 benzeri) |
 | Baş hareketi | Kalibrasyon birkaç saniyede bozulur | Baş pozlu kalibrasyon, tek noktalı hızlı düzeltme, ekranda uyarı |
 | Dallar main'den ayrışıyor | Birleştirme çatışmaları | Bu hafta üç dalın PR'ı |
@@ -196,8 +193,8 @@ kaydıyla.
 | 16–20 Kasım | Yapılabilirlik haftası (bölüm 4–5); Cuma karar toplantısı |
 | 23–27 Kasım | Kalıcı protokol (`gaze_features`, kalibrasyon mesajları); ince ayarlı modelle simülasyon; 2–3 kişilik pilot |
 | 30 Kasım – 4 Aralık | Simülasyon sonuçları kesinleşir (Çalışma A); rapor yöntem bölümü; deney materyalleri dondurulur |
-| 7–18 Aralık | Etik onay geldiyse kullanıcı çalışması (Çalışma B); gelmediyse pilot genişletme ve rapor yazımı |
-| 21 Aralık – 3 Ocak | Kullanıcı çalışması analizi ya da yedek tarihte çalışma |
+| 7–18 Aralık | Kullanıcı çalışması (Çalışma B) |
+| 21 Aralık – 3 Ocak | Kullanıcı çalışması analizi |
 | Ocak | Test kümesi açılır, nihai değerlendirme, rapor, demo, teslim |
 
 Karar kapısına göre yedek yollar:
@@ -208,7 +205,6 @@ Karar kapısına göre yedek yollar:
   sorusu prototipten bağımsız, bu yol her zaman açık.
 - **Dil modeli yavaş ya da isabetsiz:** daha küçük model ya da n-gram
   sağlayıcısı; aday sayısını azaltmak; ince ayarın sonucunu beklemek.
-- **Etik onay gecikirse:** Çalışma B Ocak başına, rapor buna göre.
 
 ## 8. Açık kararlar
 
