@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
+from typing import Any
+
 import numpy as np
 import pytest
 
@@ -87,6 +91,36 @@ class TestFeatures:
     def test_output_is_finite(self) -> None:
         values = extract_features(_fake_landmarks()).values
         assert np.all(np.isfinite(values))
+
+
+FEATURE_FIXTURE = (
+    Path(__file__).resolve().parents[2] / "frontend/src/features/gaze/__fixtures__/features.json"
+)
+
+
+def _fixture_cases() -> list[dict[str, Any]]:
+    data = json.loads(FEATURE_FIXTURE.read_text(encoding="utf-8"))
+    assert data["feature_names"] == list(FEATURE_NAMES)
+    return list(data["cases"])
+
+
+class TestFeatureFixture:
+    """TypeScript'le ortak test verisi (features.ts aynı dosyaya karşı test edilir).
+
+    Burada kırmızı: features.py değişmiş. Bilerek değiştiyse
+    ``python scripts/export_feature_fixture.py`` çalıştırılır ve features.ts de
+    aynı şekilde güncellenir; yoksa tarayıcıdaki öznitelikler sunucudaki
+    modelle uyuşmaz.
+    """
+
+    @pytest.mark.parametrize("case", _fixture_cases(), ids=lambda case: case["name"])
+    def test_python_matches_fixture(self, case: dict[str, Any]) -> None:
+        points = np.tile(np.array([0.5, 0.5, 0.0]), (478, 1))
+        for index, xyz in case["points"].items():
+            points[int(index)] = xyz
+        result = extract_features(points)
+        np.testing.assert_allclose(result.values, case["values"], rtol=0, atol=1e-12)
+        assert result.confidence == pytest.approx(case["confidence"], abs=1e-12)
 
 
 class TestGazeMapper:

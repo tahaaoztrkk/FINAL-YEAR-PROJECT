@@ -66,7 +66,7 @@ export function useGazeSource({ kind, onSample, hz = 30, enabled = true }: Optio
     // TODO(Kişi 1): Kamera hattını buraya bağla.
     // 1-2. Hazır: features/gaze/useFaceTracking (kamera + 478 landmark),
     //      tarayıcıda denemek için ?kamera sayfası.
-    // 3. Öznitelik vektörünü hesapla (backend/gaze/features.py ile aynı sıra) — 11 Kasım
+    // 3. Hazır: features/gaze/features.ts → extractFeatures (features.py ile birebir)
     // 4. Kalibrasyon modundaysa calibration_sample, değilse canlı mesaj gönder.
     //    Canlı mesajın biçimi docs/oneri-canli-bakis-mesaji.md'de, Kişi 3 ile karara bağlanacak.
     console.warn('Kamera tabanlı bakış kaynağı henüz bağlanmadı.');

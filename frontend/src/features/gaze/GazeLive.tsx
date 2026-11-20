@@ -2,8 +2,11 @@
  * Canlı bakış denemesi (`?bakis`).
  *
  * Geliştirici aracıdır. 9 noktayla kalibre eder, sonra baktığın yeri tam
- * ekranda imleçle ve 4x3 ızgarada vurgulanan hücreyle gösterir. Sunucu
+ * ekranda imleçle ve ızgarada (varsayılan 4x3, `&izgara=3x2` gibi) vurgulanan hücreyle gösterir. Sunucu
  * gerekmez; görüntü ve landmark hiçbir yere kaydedilmez.
+ *
+ * D tuşu 10 denemelik dwell oturumu başlatır (dwellTrial.ts): işaretli hücreye
+ * 700 ms bakılınca seçim olur, sonunda doğru sayısı gösterilir ve indirilebilir.
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -22,6 +25,14 @@ import {
   type GazeSample,
   type LinearGazeModel,
 } from './gazeLinear';
+import {
+  DWELL_S,
+  DwellTrial,
+  TRIAL_COUNT,
+  parseGrid,
+  pickTargets,
+  type TrialResult,
+} from './dwellTrial';
 import { useFaceTracking, type FaceFrame } from './useFaceTracking';
 
 const PREP_MS = 600;
@@ -29,8 +40,8 @@ const DISCARD_MS = 300;
 const HOLD_MS = 1200;
 const MIN_CONFIDENCE = 0.3;
 const MIN_SAMPLES = 12;
-const COLUMNS = 4;
-const ROWS = 3;
+// `?bakis&izgara=3x2` gibi; tuş boyutu kararı için (docs/oneri-canli-bakis-mesaji.md).
+const [COLUMNS, ROWS] = parseGrid(window.location.search);
 
 type Point = readonly [number, number];
 type Phase = 'setup' | 'calibrating' | 'recenter' | 'live';
@@ -81,6 +92,28 @@ function shuffled<T>(items: readonly T[]): T[] {
   return copy;
 }
 
+interface TrialSummary {
+  results: TrialResult[];
+  correct: number;
+  medianMs: number;
+}
+
+function median(values: number[]): number {
+  const sorted = [...values].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 ? (sorted[mid] ?? 0) : ((sorted[mid - 1] ?? 0) + (sorted[mid] ?? 0)) / 2;
+}
+
+function download(name: string, data: unknown): void {
+  const blob = new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = name;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
 function clamp01(value: number): number {
   return Math.min(1, Math.max(0, value));
 }
@@ -91,6 +124,7 @@ export function GazeLive() {
   const [collecting, setCollecting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [prompt, setPrompt] = useState<string | null>(null);
+  const [trialSummary, setTrialSummary] = useState<TrialSummary | null>(null);
 
   const collectRef = useRef<{ target: Point; samples: GazeSample[] } | null>(null);
   const modelRef = useRef<LinearGazeModel | null>(null);
@@ -106,6 +140,58 @@ export function GazeLive() {
   const cursorRef = useRef<HTMLDivElement>(null);
   const tilesRef = useRef<(HTMLDivElement | null)[]>([]);
   const activeTileRef = useRef(-1);
+  const trialRef = useRef<DwellTrial | null>(null);
+  const trialInfoRef = useRef<HTMLParagraphElement>(null);
+  const dwellBarRef = useRef<HTMLDivElement>(null);
+
+  // Dwell denemesi de DOM'a doğrudan yazar (her karede render olmasın).
+  const markTarget = (target: number | null) => {
+    tilesRef.current.forEach((element, index) => {
+      if (!element) return;
+      element.style.outline = index === target ? '8px solid var(--ok)' : 'none';
+      element.style.outlineOffset = '-8px';
+    });
+  };
+  const setTrialInfo = (text: string) => {
+    if (trialInfoRef.current) trialInfoRef.current.textContent = text;
+  };
+  const showDwell = (tile: number, progress: number) => {
+    const bar = dwellBarRef.current;
+    if (!bar) return;
+    const column = tile % COLUMNS;
+    const row = Math.floor(tile / COLUMNS);
+    bar.style.left = `${(column / COLUMNS) * 100}%`;
+    bar.style.top = `${((row + 1) / ROWS) * 100}%`;
+    bar.style.width = `${(progress / COLUMNS) * 100}%`;
+  };
+
+  const startTrial = () => {
+    const trial = new DwellTrial(pickTargets(TRIAL_COUNT, COLUMNS * ROWS));
+    trialRef.current = trial;
+    setTrialSummary(null);
+    markTarget(trial.target);
+    setTrialInfo(`Deneme 1/${trial.targets.length} · yeşil çerçeveli hücreye bak`);
+  };
+
+  const cancelTrial = () => {
+    trialRef.current = null;
+    markTarget(null);
+    setTrialInfo('');
+  };
+
+  const downloadTrial = (summary: TrialSummary) => {
+    const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+    download(`bakis-deneme-${stamp}.json`, {
+      format: 'gaze-aac/dwell-trial@1',
+      created: new Date().toISOString(),
+      user_agent: navigator.userAgent,
+      screen: { width: window.innerWidth, height: window.innerHeight },
+      grid: { columns: COLUMNS, rows: ROWS },
+      dwell_ms: DWELL_S * 1000,
+      correct: summary.correct,
+      trials: summary.results,
+    });
+  };
 
   // Her karede React durumu değil, doğrudan DOM güncellenir: 30 Hz render
   // imleci gecikmeli gösterirdi.
@@ -187,6 +273,32 @@ export function GazeLive() {
       if (next) next.style.background = 'var(--accent-soft)';
       activeTileRef.current = tile;
     }
+
+    const trial = trialRef.current;
+    if (trial) {
+      const update = trial.update(tile, frame.t);
+      showDwell(tile, update.progress);
+      if (update.selected) {
+        markTarget(null);
+        setTrialInfo(
+          `${update.selected.correct ? '✓ doğru' : `✗ yanlış (${update.selected.selected + 1})`} · ` +
+            `${trial.correctCount}/${trial.results.length}`,
+        );
+      }
+      if (update.newTarget) {
+        markTarget(trial.target);
+        setTrialInfo(`Deneme ${trial.trialNumber}/${trial.targets.length} · ${trial.correctCount} doğru`);
+      }
+      if (update.done) {
+        trialRef.current = null;
+        showDwell(tile, 0);
+        setTrialSummary({
+          results: [...trial.results],
+          correct: trial.correctCount,
+          medianMs: median(trial.results.map((r) => r.timeMs)),
+        });
+      }
+    }
   }, []);
 
   const { videoRef, status, stats } = useFaceTracking({ enabled: true, onFrame });
@@ -232,6 +344,8 @@ export function GazeLive() {
     busyRef.current = true;
     liveRef.current = false;
     modelRef.current = null;
+    trialRef.current = null;
+    setTrialSummary(null);
     shiftRef.current = [0, 0];
     setMessage(null);
     setPhase('calibrating');
@@ -296,6 +410,19 @@ export function GazeLive() {
   recenterRef.current = recenter;
   const calibrateRef = useRef(calibrate);
   calibrateRef.current = calibrate;
+  const startTrialRef = useRef(startTrial);
+  startTrialRef.current = startTrial;
+
+  // Yeniden ortalama (Boşluk) sırasında ızgara DOM'dan kalkar; canlıya
+  // dönünce süren denemenin hedefi ve yazısı yeniden çizilir.
+  useEffect(() => {
+    const trial = trialRef.current;
+    if (phase !== 'live' || !trial || trial.done) return;
+    markTarget(trial.target);
+    setTrialInfo(`Deneme ${trial.trialNumber}/${trial.targets.length} · ${trial.correctCount} doğru`);
+    // markTarget ve setTrialInfo yalnızca ref'lere yazıyor.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase]);
 
   useEffect(() => {
     if (phase !== 'live') return;
@@ -305,6 +432,8 @@ export function GazeLive() {
         void recenterRef.current();
       } else if (event.key.toLowerCase() === 'k') {
         void calibrateRef.current();
+      } else if (event.key.toLowerCase() === 'd') {
+        startTrialRef.current();
       }
     };
     window.addEventListener('keydown', onKey);
@@ -332,7 +461,8 @@ export function GazeLive() {
           <p>
             Yaklaşık 75 saniye sürer. Önce başın sabitken dokuz noktaya, sonra ekrandaki yazının
             istediği gibi başını hafifçe çevirip beşer noktaya bakacaksın. Sonra imleç baktığın
-            yeri gösterecek.
+            yeri gösterecek. Izgara: {COLUMNS}×{ROWS} (değiştirmek için adrese{' '}
+            <code>&amp;izgara=3x2</code> ekle).
           </p>
           <p>
             Durum:{' '}
@@ -400,6 +530,63 @@ export function GazeLive() {
                   pointerEvents: 'none',
                 }}
               />
+              <div
+                ref={dwellBarRef}
+                style={{
+                  position: 'absolute',
+                  height: 10,
+                  marginTop: -10,
+                  width: 0,
+                  background: 'var(--accent)',
+                  pointerEvents: 'none',
+                }}
+              />
+              <p
+                ref={trialInfoRef}
+                style={{
+                  position: 'absolute',
+                  top: 16,
+                  left: 16,
+                  margin: 0,
+                  fontSize: 24,
+                  color: 'var(--text)',
+                }}
+              />
+              {trialSummary && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '30%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    background: 'var(--surface)',
+                    borderRadius: 16,
+                    padding: 24,
+                    textAlign: 'center',
+                    fontSize: 24,
+                  }}
+                >
+                  <p style={{ fontSize: 40, margin: '0 0 8px' }}>
+                    {trialSummary.correct}/{trialSummary.results.length} doğru
+                  </p>
+                  <p style={{ margin: '0 0 16px', color: 'var(--text-dim)' }}>
+                    Ölçüt: en az 8 · medyan seçim süresi{' '}
+                    {(trialSummary.medianMs / 1000).toFixed(1).replace('.', ',')} sn
+                  </p>
+                  <button type="button" onClick={() => downloadTrial(trialSummary)}>
+                    Sonucu indir
+                  </button>{' '}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTrialSummary(null);
+                      cancelTrial();
+                    }}
+                  >
+                    Kapat
+                  </button>
+                </div>
+              )}
               <p
                 ref={bannerRef}
                 style={{
@@ -422,8 +609,8 @@ export function GazeLive() {
                   margin: 0,
                 }}
               >
-                Boşluk: başın oynadıysa düzelt (ortadaki noktaya bak) · K: yeniden kalibre et · Esc:
-                tam ekrandan çık
+                D: 10 dwell denemesi · Boşluk: başın oynadıysa düzelt (ortadaki noktaya bak) · K:
+                yeniden kalibre et · Esc: tam ekrandan çık
               </p>
             </>
           )}
