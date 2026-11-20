@@ -49,9 +49,11 @@ sistemin koda göre belirlediği koşul sırası olmalı.
 **Yazılım**
 - [ ] Sunucu ve arayüz çalışıyor; tarayıcı **tam ekran**, adres `http://localhost:5173/?deney`.
 - [ ] `.env`: `DWELL_MS=700`, `GAZE_SOURCE=webcam`.
-- [ ] Sağlayıcı **ince ayarlı model** (`mock` değil; `mock` ile alınan kayıt analizde uyarı verir).
-      **[EKİPLE — Taha]** Kullanıcı testinde hangi sağlayıcı kullanılacak? `setup.md` `hf_local` diyor (16 GB GPU ister);
-      demo dizüstünde `llamacpp` çalışıyor. Hangisi seçilirse bütün katılımcılarda aynı kalır.
+- [ ] Sağlayıcı `EXPANDER_PROVIDER=llamacpp` (demo dizüstü, RTX 5060 Laptop 8 GB; karar: Taha, 20 Kasım). `mock` değil;
+      `mock` ile alınan kayıt analizde uyarı verir. Bütün katılımcılarda aynı sağlayıcı ve aynı model dosyası kullanılır.
+- [ ] `llama-server` ince ayarlı GGUF modelle çalışıyor; `.env`'de `LLAMACPP_URL` doğru (`docs/setup.md` → "Demo bilgisayarı
+      (llama.cpp)"). Yüklenen model dosyasının adı not formuna yazıldı.
+- [ ] GPU belleği sınırlı (model 6,5/8 GB kullanıyor): oturum boyunca tarayıcı, sunucu ve `llama-server` dışında hiçbir uygulama açık değil.
 - [ ] `data/study/sentences.json` değişmedi (kayıttaki özet önceki katılımcılarınkiyle aynı olmalı).
 - [ ] Bir prova cümlesi `P` koduyla denendi, ardından sayfa yenilendi (her katılımcıdan önce yenilenir).
 
@@ -204,6 +206,7 @@ Deneyi yürüten katılımcının yerine karar vermez ve ipucu vermez. Yalnızca
 | Tarih, başlangıç–bitiş saati | |
 | Deneyi yürüten | Polat (farklıysa nedeni) |
 | Gözlük / lens | |
+| Model dosyası (GGUF) | |
 | Kalibrasyon 1: hata (°), deneme sayısı | |
 | Blok 1 koşulu (A/B) | |
 | Kalibrasyon 2: hata (°), deneme sayısı | |
@@ -218,7 +221,8 @@ Deneyi yürüten katılımcının yerine karar vermez ve ipucu vermez. Yalnızca
 
 ## Açık noktalar
 
-- **[EKİPLE — Taha]** Kullanıcı testindeki sağlayıcı (`hf_local` mi, `llamacpp` mi) ve kullanılacak adaptör sürümü.
+- **[EKİPLE — Taha]** Sağlayıcı `llamacpp` olarak kararlaştırıldı (20 Kasım). Hangi ince ayar sürümünün (GGUF) kullanılacağı ince ayar
+  koşusundan sonra netleşecek; o sürüm bütün oturumlarda sabit kalır.
 - **[BEKLENİYOR — Yusuf]** Kalibrasyon ekranı ve doğrulama noktalarından hata hesabı (`purpose: "validate"`).
 - **Etik kurul:** Danışman henüz karar vermedi; en kötü durumda test yalnızca ekip üyeleriyle yapılacak. O durumda da bu
   yönerge aynen uygulanır; ekip üyelerinin sistemi tanıdığı için sonuçları iyimser olabileceği raporda sınırlılık olarak yazılır.
