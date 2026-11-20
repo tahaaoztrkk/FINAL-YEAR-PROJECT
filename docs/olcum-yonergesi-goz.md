@@ -77,4 +77,5 @@ yana).
 - Kişi başına doğrulama hatası (°), gözlüklü ve gözlüksüz ayrı.
 - Tuş boyutu ve ızgara: rapordaki "Tuş boyutu" tablosu ve `?bakis` doğru
   sayıları birlikte; karar kuralı `docs/oneri-canli-bakis-mesaji.md`'de
-  (Yusuf'la birlikte).
+  (Yusuf'la birlikte). 4×3 tutmazsa önerilen düzende `?bakis` yeniden:
+  `http://127.0.0.1:5173/?bakis&izgara=3x2` (seçenekler 4x3, 3x3, 3x2, 2x2).

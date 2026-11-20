@@ -2,7 +2,7 @@
  * Canlı bakış denemesi (`?bakis`).
  *
  * Geliştirici aracıdır. 9 noktayla kalibre eder, sonra baktığın yeri tam
- * ekranda imleçle ve 4x3 ızgarada vurgulanan hücreyle gösterir. Sunucu
+ * ekranda imleçle ve ızgarada (varsayılan 4x3, `&izgara=3x2` gibi) vurgulanan hücreyle gösterir. Sunucu
  * gerekmez; görüntü ve landmark hiçbir yere kaydedilmez.
  *
  * D tuşu 10 denemelik dwell oturumu başlatır (dwellTrial.ts): işaretli hücreye
@@ -25,7 +25,14 @@ import {
   type GazeSample,
   type LinearGazeModel,
 } from './gazeLinear';
-import { DWELL_S, DwellTrial, TRIAL_COUNT, pickTargets, type TrialResult } from './dwellTrial';
+import {
+  DWELL_S,
+  DwellTrial,
+  TRIAL_COUNT,
+  parseGrid,
+  pickTargets,
+  type TrialResult,
+} from './dwellTrial';
 import { useFaceTracking, type FaceFrame } from './useFaceTracking';
 
 const PREP_MS = 600;
@@ -33,8 +40,8 @@ const DISCARD_MS = 300;
 const HOLD_MS = 1200;
 const MIN_CONFIDENCE = 0.3;
 const MIN_SAMPLES = 12;
-const COLUMNS = 4;
-const ROWS = 3;
+// `?bakis&izgara=3x2` gibi; tuş boyutu kararı için (docs/oneri-canli-bakis-mesaji.md).
+const [COLUMNS, ROWS] = parseGrid(window.location.search);
 
 type Point = readonly [number, number];
 type Phase = 'setup' | 'calibrating' | 'recenter' | 'live';
@@ -454,7 +461,8 @@ export function GazeLive() {
           <p>
             Yaklaşık 75 saniye sürer. Önce başın sabitken dokuz noktaya, sonra ekrandaki yazının
             istediği gibi başını hafifçe çevirip beşer noktaya bakacaksın. Sonra imleç baktığın
-            yeri gösterecek.
+            yeri gösterecek. Izgara: {COLUMNS}×{ROWS} (değiştirmek için adrese{' '}
+            <code>&amp;izgara=3x2</code> ekle).
           </p>
           <p>
             Durum:{' '}

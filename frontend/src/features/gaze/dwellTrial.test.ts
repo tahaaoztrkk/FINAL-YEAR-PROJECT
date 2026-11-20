@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { DwellTrial, pickTargets } from './dwellTrial';
+import { DwellTrial, parseGrid, pickTargets } from './dwellTrial';
 
 /** Bakışı ``tile``'da ``seconds`` boyunca 30 Hz tutar; son güncellemeyi döndürür. */
 function hold(trial: DwellTrial, tile: number, from: number, seconds: number) {
@@ -18,6 +18,28 @@ describe('pickTargets', () => {
     expect(targets).toHaveLength(10);
     expect(new Set(targets).size).toBe(10);
     targets.forEach((t) => expect(t).toBeGreaterThanOrEqual(0));
+  });
+});
+
+describe('pickTargets az hücrede', () => {
+  it('2x2 ızgarada 10 hedef, art arda aynı hücre yok', () => {
+    for (let seed = 0; seed < 50; seed += 1) {
+      const targets = pickTargets(10, 4);
+      expect(targets).toHaveLength(10);
+      targets.forEach((t, i) => {
+        expect(t).toBeLessThan(4);
+        if (i > 0) expect(t).not.toBe(targets[i - 1]);
+      });
+    }
+  });
+});
+
+describe('parseGrid', () => {
+  it('izgara parametresini okur, tanınmayanı 4x3 yapar', () => {
+    expect(parseGrid('?bakis')).toEqual([4, 3]);
+    expect(parseGrid('?bakis&izgara=3x2')).toEqual([3, 2]);
+    expect(parseGrid('?bakis&izgara=2x2')).toEqual([2, 2]);
+    expect(parseGrid('?bakis&izgara=9x9')).toEqual([4, 3]);
   });
 });
 

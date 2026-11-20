@@ -37,15 +37,34 @@ export interface TrialUpdate {
   done: boolean;
 }
 
-/** Aynı hücre iki kez sorulmasın: 12 hücreden 10 farklı hedef. */
+/** Karşılaştırılan ızgara düzenleri (analiz raporundaki GRIDS ile aynı). */
+export const GRID_OPTIONS = ['4x3', '3x3', '3x2', '2x2'] as const;
+
+/** `?bakis&izgara=3x2` → [3, 2]. Tanınmayan değer 4x3'e düşer. */
+export function parseGrid(search: string): [number, number] {
+  const value = new URLSearchParams(search).get('izgara') ?? '4x3';
+  const option = (GRID_OPTIONS as readonly string[]).includes(value) ? value : '4x3';
+  const [columns, rows] = option.split('x').map(Number);
+  return [columns ?? 4, rows ?? 3];
+}
+
+/**
+ * Hedefler: her hücre bir kez, hücre sayısı denemeden azsa yeni bir karışık
+ * tur (2x2'de 10 deneme = 2,5 tur). Art arda aynı hücre sorulmaz.
+ */
 export function pickTargets(count: number, tiles: number, random = Math.random): number[] {
-  const all = Array.from({ length: tiles }, (_, i) => i);
-  for (let i = all.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(random() * (i + 1));
-    [all[i], all[j]] = [all[j] as number, all[i] as number];
+  const picked: number[] = [];
+  while (picked.length < count) {
+    const round = Array.from({ length: tiles }, (_, i) => i);
+    for (let i = round.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(random() * (i + 1));
+      [round[i], round[j]] = [round[j] as number, round[i] as number];
+    }
+    if (round.length > 1 && round[0] === picked[picked.length - 1]) {
+      [round[0], round[1]] = [round[1] as number, round[0] as number];
+    }
+    picked.push(...round);
   }
-  const picked = [];
-  while (picked.length < count) picked.push(...all);
   return picked.slice(0, count);
 }
 
