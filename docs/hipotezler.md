@@ -26,7 +26,7 @@ Kod ile bu dosya ayrışırsa, veri toplanmadan önce biri düzeltilir.
 | Soru | Türkçede hangi kısaltma şeması en iyi tuş tasarrufu–doğruluk dengesini verir? | Kısaltma sistemi, harf harf göz klavyesine göre yazma hızını artırır mı? |
 | Gözlem birimi | Cümle | Katılımcı |
 | Tasarım | 4 şema × 3 model × bağlamlı/bağlamsız = 24 koşul, aynı cümlelerle eşleştirilmiş | Denek içi, 2 koşul (A harf harf, B kısaltma), karşıt dengelemeli |
-| Örneklem | Ayrılmış test kümesi: 295 cümle (doğrulama 291, eğitim 2.321; 11 Kasım derlemi) | 12–15 sağlıklı gönüllü (alt sınır 10) |
+| Örneklem | Ayrılmış test kümesi: 295 cümle (doğrulama 291, eğitim 2.321; 11 Kasım derlemi) | Proje ekibinin 4 üyesi (K01–K04); hipotez testi yok, betimsel |
 | Kod | `python -m gaze_aac.evaluation.simulate` | `python -m gaze_aac.evaluation.study` |
 
 ---
@@ -48,8 +48,9 @@ düzeltme turları azaldığından toplamda daha az seçim gerekir.
 > KSR'si yüksek.
 
 **Karar (Polat, 8 Kasım):** Birincil hipotez H-A1'dir. Değerlendirilen alternatifler: (a) yönsüz "şemalar arasında ilk-1
-doğrulukta fark vardır"; (b) birincil hipotezi yalnızca Çalışma B'ye koymak. (b) seçilmedi: kullanıcı testi prototipin zamanında hazır olmasına bağlı ve
-4 kişilik pilota inebilir, o zaman projenin ön kayıtlı birincil sonucu kalmaz. H-A1 tutmazsa bu da raporlanacak bir bulgudur.
+doğrulukta fark vardır"; (b) birincil hipotezi yalnızca Çalışma B'ye koymak. (b) seçilmedi: kullanıcı testi prototipin zamanında
+hazır olmasına bağlı ve yalnızca 4 kişilik ekiple yapılacağı için hipotez testine uygun değil (Bölüm 3.4); o zaman projenin ön
+kayıtlı birincil sonucu kalmaz. H-A1 tutmazsa bu da raporlanacak bir bulgudur.
 
 **İkincil hipotezler (Holm düzeltmesiyle tek aile):**
 - **H-A2:** S1 dört şema içinde en yüksek nominal tasarrufu, ama en düşük ilk-1 doğruluğu verir.
@@ -67,18 +68,21 @@ doğrulukta fark vardır"; (b) birincil hipotezi yalnızca Çalışma B'ye koyma
 
 ### 1.2 Çalışma B — Kullanıcı testi
 
-**H-B1 (birincil):** B koşulunda (kısaltma + aday listesi) yazma hızı (`wpm`), A koşuluna (harf harf) göre **daha yüksektir**.
+> **Örneklem (karar, 20 Kasım):** Çalışma B yalnızca proje ekibinin 4 üyesiyle yapılır. 4 kişiyle eşleştirilmiş test ancak
+> d_z ≈ 2,1 ve üstü etkileri yakalayabildiği için (Bölüm 3.4) **Çalışma B'de hipotez testi yapılmaz.** Aşağıdaki H-B1–H-B3
+> beklenen yönlerdir; sonuçlar betimsel olarak raporlanır ve hiçbiri "doğrulandı" ya da "reddedildi" diye yazılmaz.
+> Çalışma B'nin amacı sistemin gözle uçtan uca çalıştığını göstermek ve beklenen yönler hakkında ilk bulguyu vermektir;
+> projenin birincil sonucu Çalışma A'dan (H-A1) gelir.
 
-> Planda "WPM'i en az %30 artırır" yazıyor. "%30'dan fazla" iddiasını test etmek (H₀: oran ≤ 1,3) 12 kişiyle çok daha fazla
-> güç ister. Test edilen hipotez **"fark > 0"**dır; %30 **beklenen etki** olarak yazılır ve sonuçta B/A oranının %95 güven
-> aralığı verilir.
+**H-B1 (beklenen yön):** B koşulunda (kısaltma + aday listesi) yazma hızı (`wpm`), A koşuluna (harf harf) göre **daha yüksektir**.
+Plandaki "en az %30 artış" **beklenen etki** olarak yazılır; her katılımcının B/A oranı ayrı ayrı verilir.
 
-**İkincil hipotezler (Holm düzeltmesiyle):**
-- **H-B2:** B koşulunun SUS puanı 68'den yüksektir (tek örneklem testi).
+**Diğer beklenen yönler:**
+- **H-B2:** B koşulunun SUS puanı 68'in üstündedir.
 - **H-B3:** B koşulunda cümle başına düzeltme sayısı (`duzeltme` = Sil + Geri) A'dan düşüktür.
 
-**Yalnızca betimsel:** `study.py`'nin `karsilastirma.csv`'de p değeri verdiği diğer ölçüler (`ksr`, `sure_s`, `secim`,
-`yanlis_cikti`) **hipotez testi sayılmaz**; raporda betimsel tablo olarak verilir. (`sure_s` ile `wpm` aynı şeyi ölçer; ikisini
+**Yalnızca betimsel:** `study.py`'nin `karsilastirma.csv`'de p değeri verdiği ölçüler (`wpm`, `ksr`, `sure_s`, `secim`,
+`duzeltme`, `yanlis_cikti`) dahil **hiçbir p değeri raporlanmaz**; raporda betimsel tablo olarak verilir. (`sure_s` ile `wpm` aynı şeyi ölçer; ikisini
 ayrı "anlamlı bulgu" saymak çoklu karşılaştırma hatası olur.) Ayrıca: B koşulunda ilk-1 / ilk-5, kalibrasyon hatası, kısa anket
 maddeleri (`k1`–`k5`), 2019 Türkçe webcam klavyesiyle (6,63 kelime/dk) dolaylı kıyas. Bu son kıyas **farklı düzenekle**
 (gözlüğe takılı kamera) elde edildiği için kanıt değil bağlamdır.
@@ -201,19 +205,16 @@ sayılar odur (onaylandı, Taha, 20 Kasım).
 
 ### 3.3 Çalışma B
 
-`study.paired_comparison` ile: katılımcı × koşul ortalamaları alınır, **eşleştirilmiş farklar** üzerinde Shapiro-Wilk; p ≥ 0,05
-ise eşleştirilmiş t-testi, değilse Wilcoxon işaretli sıralar. Etki büyüklüğü Cohen d_z. H-B1 için ek olarak B/A WPM oranının
-geometrik ortalaması ve %95 GA.
+**Hipotez testi yapılmaz** (4 katılımcı; Bölüm 3.4). Raporlananlar:
 
-- n = 12'de Shapiro-Wilk'in gücü düşüktür; prosedür teknik plandaki analiz planıyla uyumlu olduğu için korunur, sınırlılık olarak yazılır.
-- **H-B2:** SUS puanları üzerinde 68'e karşı tek örneklem t-testi (normallik yoksa tek örneklem Wilcoxon). `study.py` şu an
-  yalnızca "68 üstü yüzde"yi veriyor; bu test eklenecek.
-- **H-B3:** `duzeltme` ortalamaları üzerinde `paired_comparison`.
-- **Atlanan cümleler için duyarlılık analizi:** Atlanan cümleler ana analizde ortalamaya girmez. Atlamalar daha çok yavaş
-  koşulda (büyük olasılıkla A) olacağı için bu, o koşulun hızını olduğundan iyi gösterir. H-B1, atlanan her cümleye
-  **180 sn** (atlama sınırı) verilmiş hâliyle bir kez daha test edilir. Birincil sonuç ana analizdir; iki sonuç birlikte
-  raporlanır ve koşul başına atlama sayısı verilir.
-- Holm düzeltmesi `study.py`'de yok; H-B2 ve H-B3'e uygulanacak.
+- **Katılımcı başına tablo:** Her katılımcı için A ve B koşullarının ortalama `wpm`'i, B/A oranı, `duzeltme`, atlanan cümle sayısı
+  ve SUS puanı. 4 kişide ortalama tek başına yanıltıcı olabileceği için her satır ayrı verilir.
+- **Özet:** Koşul başına ortalama, en küçük ve en büyük değer; 4 katılımcıdan kaçında B'nin A'dan hızlı olduğu.
+- **H-B2:** SUS puanları tek tek ve ortalaması; 68 yalnızca karşılaştırma noktası olarak verilir.
+- **Atlanan cümleler:** Atlanan cümleler ana tabloda ortalamaya girmez. Atlamalar daha çok yavaş koşulda (büyük olasılıkla A)
+  olacağı için bu, o koşulun hızını olduğundan iyi gösterir. Bu yüzden `wpm` bir kez de atlanan her cümleye **180 sn** (atlama
+  sınırı) verilmiş hâliyle hesaplanır; iki tablo birlikte verilir ve koşul başına atlama sayısı yazılır.
+- `study.py`'nin ürettiği p değerleri ve etki büyüklükleri rapora konmaz.
 
 ### 3.4 Güç
 
@@ -223,8 +224,8 @@ Eşleştirilmiş t-testi, α = 0,05, çift yönlü, %80 güç için tespit edile
 |---|---|---|---|---|
 | En küçük d_z | 0,78 | 0,89 | 1,00 | 2,13 |
 
-Çalışma B yalnızca **büyük** etkileri yakalayabilir; bu baştan sınırlılık olarak yazılır. Çalışma 4 kişilik pilota inerse hipotez
-testi yapılmaz; H-B1–H-B3 "test edilemedi" olarak raporlanır ve yalnızca betimsel sonuç verilir.
+Çalışma B 4 kişiyle yapılacağı için (20 Kasım kararı) en küçük tespit edilebilir etki d_z ≈ 2,13; bu, gerçekçi bir etki
+büyüklüğü değildir. Bu yüzden Çalışma B'de hipotez testi yapılmaz (Bölüm 1.2 ve 3.3). Tablo, kararın gerekçesi olarak korunur.
 
 ---
 
@@ -232,10 +233,15 @@ testi yapılmaz; H-B1–H-B3 "test edilemedi" olarak raporlanır ve yalnızca be
 
 - **Koşullar:** A harf harf (aynı arayüz, aynı ızgara, dil modeli yok), B kısaltma + aday listesi (S1). Dwell süresi iki koşulda da
   **700 ms** (`DWELL_MS`), hedef boyutu, kamera ve çene desteği aynı.
-- **Sıra:** Katılımcı kodundan çıkar: tek numara A→B, çift numara B→A. Deneyi yürüten seçmez. Dengeli olması için **katılımcı
-  sayısı çift** tutulur (12 ya da 14). Dışlanan katılımcının kodu yeniden kullanılmaz; **dahil edilen** katılımcılarda A→B ve
-  B→A sayısı eşit olana kadar katılımcı alınır.
-- **Deneyi yürüten:** Bütün oturumları aynı kişi (Polat) yürütür ve okunacak metinler sabittir (`docs/oturum-yonergesi.md`).
+- **Katılımcılar:** Proje ekibinin 4 üyesi, `K01`–`K04`. Kodlar oturumdan önce kurayla dağıtılır.
+- **Sıra:** Katılımcı kodundan çıkar: tek numara A→B, çift numara B→A; yani 2 kişi A→B, 2 kişi B→A. Deneyi yürüten seçmez.
+  Dışlanan ekip üyesinin yerine kimse alınmaz; denge bozulursa raporlanır.
+- **Deneyi yürüten:** Oturumları Polat yürütür; Polat'ın kendi oturumunu başka bir ekip üyesi yürütür ve bu not formuna yazılır.
+  Okunacak metinler sabittir (`docs/oturum-yonergesi.md`).
+- **Ekip içi testin bilinen yanlılıkları (sınırlılık olarak raporlanır):** Katılımcılar sistemi geliştirdi; arayüzü, şemaları ve
+  derlemi tanıyor. Deney cümlelerini (`data/study/sentences.json`) önceden görmüş olabilirler; bu özellikle B koşulunda adayları
+  tanımayı kolaylaştırır. Ekip üyeleri kendi oturumlarından önce bu dosyayı açmaz ve cümleleri konuşmaz; kimin önceden
+  gördüğü not formuna yazılır.
 - **Serbest deneme:** Kalibrasyondan sonra, iki koşulda ortak olan becerilerle (grup/harf seçme, Sil) 2 dakikalık deneme; deney
   cümlelerinde geçmeyen bir kelimeyle.
 - **Cümle setleri:** 1. blok hep 1. seti, 2. blok hep 2. seti alır; böylece her koşul katılımcıların yarısında bir seti görür.
@@ -251,8 +257,9 @@ testi yapılmaz; H-B1–H-B3 "test edilemedi" olarak raporlanır ve yalnızca be
 
 ## 5. Katılım ve dışlama kuralları (veri görülmeden önce yazıldı)
 
-**Etik kurul:** Gerekmiyor. Danışman 20 Kasım 2026'da sözlü olarak bildirdi; yazılı teyit e-postayla istenecek ve rapora
-eklenecek. Her katılımcıdan aydınlatılmış onam formu alınır; onam imzalanmadan hiçbir kayıt başlamaz.
+**Örneklem:** Yalnızca proje ekibi (danışmanla 20 Kasım'da kararlaştırıldı). Dışarıdan katılımcı eklenmesi danışmanla yeniden
+görüşülür ve bu dosyaya değişiklik günlüğüyle işlenir. Her katılımcıdan aydınlatılmış onam formu alınır; onam imzalanmadan hiçbir
+kayıt başlamaz.
 
 **Katılım:** 18 yaş ve üzeri; anadili Türkçe; normal ya da düzeltilmiş görme; bilinen nörolojik ya da göz hareketi bozukluğu yok;
 aydınlatılmış onam formunu imzalamış.
@@ -275,8 +282,9 @@ ortalamada hedefin dışına düşer; ölçülen WPM sistemi değil kalibrasyonu
 - Bir cümle **3 dakikada** bitmezse deneyi yürüten onu atlar (`skipped`). Atlananlar ortalamaya girmez, ayrı sayılır.
 - Onamını geri çeken katılımcının verisi silinir.
 - **Uç değer temizliği yapılmaz.** Yukarıdakiler dışında hiçbir veri çıkarılmaz. Dışlanan katılımcı sayısı ve nedenleri raporlanır.
-- Katılımcılar `K01`, `K02`… kodlarıyla kaydedilir. Ekip provaları (fareyle 25 Kasım, kamerayla 8 Aralık) `P` kodlarıyla kaydedilir;
-  `study.py` yalnızca `K` kodlarını okuduğu için analize girmez.
+- Asıl oturumlar `K01`–`K04` kodlarıyla kaydedilir. Provalar (fareyle 25 Kasım, kamerayla 8 Aralık) ve denemeler `P` kodlarıyla
+  kaydedilir; `study.py` yalnızca `K` kodlarını okuduğu için analize girmez. Prova yapan ekip üyesi sonra kendi `K` oturumuna da
+  katılır; provadaki alıştırma etkisi sınırlılık olarak yazılır.
 
 **Veri koruma:** Kamera görüntüsü ve 478 noktalı yüz ağı yazılmaz; yalnızca öznitelik vektörü, zaman damgaları, bakış tahminleri ve
 seçim olayları kaydedilir. `data/sessions/` repoya girmez. Ad–kod eşleşmesi repoda değil, ayrı ve şifreli bir dosyada durur.
@@ -294,3 +302,4 @@ katılımcılarla kullanılmaz ve kayıtları repoya girmez.
 | 2026-11-17 | 3.3, 4 | Atlanan cümleler için 180 sn duyarlılık analizi; dışlananın yerine eşit sıra kuralı; tek deneyi yürüten; 2 dk serbest deneme | Oturum yönergesi (PR #22) yazılırken çıkan tasarım kararları | Evet (katılımcı verisi yok) |
 | 2026-11-20 | 5 | Etik kurul: "askıda" yerine "gerekmiyor" (danışman, 20 Kasım, sözlü; yazılı teyit istenecek) | Danışmanın kararı | Evet (katılımcı verisi yok) |
 | 2026-11-20 | 1.1, 2.2, 3.2 | Tur sınırı kaldırıldı (`max_rounds = 0`); cümle başına CSV tanımlandı; test kümesinin Ocak'ta bir kez çalıştırılması onaylandı; 1.1'deki etik onay gerekçesi düzeltildi | Taha'nın kararları (PR #29) | Evet (yalnızca n-gram doğrulama sonuçları görüldü; karar o karşılaştırmaya dayanıyor. İnce ayarlı modelin ilk 20 cümlelik doğrulama koşusu karardan sonra yapıldı; test sonuçları görülmedi) |
+| 2026-11-20 | 0, 1.1, 1.2, 3.3, 3.4, 4, 5 | Çalışma B yalnızca ekibin 4 üyesiyle; hipotez testi yerine katılımcı başına betimsel raporlama; sıra 2/2, yerine alma yok; ekip içi yanlılıklar sınırlılık olarak eklendi; etik kurul ifadeleri çıkarıldı | Danışmanla kararlaştırılan örneklem; 4 kişiyle test gücü yetersiz (d_z ≈ 2,13) | Evet (katılımcı verisi yok) |
