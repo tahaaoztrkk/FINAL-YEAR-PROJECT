@@ -38,7 +38,7 @@ Kameradan ekran koordinatına giden yol. Her adım ayrı modül:
   olduğu için import işlev içinde yapılır; testler ve simülasyon bu paket
   kurulu olmadan çalışır.
 - `features.py` — 478 landmark'tan 12 boyutlu öznitelik vektörü.
-- `calibration.py` — öznitelikten ekran koordinatına polinom ridge regresyon.
+- `calibration.py` — öznitelikten ekran koordinatına doğrusal ridge regresyon; kırpış örneklerini eler, baş pozunu yalnızca kalibrasyonda baş oynadıysa kullanır.
 - `filters.py` — One Euro filtresi ile yumuşatma.
 - `dwell.py` — bakışla seçim, tolerans ve bekleme süresi.
 
@@ -82,9 +82,16 @@ genişliğine bölme bunu ortadan kaldırır.
 ## Neden bu teknik seçimler
 
 **Kalibrasyonda derin ağ değil regresyon.** Kalibrasyon verisi 9 nokta ×
-~30 kare = 270 örnek. Bu veriyle derin ağ ezberler. İkinci derece polinom
-açılımı, kameranın doğrusal olmayan davranışını yakalayacak kadar esnek,
-ezberlemeyecek kadar kısıtlı.
+~30 kare = 270 örnek. Bu veriyle derin ağ ezberler. İlk tasarımda ikinci
+derece polinom vardı; 10 Kasım ölçümlerinde doğrulama noktalarında 1. derece
+daha iyi çıktı (1,8–3,3° / 4,1–8,6°), ikinci derece küçük veriyi ezberliyor.
+
+**Baş öznitelikleri koşullu.** Kalibrasyonda baş hiç oynamazsa yaw/pitch
+neredeyse sabit görünür, ölçekleme onları büyütür ve küçük bir baş hareketi
+tahmini ekran dışına atar (~18°). Bu yüzden ancak kalibrasyon örneklerinde
+yeterince değişmişlerse (%5–%95 aralığı ≥ 0.03) modele girerler; baş pozlu
+kalibrasyonla hata baş oynamışken 2,3–4,5°'ye iniyor. Eşik ölçümlerle
+ayarlanacak.
 
 **Dwell'de tolerans süresi.** Bakış tahmininin doğal titremesi hedefin
 kenarında dolaşır. İlerleme her sapmada sıfırlanırsa seçim hiç tamamlanmaz.

@@ -61,6 +61,35 @@ class TestFeatures:
         assert np.all(np.isfinite(values))
 
 
+OPEN_L = FEATURE_NAMES.index("left_eye_openness")
+OPEN_R = FEATURE_NAMES.index("right_eye_openness")
+YAW = FEATURE_NAMES.index("head_yaw")
+PITCH = FEATURE_NAMES.index("head_pitch")
+
+
+def _head_samples(
+    count: int, *, head_spread: float, seed: int = 0, gain: float = 0.6
+) -> list[CalibrationSample]:
+    """Baş pozunun bakışı etkilediği sentetik veri.
+
+    İris konumu, ekrandaki hedef eksi başın katkısıdır: başı sağa çeviren
+    kullanıcı aynı noktaya bakmak için gözünü daha az çevirir. Model ancak baş
+    özniteliklerini görürse bunu çözebilir.
+    """
+    rng = np.random.default_rng(seed)
+    samples = []
+    for _ in range(count):
+        tx, ty = rng.uniform(0.05, 0.95, size=2)
+        yaw, pitch = rng.uniform(-head_spread / 2, head_spread / 2, size=2)
+        features = list(rng.normal(0, 0.002, size=FEATURE_DIM))
+        features[0] = features[2] = tx - gain * yaw / 0.1 * 0.1 + rng.normal(0, 0.005)
+        features[1] = features[3] = ty - gain * pitch / 0.1 * 0.1 + rng.normal(0, 0.005)
+        features[OPEN_L] = features[OPEN_R] = 0.3 + rng.normal(0, 0.01)
+        features[YAW], features[PITCH] = yaw, pitch
+        samples.append(CalibrationSample(features=features, target_x=tx, target_y=ty))
+    return samples
+
+
 class TestGazeMapper:
     @staticmethod
     def _samples(count: int = 40) -> list[CalibrationSample]:
@@ -70,6 +99,9 @@ class TestGazeMapper:
         for _ in range(count):
             fx, fy = rng.uniform(0.0, 1.0, size=2)
             features = [fx, fy, *rng.normal(0, 0.01, size=FEATURE_DIM - 2)]
+            # Gerçekçi göz açıklığı: kırpış filtresi açık gözleri elememeli.
+            features[OPEN_L] += 0.3
+            features[OPEN_R] += 0.3
             samples.append(
                 CalibrationSample(
                     features=features,
@@ -109,6 +141,117 @@ class TestGazeMapper:
         # Doğrusal ilişki öğrenilebilmeli; eşik gevşek, amaç regresyonun
         # tamamen kopuk olmadığını görmek.
         assert report.mean_error_deg < 2.0
+
+    def test_default_is_first_degree(self) -> None:
+        assert GazeMapper().degree == 1
+
+    def test_rejects_wrong_vector_length(self) -> None:
+        samples = self._samples()
+        samples[0] = CalibrationSample(features=[0.5] * 8, target_x=0.5, target_y=0.5)
+        with pytest.raises(CalibrationError, match="12 öznitelik"):
+            GazeMapper().fit(samples)
+        mapper = GazeMapper()
+        mapper.fit(self._samples())
+        with pytest.raises(CalibrationError, match="12 öznitelik"):
+            mapper.predict([0.5] * 8)
+
+
+class TestHeadPose:
+    """10 Kasım ölçümündeki hata: baş sabit kalibrasyon + küçük baş hareketi."""
+
+    def test_head_features_left_out_when_head_was_still(self) -> None:
+        mapper = GazeMapper()
+        mapper.fit(_head_samples(120, head_spread=0.004))
+        assert not mapper.uses_head_pose
+        assert "head_yaw" not in mapper.feature_names
+
+    def test_still_head_model_does_not_fly_off_when_head_moves(self) -> None:
+        mapper = GazeMapper()
+        mapper.fit(_head_samples(120, head_spread=0.004))
+        features = [0.5] * FEATURE_DIM
+        features[OPEN_L] = features[OPEN_R] = 0.3
+        features[YAW] = features[PITCH] = 0.0
+        before = mapper.predict(features)
+        features[YAW] = features[PITCH] = 0.05  # kalibrasyonun ~12 katı baş hareketi
+        after = mapper.predict(features)
+        # Baş sütunları modelde olsaydı tahmin ekranın kenarına fırlardı.
+        assert abs(after[0] - before[0]) < 0.02
+        assert abs(after[1] - before[1]) < 0.02
+        assert not mapper.in_calibrated_pose(features) or not mapper.uses_head_pose
+
+    def test_head_features_used_when_calibration_had_head_poses(self) -> None:
+        mapper = GazeMapper()
+        mapper.fit(_head_samples(200, head_spread=0.12))
+        assert mapper.uses_head_pose
+        assert {"head_yaw", "head_pitch"} <= set(mapper.feature_names)
+
+    def test_head_aware_model_is_more_accurate_with_head_movement(self) -> None:
+        train = _head_samples(200, head_spread=0.12, seed=1)
+        test = _head_samples(60, head_spread=0.12, seed=2)
+        screen = {
+            "screen_width_px": 1920,
+            "screen_height_px": 1080,
+            "screen_width_cm": 34.5,
+            "distance_cm": 60.0,
+        }
+
+        with_head = GazeMapper()
+        with_head.fit(train)
+        without_head = GazeMapper(head_min_spread=float("inf"))
+        without_head.fit(train)
+
+        assert not without_head.uses_head_pose
+        error_with = with_head.evaluate(test, **screen).mean_error_deg
+        error_without = without_head.evaluate(test, **screen).mean_error_deg
+        assert error_with < error_without / 2
+
+    def test_in_calibrated_pose(self) -> None:
+        mapper = GazeMapper()
+        mapper.fit(_head_samples(200, head_spread=0.12))
+        inside = [0.5] * FEATURE_DIM
+        inside[YAW] = inside[PITCH] = 0.0
+        outside = list(inside)
+        outside[YAW] = 0.5
+        assert mapper.in_calibrated_pose(inside)
+        assert not mapper.in_calibrated_pose(outside)
+        assert mapper.in_calibrated_pose(outside, margin=1.0)
+
+
+class TestBlinkFilter:
+    def test_blink_samples_are_left_out(self) -> None:
+        samples = _head_samples(60, head_spread=0.0)
+        rng = np.random.default_rng(5)
+        blinks = []
+        for _ in range(10):
+            features = [0.0] * FEATURE_DIM
+            features[1] = features[3] = 1.5  # kapanan kapak irisi aşağı iter
+            features[OPEN_L] = features[OPEN_R] = 0.03
+            blinks.append(
+                CalibrationSample(
+                    features=features, target_x=float(rng.uniform()), target_y=float(rng.uniform())
+                )
+            )
+        mapper = GazeMapper()
+        mapper.fit(samples + blinks)
+        assert mapper.discarded_blinks == 10
+        assert mapper.sample_count == 60
+
+    def test_looking_down_is_not_a_blink(self) -> None:
+        # Alt sıraya bakarken göz kısılır; eşik oradan alındığı için elenmez.
+        samples = _head_samples(60, head_spread=0.0)
+        for sample in samples:
+            if sample.target_y >= 0.85:
+                sample.features[OPEN_L] = sample.features[OPEN_R] = 0.2
+        mapper = GazeMapper()
+        mapper.fit(samples)
+        assert mapper.discarded_blinks == 0
+
+    def test_all_blinks_is_an_error(self) -> None:
+        samples = _head_samples(20, head_spread=0.0)
+        for i, sample in enumerate(samples):
+            sample.features[OPEN_L] = sample.features[OPEN_R] = 0.3 if i < 5 else 0.01
+        with pytest.raises(CalibrationError, match="Kırpış"):
+            GazeMapper().fit(samples)
 
 
 class TestDegreeConversion:
