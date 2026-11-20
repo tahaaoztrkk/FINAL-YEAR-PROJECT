@@ -63,11 +63,12 @@ export function useGazeSource({ kind, onSample, hz = 30, enabled = true }: Optio
 
   useEffect(() => {
     if (!enabled || kind !== 'webcam') return;
-    // TODO(Kişi 1): MediaPipe FaceLandmarker hattını buraya bağla.
-    // 1. getUserMedia ile kamera akışını al
-    // 2. FaceLandmarker.detectForVideo ile 478 landmark çıkar
-    // 3. Öznitelik vektörünü hesapla (backend/gaze/features.py ile aynı sıra)
-    // 4. Kalibrasyon modundaysa calibration_sample, değilse gaze gönder
+    // TODO(Kişi 1): Kamera hattını buraya bağla.
+    // 1-2. Hazır: features/gaze/useFaceTracking (kamera + 478 landmark),
+    //      tarayıcıda denemek için ?kamera sayfası.
+    // 3. Öznitelik vektörünü hesapla (backend/gaze/features.py ile aynı sıra) — 11 Kasım
+    // 4. Kalibrasyon modundaysa calibration_sample, değilse canlı mesaj gönder.
+    //    Canlı mesajın biçimi docs/oneri-canli-bakis-mesaji.md'de, Kişi 3 ile karara bağlanacak.
     console.warn('Kamera tabanlı bakış kaynağı henüz bağlanmadı.');
   }, [kind, enabled]);
 }

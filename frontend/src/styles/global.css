@@ -428,3 +428,119 @@ button {
   font-size: 12px;
   color: var(--text-dim);
 }
+
+/* --- Kamera kontrolü (?kamera) ------------------------------------------- */
+/* Geliştirici sayfası: katılımcı arayüzündeki 32 px kuralı burada uygulanmaz. */
+
+.camera-check {
+  height: 100%;
+  overflow: auto;
+  padding: 16px;
+  font-size: 16px;
+}
+
+.camera-check__header h1 {
+  margin: 0 0 4px;
+  font-size: 24px;
+}
+
+.camera-check__header p {
+  margin: 0 0 16px;
+  color: var(--text-dim);
+  max-width: 70ch;
+}
+
+.camera-check__body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.camera-check__stage {
+  position: relative;
+  flex: 1 1 480px;
+  max-width: 960px;
+  aspect-ratio: 4 / 3;
+  background: var(--surface);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+/* Ayna görüntüsü yalnızca gösterim için: landmark'lar ham kareden çıkar,
+ * Python tarafıyla aynı yönelimde kalır. */
+.camera-check__video,
+.camera-check__overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: scaleX(-1);
+}
+
+.camera-check__veil {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  background: rgba(7, 9, 13, 0.8);
+}
+
+.camera-check__panel {
+  flex: 0 1 300px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.camera-check__panel dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 12px;
+  margin: 0 0 16px;
+}
+
+.camera-check__panel dt {
+  color: var(--text-dim);
+}
+
+.camera-check__panel dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.camera-check__panel dd.is-good {
+  color: var(--ok);
+}
+
+.camera-check__panel dd.is-bad {
+  color: var(--error);
+}
+
+.camera-check__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.camera-check__actions button {
+  background: var(--surface-hover);
+  border: 1px solid #232a3a;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.camera-check__actions button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.camera-check__actions a {
+  color: var(--accent);
+}
