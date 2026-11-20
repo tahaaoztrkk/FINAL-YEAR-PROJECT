@@ -3,8 +3,9 @@
 **Sorumlu:** Polat Elmas · **Durum:** Hazır, 25 Kasım fare provasında denenecek (17 Kasım) · **Dayandığı belgeler:** `docs/hipotezler.md` (ön kayıt),
 `data/study/anket_formu.md`, `docs/setup.md` → "Kullanıcı testi"
 
-Bu belge bir oturumu baştan sona, her katılımcıda **aynı şekilde** yürütmek içindir. **Bütün oturumları aynı kişi (Polat)
-yürütür**; böylece deneyi yürütenden gelebilecek farklar sabit kalır. Deneyi yürüten kişi okunacak
+Bu belge bir oturumu baştan sona, her katılımcıda **aynı şekilde** yürütmek içindir. **Katılımcılar proje ekibinin 4 üyesidir
+(`K01`–`K04`).** Oturumları Polat yürütür; Polat'ın kendi oturumunu başka bir ekip üyesi yürütür. Böylece deneyi yürütenden
+gelebilecek farklar en aza iner. Okunacak metinler ekip üyelerine de aynen okunur; herkes aynı yönergeyi duymalı. Deneyi yürüten kişi okunacak
 metinleri (» ile başlayan satırlar) olduğu gibi okur; kendi sözleriyle açıklama eklemez. Katılımcılar arasındaki tek fark
 sistemin koda göre belirlediği koşul sırası olmalı.
 
@@ -34,8 +35,10 @@ sistemin koda göre belirlediği koşul sırası olmalı.
 - [ ] Katılım ölçütleri teyit edildi (ön kayıt Bölüm 5): 18 yaş ve üzeri, anadili Türkçe, normal ya da düzeltilmiş görme,
       bilinen nörolojik ya da göz hareketi bozukluğu yok.
 - [ ] Katılımcıya saat ve yer hatırlatıldı; gözlük ya da lens kullanıyorsa her zamanki gibi gelmesi söylendi.
-- [ ] Katılımcı kodu verildi: bir sonraki boş `K` numarası (`K01`, `K02`…). Kod sırası atlanmaz; tek numaralar A→B, çift
-      numaralar B→A ile başlar, dengenin bozulmaması için **katılımcı sayısı çift** tutulur.
+- [ ] Katılımcı kodu verildi: `K01`–`K04` ekip üyelerine oturumlardan önce **kurayla** dağıtıldı. Tek numaralar A→B, çift
+      numaralar B→A ile başlar (2 kişi / 2 kişi).
+- [ ] Katılımcıya kendi oturumundan önce `data/study/sentences.json` dosyasını açmaması ve deney cümlelerini diğer ekip üyeleriyle
+      konuşmaması hatırlatıldı. Cümleleri daha önce görüp görmediği not formuna yazılır.
 - [ ] Ad–kod eşleşmesi yalnızca ayrı ve şifreli dosyaya yazıldı (repoya değil).
 
 ## 3. Oturumdan önce kontrol listesi (katılımcı gelmeden 30 dk önce)
@@ -114,8 +117,8 @@ geçilir. Hız önemli ama acele etmeyin; yanlış yazarsanız Sil ile düzelteb
 - [ ] Doğrulama hatası (kalibrasyona **girmeyen** doğrulama noktalarından, derece) not formuna yazıldı.
 - [ ] Hata eşiği aşarsa yeniden kalibrasyon; **en fazla 2 tekrar.** Üçüncü denemede de aşarsa:
       » "Sistem bugün sizin gözünüzü yeterince doğru izleyemedi; bu sizinle değil, sistemle ilgili. Katkınız için teşekkür ederiz."
-      Katılımcı **her iki koşuldan** dışlanır, nedeni not formuna yazılır. Kodu yeniden kullanılmaz. Dahil edilen
-      katılımcılarda A→B (tek kod) ve B→A (çift kod) sayısı eşit olana kadar katılımcı alınmaya devam edilir.
+      Katılımcı **her iki koşuldan** dışlanır, nedeni not formuna yazılır. Yerine kimse alınmaz;
+      A→B / B→A dengesi bozulursa raporda belirtilir.
       *Eşik: ön kayıtta 2,5°; 20 Kasım karar toplantısındaki ekip ölçümlerine göre kesinleşecek.*
 
 ### 4.4b Serbest deneme (2 dk)
@@ -165,8 +168,8 @@ istediğiniz harflere bakabilirsiniz."
 
 ### 4.9 Kapanış (1 dk)
 
-» "Teşekkür ederiz. Verileriniz yalnızca kodunuzla saklanıyor. Sonuçları merak ederseniz proje bitince paylaşabiliriz.
-Lütfen kullandığınız cümleleri diğer katılımcılarla paylaşmayın."
+» "Teşekkür ederiz. Verileriniz yalnızca kodunuzla saklanıyor. Lütfen bütün ekip testini bitirene kadar kullandığınız
+cümleleri ve oturumu diğer ekip üyeleriyle konuşmayın."
 
 ---
 
@@ -204,7 +207,8 @@ Deneyi yürüten katılımcının yerine karar vermez ve ipucu vermez. Yalnızca
 |---|---|
 | Katılımcı kodu | K__ |
 | Tarih, başlangıç–bitiş saati | |
-| Deneyi yürüten | Polat (farklıysa nedeni) |
+| Deneyi yürüten | Polat (K oturumu Polat'ınsa: yürüten ekip üyesi) |
+| Deney cümlelerini önceden gördü mü? (evet / hayır / emin değil) | |
 | Gözlük / lens | |
 | Model dosyası (GGUF) | |
 | Kalibrasyon 1: hata (°), deneme sayısı | |
@@ -224,8 +228,6 @@ Deneyi yürüten katılımcının yerine karar vermez ve ipucu vermez. Yalnızca
 - **[EKİPLE — Taha]** Sağlayıcı `llamacpp` olarak kararlaştırıldı (20 Kasım). Hangi ince ayar sürümünün (GGUF) kullanılacağı ince ayar
   koşusundan sonra netleşecek; o sürüm bütün oturumlarda sabit kalır.
 - **[BEKLENİYOR — Yusuf]** Kalibrasyon ekranı ve doğrulama noktalarından hata hesabı (`purpose: "validate"`).
-- **Etik kurul:** Gerekmiyor. Danışman 20 Kasım'da sözlü olarak bildirdi; yazılı teyit e-postayla istenecek. Aydınlatılmış onam
-  formu her katılımcıda kullanılmaya devam eder (4.1).
 - 25 Kasım fare provası: 4.4 atlanır (`GAZE_SOURCE=mouse`), geri kalan adımlar ve süreler bu yönergeyle denenir; prova `P` koduyla
   yapılır. Okunacak metinler provada **yüksek sesle** okunur; takılınan ya da katılımcının soru sorduğu her yer not edilip
   metin düzeltilir. Eğitim metnindeki üç arayüz sorusu (4.3) da burada cevaplanır.

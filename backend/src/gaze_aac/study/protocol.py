@@ -1,6 +1,6 @@
 """Kullanıcı testinin planı.
 
-Etik kurul belgesindeki tasarımın kodu: denek içi, iki koşul (A harf harf,
+Ön kayıttaki (docs/hipotezler.md) tasarımın kodu: denek içi, iki koşul (A harf harf,
 B kısaltma ve aday listesi), katılımcıların yarısı B ile başlar. Her koşul
 kendi alıştırma cümleleriyle açılır, ardından ölçülen set gelir.
 
