@@ -5,10 +5,12 @@ kalır: her test cümlesi için kısaltma üretilir, sağlayıcıdan adaylar ist
 kullanıcının davranışı modellenir.
 
 Modellenen kullanıcı şöyle davranır: doğru cümle listede varsa seçer; yoksa
-cümlenin başından bir kelimeyi açık yazar ve tekrar dener. En fazla beş
-denemeden sonra vazgeçip cümleyi baştan harf harf yazar; o ana kadar
-girdiği seçimler boşa gitmiş sayılır. (Son denemede bütün kelimeler açık
-yazılmışsa cümle zaten yazılmıştır, yalnızca seslendirilir.) Bu, gerçek kullanıcının yapacağı şeyin
+cümlenin başından bir kelimeyi açık yazar ve tekrar dener. Varsayılan olarak
+deneme sınırı yoktur: bütün kelimeler açık yazılınca cümle zaten yazılmıştır,
+yalnızca seslendirilir (ön kayıt kararı, 20 Kasım; 5 denemelik sınır uzun
+cümleleri cezalandırıyordu). ``max_rounds`` verilirse o kadar denemeden sonra
+vazgeçip cümleyi baştan harf harf yazar; o ana kadar girdiği seçimler boşa
+gitmiş sayılır. Bu, gerçek kullanıcının yapacağı şeyin
 iyimser ama tutarlı bir yaklaşımıdır ve bütün koşullarda aynı uygulandığı
 için karşılaştırmayı adil kılar.
 
@@ -31,6 +33,9 @@ from ..nlp.expander import ExpansionService
 from ..nlp.schemes import get_scheme, normalize_abbreviation, tokenize, warm_up_schemes
 from ..schemas.expansion import ExpansionRequest
 from .metrics import SimulationStats, character_count
+
+MAX_ROUNDS = 0
+"""Bir cümle için en fazla deneme; 0 = sınırsız (ön kayıt kararı, docs/hipotezler.md)."""
 
 
 @dataclass
@@ -65,7 +70,7 @@ async def simulate_case(
     scheme_id: str,
     top_k: int,
     use_context: bool,
-    max_rounds: int = 5,
+    max_rounds: int = MAX_ROUNDS,
     request_latencies: list[float] | None = None,
 ) -> CaseResult:
     """Tek cümle için kullanıcı davranışını modeller.
@@ -86,7 +91,9 @@ async def simulate_case(
 
     # Tur 1: tam kısaltma. Sonraki turlarda kullanıcı cümlenin başından
     # itibaren birer kelime açık yazar (çıkmaz sokak olmaması ilkesi).
-    for round_index in range(max_rounds):
+    # max_rounds <= 0: sınır yok, gerekirse bütün kelimeler açılana kadar.
+    rounds = len(words) + 1 if max_rounds <= 0 else max_rounds
+    for round_index in range(rounds):
         if round_index > len(words):
             break
         revealed = words[:round_index]
@@ -134,6 +141,7 @@ async def run_condition(
     scheme_id: str,
     top_k: int = 5,
     use_context: bool = False,
+    max_rounds: int = MAX_ROUNDS,
 ) -> SimulationStats:
     """Tek bir koşulu (şema x sağlayıcı x bağlam) baştan sona koşar."""
     stats = SimulationStats(
@@ -147,10 +155,12 @@ async def run_condition(
             scheme_id,
             top_k,
             use_context,
+            max_rounds=max_rounds,
             request_latencies=stats.request_latencies_ms,
         )
         stats.sentence_count += 1
         stats.total_selections += result.selections
+        stats.selections.append(result.selections)
         stats.total_characters += character_count(case.text)
         stats.ranks.append(result.first_rank)
         stats.found_rounds.append(result.found_round)
@@ -165,6 +175,7 @@ async def run_grid(
     scheme_ids: list[str],
     context_options: tuple[bool, ...] = (False, True),
     top_k: int = 5,
+    max_rounds: int = MAX_ROUNDS,
 ) -> list[SimulationStats]:
     """Tüm koşulları koşar: şema x sağlayıcı x bağlam.
 
@@ -176,7 +187,9 @@ async def run_grid(
         for scheme_id in scheme_ids:
             for use_context in context_options:
                 started = time.perf_counter()
-                stats = await run_condition(cases, service, scheme_id, top_k, use_context)
+                stats = await run_condition(
+                    cases, service, scheme_id, top_k, use_context, max_rounds=max_rounds
+                )
                 results.append(stats)
                 elapsed = time.perf_counter() - started
                 print(
@@ -225,6 +238,69 @@ def write_csv(results: list[SimulationStats], path: Path) -> None:
         writer.writerows(rows)
 
 
+def per_sentence_path(out: Path) -> Path:
+    """Cümle başına CSV'nin yolu: ``simulation.csv`` → ``simulation_cumleler.csv``."""
+    return out.with_name(f"{out.stem}_cumleler{out.suffix or '.csv'}")
+
+
+def write_per_sentence_csv(
+    results: list[SimulationStats], cases: list[SimulationCase], path: Path
+) -> None:
+    """Her koşul x cümle için bir satır yazar.
+
+    Ön kayıttaki eşleştirilmiş testler (H-A1 için Wilcoxon, H-A2–A4 için
+    McNemar) aynı cümlenin iki koşuldaki değerlerini karşılaştırır; koşul
+    başına toplam satır buna yetmez. ``cumle_no`` değerlendirme dosyasındaki
+    0 tabanlı satır sırasıdır; aynı derlemde bütün koşullarda aynıdır.
+    """
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fieldnames = [
+        "sema",
+        "saglayici",
+        "baglam",
+        "cumle_no",
+        "cumle",
+        "kelime",
+        "harf",
+        "secim",
+        "ilk_sira",
+        "ilk1",
+        "ilk5",
+        "bulunan_tur",
+        "gecikme_ms",
+    ]
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        for stats in results:
+            if len(stats.selections) != len(cases):
+                raise ValueError(
+                    f"{stats.scheme}/{stats.provider}: {len(stats.selections)} sonuç, "
+                    f"{len(cases)} cümle. Cümle başına satırlar eşleşmiyor."
+                )
+            for index, case in enumerate(cases):
+                rank = stats.ranks[index]
+                found = stats.found_rounds[index]
+                writer.writerow(
+                    {
+                        "sema": stats.scheme,
+                        "saglayici": stats.provider,
+                        "baglam": stats.with_context,
+                        "cumle_no": index,
+                        "cumle": case.text,
+                        "kelime": len(tokenize(case.text)),
+                        "harf": character_count(case.text),
+                        "secim": stats.selections[index],
+                        # 1 tabanlı; ilk denemede yoksa boş.
+                        "ilk_sira": "" if rank is None else rank + 1,
+                        "ilk1": rank is not None and rank < 1,
+                        "ilk5": rank is not None and rank < 5,
+                        "bulunan_tur": "" if found is None else found,
+                        "gecikme_ms": round(stats.latencies_ms[index], 1),
+                    }
+                )
+
+
 def load_cases(path: Path, limit: int | None = None) -> list[SimulationCase]:
     """JSONL derleminden test vakalarını okur."""
     import json
@@ -264,6 +340,12 @@ def main() -> None:
     parser.add_argument("--schemes", nargs="+", default=["S1", "S2", "S3", "S4"])
     parser.add_argument("--top-k", type=int, default=5)
     parser.add_argument("--limit", type=int, default=None)
+    parser.add_argument(
+        "--max-rounds",
+        type=int,
+        default=MAX_ROUNDS,
+        help="cümle başına en fazla deneme; 0 = sınırsız, bütün kelimeler açılana kadar",
+    )
     parser.add_argument(
         "--max-new-tokens", type=int, default=None, help="hf_local: üretilecek en çok belirteç"
     )
@@ -323,10 +405,20 @@ def main() -> None:
         print("Değerlendirme cümlelerinde bağlam yok, yalnızca bağlamsız koşullar koşuluyor.")
 
     results = asyncio.run(
-        run_grid(cases, services, args.schemes, context_options=context_options, top_k=args.top_k)
+        run_grid(
+            cases,
+            services,
+            args.schemes,
+            context_options=context_options,
+            top_k=args.top_k,
+            max_rounds=args.max_rounds,
+        )
     )
     write_csv(results, args.out)
+    sentences_out = per_sentence_path(args.out)
+    write_per_sentence_csv(results, cases, sentences_out)
     print(f"\n{len(results)} koşul yazıldı: {args.out}")
+    print(f"Cümle başına satırlar: {sentences_out}")
 
 
 if __name__ == "__main__":

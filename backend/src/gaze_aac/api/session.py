@@ -72,6 +72,15 @@ class GazeSession:
             CalibrationError: Örnek yetersizse.
         """
         self.mapper.fit(self.calibration_samples)
+        # Raporda "baş pozu modele girdi mi, kaç kırpış elendi" buradan okunur.
+        self.log(
+            "calibration_model",
+            degree=self.mapper.degree,
+            features=list(self.mapper.feature_names),
+            uses_head_pose=self.mapper.uses_head_pose,
+            samples=self.mapper.sample_count,
+            discarded_blinks=self.mapper.discarded_blinks,
+        )
         # Not: burada eğitim kümesiyle değerlendirme yapılıyor; gerçek hata
         # ölçümü, ızgaraya denk gelmeyen doğrulama noktalarıyla arayüzün
         # gönderdiği ayrı örnekler üzerinden yapılmalı.

@@ -40,6 +40,13 @@ runs/
 # Deney ciktilari
 results/*.csv
 !results/.gitkeep
+# Göz ölçüm kayıtları (?kamera, ?olcum, ?bakis): yüz noktaları kişisel veridir,
+# repoya girmez. Yalnızca gaze_accuracy'nin özet raporu (results/gaze/*.md) girer.
+landmarks-*.json
+olcum-*.json
+bakis-deneme-*.json
+kisi*.json
+results/gaze/*.json
 
 # Editor / OS
 .vscode/*

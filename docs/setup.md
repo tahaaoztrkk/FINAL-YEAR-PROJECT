@@ -58,6 +58,12 @@ npm run dev
 `http://127.0.0.1:5173` açılır. Bağlantı göstergesi yeşil olmalı. Fareyi
 tuşların üstünde 700 ms tutun — halka dolar ve seçim gerçekleşir.
 
+Arayüz testleri (göz öznitelikleri Python'la aynı sonucu veriyor mu):
+
+```bash
+npm test
+```
+
 ## VS Code içinden çalıştırma
 
 `F5` ile hata ayıklayıcı başlar. Hazır yapılandırmalar:
