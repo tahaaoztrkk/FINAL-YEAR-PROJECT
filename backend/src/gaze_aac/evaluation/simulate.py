@@ -5,10 +5,12 @@ kalır: her test cümlesi için kısaltma üretilir, sağlayıcıdan adaylar ist
 kullanıcının davranışı modellenir.
 
 Modellenen kullanıcı şöyle davranır: doğru cümle listede varsa seçer; yoksa
-cümlenin başından bir kelimeyi açık yazar ve tekrar dener. En fazla beş
-denemeden sonra vazgeçip cümleyi baştan harf harf yazar; o ana kadar
-girdiği seçimler boşa gitmiş sayılır. (Son denemede bütün kelimeler açık
-yazılmışsa cümle zaten yazılmıştır, yalnızca seslendirilir.) Bu, gerçek kullanıcının yapacağı şeyin
+cümlenin başından bir kelimeyi açık yazar ve tekrar dener. Varsayılan olarak
+deneme sınırı yoktur: bütün kelimeler açık yazılınca cümle zaten yazılmıştır,
+yalnızca seslendirilir (ön kayıt kararı, 20 Kasım; 5 denemelik sınır uzun
+cümleleri cezalandırıyordu). ``max_rounds`` verilirse o kadar denemeden sonra
+vazgeçip cümleyi baştan harf harf yazar; o ana kadar girdiği seçimler boşa
+gitmiş sayılır. Bu, gerçek kullanıcının yapacağı şeyin
 iyimser ama tutarlı bir yaklaşımıdır ve bütün koşullarda aynı uygulandığı
 için karşılaştırmayı adil kılar.
 
@@ -32,8 +34,8 @@ from ..nlp.schemes import get_scheme, normalize_abbreviation, tokenize, warm_up_
 from ..schemas.expansion import ExpansionRequest
 from .metrics import SimulationStats, character_count
 
-MAX_ROUNDS = 5
-"""Bir cümle için en fazla deneme (ön kayıtla dondurulur, docs/hipotezler.md)."""
+MAX_ROUNDS = 0
+"""Bir cümle için en fazla deneme; 0 = sınırsız (ön kayıt kararı, docs/hipotezler.md)."""
 
 
 @dataclass

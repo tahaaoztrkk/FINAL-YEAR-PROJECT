@@ -32,7 +32,7 @@ from gaze_aac.nlp.providers.hf_local import (
 from gaze_aac.nlp.providers.llamacpp import LlamaCppProvider, candidates_from_texts
 from gaze_aac.nlp.providers.mock import MockProvider
 from gaze_aac.nlp.providers.ngram import NGramProvider
-from gaze_aac.nlp.schemes import get_scheme
+from gaze_aac.nlp.schemes import get_scheme, tokenize
 from gaze_aac.schemas.expansion import Candidate, ExpansionRequest
 
 
@@ -426,7 +426,12 @@ class TestRevealCost:
         scheme = get_scheme("S1")
         service = ExpansionService(_NeverFound())
         result = await simulate_case(
-            SimulationCase(text=sentence), service, "S1", top_k=5, use_context=False
+            SimulationCase(text=sentence),
+            service,
+            "S1",
+            top_k=5,
+            use_context=False,
+            max_rounds=5,
         )
         # Beşinci deneme ilk dört kelimeyi açık yazar; sonra baştan harf harf.
         revealed = ["bunu", "yarın", "sabah", "erkenden"]
@@ -434,6 +439,17 @@ class TestRevealCost:
         assert result.found_round is None
         assert result.first_rank is None
         assert result.selections == spent + character_count(sentence)
+
+    async def test_default_has_no_round_limit(self) -> None:
+        """Varsayılan: bütün kelimeler açılır, cümle baştan yazılmaz, seslendirilir."""
+        sentence = "Bunu yarın sabah erkenden doktora sormak istiyorum."
+        service = ExpansionService(_NeverFound())
+        result = await simulate_case(
+            SimulationCase(text=sentence), service, "S1", top_k=5, use_context=False
+        )
+        letters = sum(len(word) for word in tokenize(sentence))
+        assert result.found_round is None
+        assert result.selections == letters + 1
 
     async def test_fully_revealed_sentence_is_spoken_not_retyped(self) -> None:
         """Bütün kelimeler açık yazıldıysa cümle zaten yazılmıştır."""
