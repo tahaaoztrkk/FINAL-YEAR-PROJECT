@@ -10,6 +10,34 @@ from gaze_aac.gaze.features import FEATURE_DIM, FEATURE_NAMES, extract_features
 from gaze_aac.gaze.filters import GazeSmoother, OneEuroFilter
 from gaze_aac.schemas.gaze import CalibrationSample
 
+OPEN_L = FEATURE_NAMES.index("left_eye_openness")
+OPEN_R = FEATURE_NAMES.index("right_eye_openness")
+YAW = FEATURE_NAMES.index("head_yaw")
+PITCH = FEATURE_NAMES.index("head_pitch")
+
+
+def _head_samples(
+    count: int, *, head_spread: float, seed: int = 0, gain: float = 0.6
+) -> list[CalibrationSample]:
+    """Baş pozunun bakışı etkilediği sentetik veri.
+
+    İris konumu, ekrandaki hedef eksi başın katkısıdır: başı sağa çeviren
+    kullanıcı aynı noktaya bakmak için gözünü daha az çevirir. Model ancak baş
+    özniteliklerini görürse bunu çözebilir.
+    """
+    rng = np.random.default_rng(seed)
+    samples = []
+    for _ in range(count):
+        tx, ty = rng.uniform(0.05, 0.95, size=2)
+        yaw, pitch = rng.uniform(-head_spread / 2, head_spread / 2, size=2)
+        features = list(rng.normal(0, 0.002, size=FEATURE_DIM))
+        features[0] = features[2] = tx - gain * yaw + rng.normal(0, 0.005)
+        features[1] = features[3] = ty - gain * pitch + rng.normal(0, 0.005)
+        features[OPEN_L] = features[OPEN_R] = 0.3 + rng.normal(0, 0.01)
+        features[YAW], features[PITCH] = yaw, pitch
+        samples.append(CalibrationSample(features=features, target_x=tx, target_y=ty))
+    return samples
+
 
 def _fake_landmarks(iris_offset: float = 0.0) -> np.ndarray:
     """Sentetik landmark dizisi.
@@ -59,35 +87,6 @@ class TestFeatures:
     def test_output_is_finite(self) -> None:
         values = extract_features(_fake_landmarks()).values
         assert np.all(np.isfinite(values))
-
-
-OPEN_L = FEATURE_NAMES.index("left_eye_openness")
-OPEN_R = FEATURE_NAMES.index("right_eye_openness")
-YAW = FEATURE_NAMES.index("head_yaw")
-PITCH = FEATURE_NAMES.index("head_pitch")
-
-
-def _head_samples(
-    count: int, *, head_spread: float, seed: int = 0, gain: float = 0.6
-) -> list[CalibrationSample]:
-    """Baş pozunun bakışı etkilediği sentetik veri.
-
-    İris konumu, ekrandaki hedef eksi başın katkısıdır: başı sağa çeviren
-    kullanıcı aynı noktaya bakmak için gözünü daha az çevirir. Model ancak baş
-    özniteliklerini görürse bunu çözebilir.
-    """
-    rng = np.random.default_rng(seed)
-    samples = []
-    for _ in range(count):
-        tx, ty = rng.uniform(0.05, 0.95, size=2)
-        yaw, pitch = rng.uniform(-head_spread / 2, head_spread / 2, size=2)
-        features = list(rng.normal(0, 0.002, size=FEATURE_DIM))
-        features[0] = features[2] = tx - gain * yaw / 0.1 * 0.1 + rng.normal(0, 0.005)
-        features[1] = features[3] = ty - gain * pitch / 0.1 * 0.1 + rng.normal(0, 0.005)
-        features[OPEN_L] = features[OPEN_R] = 0.3 + rng.normal(0, 0.01)
-        features[YAW], features[PITCH] = yaw, pitch
-        samples.append(CalibrationSample(features=features, target_x=tx, target_y=ty))
-    return samples
 
 
 class TestGazeMapper:
