@@ -246,9 +246,8 @@ testi yapılmaz; H-B1–H-B3 "test edilemedi" olarak raporlanır ve yalnızca be
 
 ## 5. Katılım ve dışlama kuralları (veri görülmeden önce yazıldı)
 
-**Etik kurul:** Başvuru şu an askıda; gerekip gerekmediği danışmanla görüşülecek. Onay gerekirse **hiçbir katılımcı verisi
-onaydan önce toplanmaz**; gerekmezse bu, danışmandan yazılı olarak alınıp rapora eklenir. Her iki durumda da aydınlatılmış onam
-formu kullanılır. **[EKİPLE — danışman]**
+**Etik kurul:** Gerekmiyor. Danışman 20 Kasım 2026'da sözlü olarak bildirdi; yazılı teyit e-postayla istenecek ve rapora
+eklenecek. Her katılımcıdan aydınlatılmış onam formu alınır; onam imzalanmadan hiçbir kayıt başlamaz.
 
 **Katılım:** 18 yaş ve üzeri; anadili Türkçe; normal ya da düzeltilmiş görme; bilinen nörolojik ya da göz hareketi bozukluğu yok;
 aydınlatılmış onam formunu imzalamış.
@@ -288,3 +287,4 @@ katılımcılarla kullanılmaz ve kayıtları repoya girmez.
 | 2026-11-08 | 1.1, 5 | İlk taslak; birincil hipotez (H-A1), kalibrasyon eşiği (2,5°) ve gözlük kuralı kararlaştırıldı | — | Evet (veri yok) |
 | 2026-11-11 | 0, 1.1, 2.1–2.4, 3.2, 4, 5 | PR #14–#20 sonrası güncelleme: S4'te 8 etiket ve Zemberek; bulunamayan cümlenin maliyeti; ilk-1 yalnızca ilk denemeden; bağlam alanı; sızıntı denetimi; küme boyutları. Kalibrasyon hatası doğrulama noktalarından tanımlandı; `?olcum` ekip içiyle sınırlandı. | Kodda verilen kararları ön kayda işlemek; Berkay'ın eğitim noktası hatası notu; etik kurul durumu (askıda) eklendi | Evet (simülasyonun yalnızca n-gram doğrulama sonuçları görüldü; model ve test sonuçları görülmedi) |
 | 2026-11-17 | 3.3, 4 | Atlanan cümleler için 180 sn duyarlılık analizi; dışlananın yerine eşit sıra kuralı; tek deneyi yürüten; 2 dk serbest deneme | Oturum yönergesi (PR #22) yazılırken çıkan tasarım kararları | Evet (katılımcı verisi yok) |
+| 2026-11-20 | 5 | Etik kurul: "askıda" yerine "gerekmiyor" (danışman, 20 Kasım, sözlü; yazılı teyit istenecek) | Danışmanın kararı | Evet (katılımcı verisi yok) |
