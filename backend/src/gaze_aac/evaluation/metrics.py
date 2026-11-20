@@ -7,6 +7,7 @@ en sık çöptüğü yerdir.
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, field
 
 from ..nlp.schemes import AbbreviationScheme, tokenize
@@ -139,6 +140,14 @@ class SimulationStats:
     def max_request_latency_ms(self) -> float:
         return max(self.request_latencies_ms, default=0.0)
 
+    def request_latency_percentile_ms(self, percent: float) -> float:
+        """Tek model çağrılarının yüzdelik süresi (en yakın sıra yöntemi)."""
+        values = sorted(self.request_latencies_ms)
+        if not values:
+            return 0.0
+        rank = max(1, math.ceil(percent / 100.0 * len(values)))
+        return values[min(rank, len(values)) - 1]
+
     def as_row(self) -> dict[str, float | str | int | bool]:
         """CSV satırı. Sütun adları rapordaki tablo başlıklarıyla aynı."""
         return {
@@ -153,6 +162,8 @@ class SimulationStats:
             "bulunan": round(self.found_rate, 2),
             "gecikme_ms": round(self.mean_latency_ms, 1),
             "istek_ms": round(self.mean_request_latency_ms, 1),
+            "istek_ms_p50": round(self.request_latency_percentile_ms(50), 1),
+            "istek_ms_p95": round(self.request_latency_percentile_ms(95), 1),
             "istek_ms_en_cok": round(self.max_request_latency_ms, 1),
         }
 

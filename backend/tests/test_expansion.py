@@ -285,6 +285,16 @@ class TestSimulation:
                 tmp_path / "x.csv",
             )
 
+    def test_request_latency_percentiles(self) -> None:
+        from gaze_aac.evaluation.metrics import SimulationStats
+
+        stats = SimulationStats(scheme="S1", provider="x", with_context=False)
+        assert stats.request_latency_percentile_ms(95) == 0.0
+        stats.request_latencies_ms = [float(v) for v in range(1, 101)]
+        assert stats.request_latency_percentile_ms(50) == 50.0
+        assert stats.request_latency_percentile_ms(95) == 95.0
+        assert stats.request_latency_percentile_ms(100) == 100.0
+
     def test_per_sentence_path_sits_next_to_summary(self) -> None:
         assert per_sentence_path(Path("results/simulation.csv")) == Path(
             "results/simulation_cumleler.csv"
@@ -333,6 +343,8 @@ class TestSimulation:
             "bulunan",
             "gecikme_ms",
             "istek_ms",
+            "istek_ms_p50",
+            "istek_ms_p95",
             "istek_ms_en_cok",
         }
 
