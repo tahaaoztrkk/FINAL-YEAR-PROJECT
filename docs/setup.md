@@ -198,8 +198,10 @@ Durum çubuğuna katılımcı kodunu yazıp **Deneyi başlat** deyin. Kodlar
 
 **Sağlayıcı.** Deney cümleleri derlemde yoktur (bir test bunu denetler);
 model onları eğitimde görseydi B koşulu ezber ölçerdi. Bu yüzden `mock` ve
-`ngram` bu cümleleri üretemez ve asıl test ince ayarlı modelle koşulur
-(`EXPANDER_PROVIDER=hf_local`, `HF_ADAPTER_PATH`). `mock` ile prova
+`ngram` bu cümleleri üretemez ve asıl test ince ayarlı modelle koşulur:
+demo dizüstünde `EXPANDER_PROVIDER=llamacpp`, model GGUF'a çevrilip
+`llama-server`'da yüklenir (bkz. "Demo bilgisayarı (llama.cpp)"). Hangi ince
+ayar sürümünün kullanılacağı ince ayar koşusundan sonra netleşir. `mock` ile prova
 yapılabilir: B'de kelimeleri açık yazıp seslendirin. Analiz, `mock` ile
 alınmış bir kayıt görürse uyarır.
 
