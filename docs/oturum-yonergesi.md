@@ -224,8 +224,8 @@ Deneyi yürüten katılımcının yerine karar vermez ve ipucu vermez. Yalnızca
 - **[EKİPLE — Taha]** Sağlayıcı `llamacpp` olarak kararlaştırıldı (20 Kasım). Hangi ince ayar sürümünün (GGUF) kullanılacağı ince ayar
   koşusundan sonra netleşecek; o sürüm bütün oturumlarda sabit kalır.
 - **[BEKLENİYOR — Yusuf]** Kalibrasyon ekranı ve doğrulama noktalarından hata hesabı (`purpose: "validate"`).
-- **Etik kurul:** Danışman henüz karar vermedi; en kötü durumda test yalnızca ekip üyeleriyle yapılacak. O durumda da bu
-  yönerge aynen uygulanır; ekip üyelerinin sistemi tanıdığı için sonuçları iyimser olabileceği raporda sınırlılık olarak yazılır.
+- **Etik kurul:** Gerekmiyor. Danışman 20 Kasım'da sözlü olarak bildirdi; yazılı teyit e-postayla istenecek. Aydınlatılmış onam
+  formu her katılımcıda kullanılmaya devam eder (4.1).
 - 25 Kasım fare provası: 4.4 atlanır (`GAZE_SOURCE=mouse`), geri kalan adımlar ve süreler bu yönergeyle denenir; prova `P` koduyla
   yapılır. Okunacak metinler provada **yüksek sesle** okunur; takılınan ya da katılımcının soru sorduğu her yer not edilip
   metin düzeltilir. Eğitim metnindeki üç arayüz sorusu (4.3) da burada cevaplanır.
