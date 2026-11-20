@@ -176,8 +176,8 @@ commit hash, model/adaptör sürümü ve kütüphane sürümleri yazılır.
 
 ### 3.1 Genel
 
-- α = 0,05, **çift yönlü**. (Tek yönlü testle 12 kişide gereken etki d ≈ 0,89'dan 0,77'ye iner; çift yönlü daha savunulabilir.)
-- Her çalışmanın birincil hipotezi düzeltmesiz; ikinciller kendi ailesinde **Holm** düzeltmesiyle.
+- Hipotez testleri yalnızca **Çalışma A**'da yapılır; Çalışma B betimseldir (Bölüm 1.2).
+- α = 0,05, **çift yönlü**. Birincil hipotez (H-A1) düzeltmesiz; ikinciller (H-A2–H-A4) tek aile olarak **Holm** düzeltmesiyle.
 - Her testte etki büyüklüğü ve %95 güven aralığı raporlanır.
 
 ### 3.2 Çalışma A
