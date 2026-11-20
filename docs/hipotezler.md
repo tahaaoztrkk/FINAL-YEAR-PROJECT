@@ -48,7 +48,7 @@ düzeltme turları azaldığından toplamda daha az seçim gerekir.
 > KSR'si yüksek.
 
 **Karar (Polat, 8 Kasım):** Birincil hipotez H-A1'dir. Değerlendirilen alternatifler: (a) yönsüz "şemalar arasında ilk-1
-doğrulukta fark vardır"; (b) birincil hipotezi yalnızca Çalışma B'ye koymak. (b) seçilmedi: kullanıcı testi etik onaya bağlı ve
+doğrulukta fark vardır"; (b) birincil hipotezi yalnızca Çalışma B'ye koymak. (b) seçilmedi: kullanıcı testi prototipin zamanında hazır olmasına bağlı ve
 4 kişilik pilota inebilir, o zaman projenin ön kayıtlı birincil sonucu kalmaz. H-A1 tutmazsa bu da raporlanacak bir bulgudur.
 
 **İkincil hipotezler (Holm düzeltmesiyle tek aile):**
@@ -120,7 +120,8 @@ S4 çiftleriyle eğitildi. Sınırlılık: hal ekleri etiketlenmediği için S4 
 ### 2.2 Simülasyondaki kullanıcı modeli (`simulate.simulate_case`)
 
 Tur 1'de tam kısaltma girilir. Doğru cümle ilk 5 adayda yoksa sonraki her turda **cümlenin başından bir kelime daha açık
-yazılır**. En fazla 5 tur denenir. Doğru cümle hiç bulunmazsa cümle harf harf yazılmış sayılır.
+yazılır**. Tur sınırı yoktur (`max_rounds = 0`): doğru cümle bulunana ya da bütün kelimeler açık yazılana kadar devam
+edilir.
 
 **Maliyet kuralları (karar verildi, PR #20):**
 - Bulunan cümle: o ana kadar girilen seçimler (kısaltma + açık yazılan kelimelerin fazladan harfleri) + 1 aday seçimi.
@@ -130,9 +131,12 @@ yazılır**. En fazla 5 tur denenir. Doğru cümle hiç bulunmazsa cümle harf h
 - Bu kurallar altında bir cümlenin KSR'si negatif olabilir (kısaltma denemesi harf harf yazmaktan pahalıya gelmiş demektir).
   Negatif değerler kırpılmaz, olduğu gibi raporlanır.
 
-**[EKİPLE — Taha] Açık kalan tek nokta:** En fazla 5 deneme (`max_rounds = 5`) sınırı, 4 kelimeden uzun cümlelerde bütün
-kelimeler açık yazılmadan denemeyi keser. Sınır sabit bir parametre olarak bu dosyayla birlikte dondurulur; değiştirilecekse
-`onkayit-v1`'den önce değiştirilir.
+**Tur sınırı (karar verildi, Taha, 20 Kasım, PR #29):** Önceki 5 turluk sınır (`max_rounds = 5`), 4 kelimeden uzun
+cümlelerde (doğrulama kümesinin %32'si) bütün kelimeler açılmadan denemeyi kesiyor ve cümleyi baştan harf harf yazdırıyordu.
+n-gram ile doğrulama kümesinde bu kural tek başına KSR'yi yaklaşık 20 puan değiştirdi (S1: %−12,9 → %9,3); yani sonucu
+modelden çok kural belirliyordu. Sınır kaldırıldı. Bu durumda "bulunamayan cümle" kuralının ilk maddesi (boşa giden
+seçimler + harf harf yazım) yalnızca `--max-rounds N` ile sınır konduğunda devreye girer; ana analizde her cümle ya
+bulunur ya da bütün kelimeleri açık yazılıp seslendirilir. Parametre bu dosyayla birlikte dondurulur.
 
 **Doğru cümle eşleşmesi:** `tokenize` ile normalleştirme (Türkçe küçük harf, noktalama yok, tek boşluk) sonrası birebir eşleşme.
 Simülasyon ve kullanıcı testi aynı kuralı kullanır (`protocol.normalize_sentence`). Anlamca yakın cümle doğru sayılmaz.
@@ -187,12 +191,13 @@ olduğu için Shapiro-Wilk/t-testi kullanılmaz.
 | H-A1 | Cümle başına toplam seçim, S4 vs S1 | Wilcoxon işaretli sıralar | Eşleştirilmiş sıra-iki serili korelasyon; medyan fark, bootstrap %95 GA |
 | H-A2, H-A3, H-A4 | İlk denemede ilk-1 doğru/yanlış | Kesin McNemar | Oran farkı, %95 GA |
 
-Bootstrap: cümleler üzerinden 10.000 yeniden örnekleme, sabit tohum. **Not:** `simulate.py` şu an koşul başına toplam satır yazıyor;
-eşleştirilmiş test için **cümle başına** satırlar da (cümle kimliği, seçim, sıra) CSV'ye yazılmalı. **[EKİPLE — Taha]**
+Bootstrap: cümleler üzerinden 10.000 yeniden örnekleme, sabit tohum. Eşleştirilmiş testler `simulate.py`'nin özet CSV'nin
+yanına yazdığı **cümle başına** dosyayı (`<out>_cumleler.csv`; `cumle_no`, `secim`, `ilk_sira`, `ilk1`, `ilk5`,
+`bulunan_tur`) kullanır (PR #29). `cumle_no` değerlendirme dosyasındaki satır sırasıdır ve bütün koşullarda aynıdır.
 
 **Hangi küme:** Simülasyon şu an doğrulama kümesinde (291 cümle) ölçüyor. 15 Aralık sonuçları doğrulama kümesinden gelir. Kod ve model
-dondurulduktan sonra (commit hash kaydedilir) ayrılmış test kümesi (295 cümle) **bir kez** çalıştırılır; rapordaki asıl sayılar odur.
-**[EKİPLE — Taha]**
+dondurulduktan sonra (commit hash kaydedilir) ayrılmış test kümesi (295 cümle) Ocak'ta **bir kez** çalıştırılır; rapordaki asıl
+sayılar odur (onaylandı, Taha, 20 Kasım).
 
 ### 3.3 Çalışma B
 
@@ -288,3 +293,4 @@ katılımcılarla kullanılmaz ve kayıtları repoya girmez.
 | 2026-11-11 | 0, 1.1, 2.1–2.4, 3.2, 4, 5 | PR #14–#20 sonrası güncelleme: S4'te 8 etiket ve Zemberek; bulunamayan cümlenin maliyeti; ilk-1 yalnızca ilk denemeden; bağlam alanı; sızıntı denetimi; küme boyutları. Kalibrasyon hatası doğrulama noktalarından tanımlandı; `?olcum` ekip içiyle sınırlandı. | Kodda verilen kararları ön kayda işlemek; Berkay'ın eğitim noktası hatası notu; etik kurul durumu (askıda) eklendi | Evet (simülasyonun yalnızca n-gram doğrulama sonuçları görüldü; model ve test sonuçları görülmedi) |
 | 2026-11-17 | 3.3, 4 | Atlanan cümleler için 180 sn duyarlılık analizi; dışlananın yerine eşit sıra kuralı; tek deneyi yürüten; 2 dk serbest deneme | Oturum yönergesi (PR #22) yazılırken çıkan tasarım kararları | Evet (katılımcı verisi yok) |
 | 2026-11-20 | 5 | Etik kurul: "askıda" yerine "gerekmiyor" (danışman, 20 Kasım, sözlü; yazılı teyit istenecek) | Danışmanın kararı | Evet (katılımcı verisi yok) |
+| 2026-11-20 | 1.1, 2.2, 3.2 | Tur sınırı kaldırıldı (`max_rounds = 0`); cümle başına CSV tanımlandı; test kümesinin Ocak'ta bir kez çalıştırılması onaylandı; 1.1'deki etik onay gerekçesi düzeltildi | Taha'nın kararları (PR #29) | Evet (yalnızca n-gram doğrulama sonuçları görüldü; karar o karşılaştırmaya dayanıyor. İnce ayarlı modelin ilk 20 cümlelik doğrulama koşusu karardan sonra yapıldı; test sonuçları görülmedi) |
