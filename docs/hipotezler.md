@@ -236,7 +236,12 @@ büyüklüğü değildir. Bu yüzden Çalışma B'de hipotez testi yapılmaz (B�
 - **Katılımcılar:** Proje ekibinin 4 üyesi, `K01`–`K04`. Kodlar oturumdan önce kurayla dağıtılır.
 - **Sıra:** Katılımcı kodundan çıkar: tek numara A→B, çift numara B→A; yani 2 kişi A→B, 2 kişi B→A. Deneyi yürüten seçmez.
   Dışlanan ekip üyesinin yerine kimse alınmaz; denge bozulursa raporlanır.
-- **Deneyi yürüten:** Oturumları Polat yürütür; Polat'ın kendi oturumunu başka bir ekip üyesi yürütür ve bu not formuna yazılır.
+- **Deneyi yürüten:** Oturumları Polat yürütür. Oturumu yürüten kişi hedef cümleleri ekranda gördüğü için **Polat'ın kendi K
+  oturumu ilk yapılır** ve cümleleri zaten hazırlamış olan Taha yürütür; böylece cümleleri önceden gören kişi sayısı artmaz.
+- **Prova ve pilot:** Fare provası, kamera provası ve 1 kişilik pilot `P` koduyla ve **ayrı bir cümle setiyle**
+  (`data/study/prova_sentences.json`; `backend/scripts/make_rehearsal_sentences.py`) yapılır. Bu set derlemin eğitim kısmından,
+  asıl cümlelerle 4+ harfli ortak kelimesi olmadan ve uzunluk bakımından eşleştirilerek seçildi. Asıl cümle dosyasının özeti
+  `55630ed3d54f`; her K oturumundan önce bu özet kontrol edilir.
   Okunacak metinler sabittir (`docs/oturum-yonergesi.md`).
 - **Ekip içi testin bilinen yanlılıkları (sınırlılık olarak raporlanır):** Katılımcılar sistemi geliştirdi; arayüzü, şemaları ve
   derlemi tanıyor. Deney cümlelerini (`data/study/sentences.json`) önceden görmüş olabilirler; bu özellikle B koşulunda adayları
@@ -271,9 +276,17 @@ betimsel raporlanır. Gerekçe: dışlamak örneklemi daraltır. Gözlük camı 
 **Kalibrasyon:** Doğrulama hatası eşiği aşarsa en fazla **2 kez** yeniden kalibrasyon yapılır. Üçüncüde de aşarsa katılımcı **her
 iki koşuldan** dışlanır (denek içi tasarımda tek koşulda tutulamaz).
 
-**Eşik (karar, 8 Kasım): 2,5°.** Gerekçe: ızgara ekran yüksekliğinin %62'sini 3 satıra bölüyor (`layout.ts`), yani bir
-hedef ~223 px. 15,6" 1080p ekranda bu ~4,0 cm; 60 cm'de merkezden kenara ~1,9°. Plandaki 3° eşiğindeki katılımcının bakışı
-ortalamada hedefin dışına düşer; ölçülen WPM sistemi değil kalibrasyonu yansıtır. Kesin ekran belli olunca bu sayı yeniden hesaplanır.
+**Eşik (karar, 21 Kasım; 8 Kasım'daki sabit 2,5°'nin yerine):** Eşik, kullanılan ızgaradaki bir tuşun boyutundan türetilir:
+
+> **θ = atan( (k / 2) / 60 cm )**, k = tuşun kısa kenarı (cm), deney ekranında cetvelle ölçülür.
+
+Izgara, Berkay ve Yusuf'un karar belgesindeki ölçüm kuralıyla seçilir (`docs/oneri-canli-bakis-mesaji.md`, Bölüm 3; PR #28).
+θ 0,1°'ye yuvarlanır ve ızgara seçilince değişiklik günlüğüne "formülden hesaplandı" diye yazılır; bu bir sapma sayılmaz.
+Izgara seçilip θ yazılmadan hiçbir K oturumu başlamaz.
+Gerekçe: Katılımcı, sistemi kullanamadığı için dışlanmalı; kullanılabilirliği de tuşun boyutu belirler. Bakış hatası tuşun yarı
+boyunu aşınca bakış ortalamada tuşun dışına düşer ve ölçülen WPM sistemi değil kalibrasyonu yansıtır. Sabit 2,5° bu ilişkiyi yok
+sayıyordu: bugünkü 4×3 ızgarada (tuşun yarı yüksekliği ≈ 1,9 cm) formül ≈ 1,8° verir, ekip ölçümleri ise 1,8–4,5° (Taha, 13 Kasım;
+tek kişi). Daha büyük tuşlar seçilirse eşik kendiliğinden gevşer.
 `study.py` dışlamayı şu an uygulamıyor; analizden önce eklenecek ya da elle uygulanıp gerekçesiyle raporlanacak.
 
 **Diğer kurallar:**
@@ -303,3 +316,4 @@ katılımcılarla kullanılmaz ve kayıtları repoya girmez.
 | 2026-11-20 | 5 | Etik kurul: "askıda" yerine "gerekmiyor" (danışman, 20 Kasım, sözlü; yazılı teyit istenecek) | Danışmanın kararı | Evet (katılımcı verisi yok) |
 | 2026-11-20 | 1.1, 2.2, 3.2 | Tur sınırı kaldırıldı (`max_rounds = 0`); cümle başına CSV tanımlandı; test kümesinin Ocak'ta bir kez çalıştırılması onaylandı; 1.1'deki etik onay gerekçesi düzeltildi | Taha'nın kararları (PR #29) | Evet (yalnızca n-gram doğrulama sonuçları görüldü; karar o karşılaştırmaya dayanıyor. İnce ayarlı modelin ilk 20 cümlelik doğrulama koşusu karardan sonra yapıldı; test sonuçları görülmedi) |
 | 2026-11-20 | 0, 1.1, 1.2, 3.3, 3.4, 4, 5 | Çalışma B yalnızca ekibin 4 üyesiyle; hipotez testi yerine katılımcı başına betimsel raporlama; sıra 2/2, yerine alma yok; ekip içi yanlılıklar sınırlılık olarak eklendi; etik kurul ifadeleri çıkarıldı | Danışmanla kararlaştırılan örneklem; 4 kişiyle test gücü yetersiz (d_z ≈ 2,13) | Evet (katılımcı verisi yok) |
+| 2026-11-21 | 4, 5 | Kalibrasyon eşiği sabit 2,5° yerine tuş boyutundan türetiliyor (θ = atan((k/2)/60 cm)); Polat'ın K oturumu ilk ve Taha yürütür; prova ve pilot ayrı cümle setiyle (`prova_sentences.json`) | Ekip ölçümleri (1,8–4,5°) sabit eşiğin üstünde; ekip içi testte prova deney cümlelerini açığa çıkarırdı | Evet (katılımcı verisi yok; yalnızca ekibin göz takibi ölçümleri görüldü) |

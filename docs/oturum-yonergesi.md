@@ -35,6 +35,9 @@ sistemin koda göre belirlediği koşul sırası olmalı.
 - [ ] Katılım ölçütleri teyit edildi (ön kayıt Bölüm 5): 18 yaş ve üzeri, anadili Türkçe, normal ya da düzeltilmiş görme,
       bilinen nörolojik ya da göz hareketi bozukluğu yok.
 - [ ] Katılımcıya saat ve yer hatırlatıldı; gözlük ya da lens kullanıyorsa her zamanki gibi gelmesi söylendi.
+- [ ] **Oturum sırası:** Polat'ın K oturumu ilk yapılır ve Taha yürütür (Taha cümleleri hazırladı; yürüten kişi hedef cümleleri
+      ekranda gördüğü için başka sıra, cümleleri önceden gören kişi sayısını artırır). Polat diğer üç oturumu kendi oturumundan
+      sonra yürütür.
 - [ ] Katılımcı kodu verildi: `K01`–`K04` ekip üyelerine oturumlardan önce **kurayla** dağıtıldı. Tek numaralar A→B, çift
       numaralar B→A ile başlar (2 kişi / 2 kişi).
 - [ ] Katılımcıya kendi oturumundan önce `data/study/sentences.json` dosyasını açmaması ve deney cümlelerini diğer ekip üyeleriyle
@@ -57,7 +60,9 @@ sistemin koda göre belirlediği koşul sırası olmalı.
 - [ ] `llama-server` ince ayarlı GGUF modelle çalışıyor; `.env`'de `LLAMACPP_URL` doğru (`docs/setup.md` → "Demo bilgisayarı
       (llama.cpp)"). Yüklenen model dosyasının adı not formuna yazıldı.
 - [ ] GPU belleği sınırlı (model 6,5/8 GB kullanıyor): oturum boyunca tarayıcı, sunucu ve `llama-server` dışında hiçbir uygulama açık değil.
-- [ ] `data/study/sentences.json` değişmedi (kayıttaki özet önceki katılımcılarınkiyle aynı olmalı).
+- [ ] **Asıl cümle dosyası yerinde** (prova dosyası kopyalanıp unutulmadı). İkisi de doğru olmalı:
+      `git status --short data/study/` boş çıkar, ve aşağıdaki komut `55630ed3d54f` yazar:
+      `python -c "import hashlib;print(hashlib.sha256(open('data/study/sentences.json','rb').read()).hexdigest()[:12])"`
 - [ ] Bir prova cümlesi `P` koduyla denendi, ardından sayfa yenilendi (her katılımcıdan önce yenilenir).
 
 **Malzeme**
@@ -119,7 +124,8 @@ geçilir. Hız önemli ama acele etmeyin; yanlış yazarsanız Sil ile düzelteb
       » "Sistem bugün sizin gözünüzü yeterince doğru izleyemedi; bu sizinle değil, sistemle ilgili. Katkınız için teşekkür ederiz."
       Katılımcı **her iki koşuldan** dışlanır, nedeni not formuna yazılır. Yerine kimse alınmaz;
       A→B / B→A dengesi bozulursa raporda belirtilir.
-      *Eşik: ön kayıtta 2,5°; 20 Kasım karar toplantısındaki ekip ölçümlerine göre kesinleşecek.*
+      *Eşik: θ = atan((k/2) / 60 cm), k = seçilen ızgarada tuşun kısa kenarı (ön kayıt Bölüm 5). Değeri: ___° (ızgara seçilince
+      yazılır; yazılmadan K oturumu başlamaz).*
 
 ### 4.4b Serbest deneme (2 dk)
 
@@ -228,6 +234,35 @@ Deneyi yürüten katılımcının yerine karar vermez ve ipucu vermez. Yalnızca
 - **[EKİPLE — Taha]** Sağlayıcı `llamacpp` olarak kararlaştırıldı (20 Kasım). Hangi ince ayar sürümünün (GGUF) kullanılacağı ince ayar
   koşusundan sonra netleşecek; o sürüm bütün oturumlarda sabit kalır.
 - **[BEKLENİYOR — Yusuf]** Kalibrasyon ekranı ve doğrulama noktalarından hata hesabı (`purpose: "validate"`).
-- 25 Kasım fare provası: 4.4 atlanır (`GAZE_SOURCE=mouse`), geri kalan adımlar ve süreler bu yönergeyle denenir; prova `P` koduyla
+- 25 Kasım fare provası: Bölüm 8'e göre **prova cümle setiyle** yapılır. 4.4 atlanır (`GAZE_SOURCE=mouse`), geri kalan adımlar ve
+  süreler bu yönergeyle denenir; prova `P` koduyla
   yapılır. Okunacak metinler provada **yüksek sesle** okunur; takılınan ya da katılımcının soru sorduğu her yer not edilip
   metin düzeltilir. Eğitim metnindeki üç arayüz sorusu (4.3) da burada cevaplanır.
+
+---
+
+## 8. Prova ve pilot (`P` kodu, prova cümle seti)
+
+Katılımcılar ekip üyeleri olduğu için prova ve pilot da bir ekip üyesiyle yapılır. Asıl deney cümleleri provada kullanılırsa o kişi
+kendi K oturumundan önce ölçülecek cümleleri görür. Bu yüzden prova ve pilotta **ayrı bir set** kullanılır:
+`data/study/prova_sentences.json` (aynı yapı: 2+2 alıştırma, 2×10 ölçülen; derlemin eğitim kısmından, asıl cümlelerle 4+ harfli
+ortak kelimesi yok, uzunlukları eşleşik; `backend/scripts/make_rehearsal_sentences.py`).
+
+**Provadan önce** (sunucuyu yeniden başlatmak gerekmez; dosya her deneyin başında okunur):
+
+```bash
+cp data/study/prova_sentences.json data/study/sentences.json
+```
+
+- [ ] Durum çubuğuna `P` kodu yazıldı (`P01`, `P02`…). **Prova hiçbir zaman `K` koduyla yapılmaz.**
+- [ ] Ekrandaki ilk alıştırma cümlesi prova setinden (A: "Rica ederim.", B: "Dişim ağrıyor."). Değilse dur, dosyayı kontrol et.
+
+**Provadan hemen sonra:**
+
+```bash
+git restore data/study/sentences.json
+```
+
+- [ ] Bölüm 3'teki "asıl cümle dosyası yerinde" kontrolü yapıldı (`git status` boş, özet `55630ed3d54f`).
+- [ ] Provada takılınan yerler, süreler ve 4.3'teki üç arayüz sorusunun cevabı not edildi; yönerge gerekiyorsa düzeltildi.
+

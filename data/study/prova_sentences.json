@@ -1,0 +1,40 @@
+{
+  "aciklama": "PROVA ve PİLOT içindir; asıl K oturumlarında KULLANILMAZ. Derlemin eğitim kısmından, deney cümleleriyle 4+ harfli ortak kelimesi olmayan ve her deney cümlesiyle kelime sayısı/uzunluk bakımından eşleşen cümleler (seçim betiği: tohum 20261121).",
+  "scheme": "S1",
+  "practice": {
+    "A": [
+      "Rica ederim.",
+      "Aidatı ödedin mi?"
+    ],
+    "B": [
+      "Dişim ağrıyor.",
+      "Sence bu film nasıl bitecek?"
+    ]
+  },
+  "sets": [
+    [
+      "Bu şarkıyı dinleyince içim ısınıyor.",
+      "Çocuklar ödevlerini bitirdi mi?",
+      "Benim yüzümden yoruldun.",
+      "Suyu pipetle verir misin?",
+      "Her yerim sızlıyor.",
+      "Hafta sonu ne yapacağız?",
+      "Bornozumu getirir misin?",
+      "Sıkıldım, bir şey yapalım.",
+      "Bu yaz nereye gideceğiz?",
+      "Pişik olmuş, krem sürer misin?"
+    ],
+    [
+      "Kollarım eskisi kadar hareket etmiyor.",
+      "Hazımsızlık çekiyorum.",
+      "Banyoda düşmekten korkuyorum.",
+      "Yatağın ortasına çeker misin?",
+      "Herkese selam söyle.",
+      "Su faturası geldi mi?",
+      "Bunu çocuklara söylemeli miyiz?",
+      "Ona benim adıma yaz.",
+      "Bunu ona nasıl söyleyelim?",
+      "Rica etsem yardım eder misin?"
+    ]
+  ]
+}
