@@ -159,8 +159,9 @@ commit hash, model/adaptör sürümü ve kütüphane sürümleri yazılır.
 ### 2.4 Kullanıcı testi ölçütleri (`study.py`)
 
 - **`wpm`** = (karakter − 1) / saniye × 60 / 5. Karakter: noktalamasız hedefin boşluk dahil uzunluğu. Süre: ilk seçimden doğru
-  seslendirmeye kadar (hedefi okuma süresi girmez). **[DOĞRULANACAK]** Kodda MacKenzie'ye atıf var; atıf yapmadan önce kaynak açılıp
-  kontrol edilecek. "5 karakter = 1 kelime" uzlaşımı Türkçede de kullanılır, aksi hâlde İngilizce çalışmalarla karşılaştırılamaz;
+  seslendirmeye kadar (hedefi okuma süresi girmez). Tanım, metin girişi literatüründeki standart WPM tanımıdır
+  (Wobbrock, 2007, "Measures of Text Entry Performance", Denklem 3.1; **[DOĞRULANACAK]** künye ve sayfalar raporda atıf
+  yapılmadan önce açılıp kontrol edilecek). Tek fark: noktalama sayılmaz, çünkü arayüzde noktalama tuşu yoktur. "5 karakter = 1 kelime" uzlaşımı Türkçede de kullanılır, aksi hâlde İngilizce çalışmalarla karşılaştırılamaz;
   sınırlılık olarak yazılır.
 - **Görev:** Kopyalama. Hedef cümle gösterilir; cümle ancak hedefle eşleşen seslendirmeyle biter (tam düzeltme koşulu).
   Düzeltme maliyeti böylece WPM'in içindedir.
@@ -170,10 +171,12 @@ commit hash, model/adaptör sürümü ve kütüphane sürümleri yazılır.
   ezberlemediğini ölçer, gerçek hatayı değil.
   **[EKİPLE — Berkay, Yusuf]** `fit_calibration` şu an hatayı eğitim noktalarından hesaplıyor (Berkay'ın notu,
   `docs/oneri-canli-bakis-mesaji.md`). Dışlama kuralı (Bölüm 5) ancak `calibration_sample` mesajına `purpose: "fit" | "validate"`
-  alanı eklenip `mean_error_deg` yalnızca doğrulama noktalarından hesaplandığında uygulanabilir. Kalibrasyon ekranı 14 Kasım'da
-  yazılacağı için bu karar ondan önce verilmeli.
+  alanı eklenip `mean_error_deg` yalnızca doğrulama noktalarından hesaplandığında uygulanabilir. Kalibrasyon ekranı bu ayrımla
+  yazılmadan hiçbir K oturumu başlamaz.
 - **SUS:** `study.sus_score` (tek maddeler yanıt − 1, çift maddeler 5 − yanıt, × 2,5). Geçerlik çalışması yapılmış Türkçe sürüm
-  kullanılır; kendi çevirimiz kullanılmaz. **[DOĞRULANACAK]** Sürüm ve kaynak 11 Kasım'da `data/study/` altına yazılacak.
+  kullanılır; kendi çevirimiz kullanılmaz: SUS-TR (Demirkol ve Şeneler, 2018, *Uşak Üniversitesi Sosyal Bilimler Dergisi*
+  11(3), 237–253). 10 maddesi 10 Kasım'da yayımlanan Tablo A2 ile karakter karakter karşılaştırıldı ve birebir aynı;
+  `data/study/anket_formu.md`.
 
 ---
 
@@ -317,3 +320,4 @@ katılımcılarla kullanılmaz ve kayıtları repoya girmez.
 | 2026-11-20 | 1.1, 2.2, 3.2 | Tur sınırı kaldırıldı (`max_rounds = 0`); cümle başına CSV tanımlandı; test kümesinin Ocak'ta bir kez çalıştırılması onaylandı; 1.1'deki etik onay gerekçesi düzeltildi | Taha'nın kararları (PR #29) | Evet (yalnızca n-gram doğrulama sonuçları görüldü; karar o karşılaştırmaya dayanıyor. İnce ayarlı modelin ilk 20 cümlelik doğrulama koşusu karardan sonra yapıldı; test sonuçları görülmedi) |
 | 2026-11-20 | 0, 1.1, 1.2, 3.3, 3.4, 4, 5 | Çalışma B yalnızca ekibin 4 üyesiyle; hipotez testi yerine katılımcı başına betimsel raporlama; sıra 2/2, yerine alma yok; ekip içi yanlılıklar sınırlılık olarak eklendi; etik kurul ifadeleri çıkarıldı | Danışmanla kararlaştırılan örneklem; 4 kişiyle test gücü yetersiz (d_z ≈ 2,13) | Evet (katılımcı verisi yok) |
 | 2026-11-21 | 4, 5 | Kalibrasyon eşiği sabit 2,5° yerine tuş boyutundan türetiliyor (θ = atan((k/2)/60 cm)); Polat'ın K oturumu ilk ve Taha yürütür; prova ve pilot ayrı cümle setiyle (`prova_sentences.json`) | Ekip ölçümleri (1,8–4,5°) sabit eşiğin üstünde; ekip içi testte prova deney cümlelerini açığa çıkarırdı | Evet (katılımcı verisi yok; yalnızca ekibin göz takibi ölçümleri görüldü) |
+| 2026-11-25 | 2.4 | Kilit öncesi düzeltme: SUS-TR kaynağı yazıldı (10 Kasım'da doğrulanmıştı); WPM tanımının kaynağı (Wobbrock, 2007) eklendi, künye doğrulaması bekliyor; kalibrasyon maddesindeki eskimiş tarih yerine "ayrım yazılmadan K oturumu başlamaz" | Kilitli belgede eskimiş bilgi kalmaması | Evet (katılımcı verisi yok); kural değişmedi |
