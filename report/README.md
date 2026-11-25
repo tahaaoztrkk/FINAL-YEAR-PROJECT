@@ -1,14 +1,19 @@
 # Bitirme raporu (LaTeX)
 
-Rapor İngilizce yazılır. **Çalışılan kopya Overleaf'tedir**; bu klasör ekibin görebildiği ortak kopyadır.
+Rapor İngilizce yazılır. **Tek kaynak bu klasördür** (Overleaf kullanılmıyor; 23 Kasım kararı).
 
-## Overleaf'e yükleme
+## Nasıl çalışıyoruz
 
-1. Bu klasörü zip'le (`report/` içeriği: `main.tex`, `references.bib`, `chapters/`).
-2. Overleaf → New Project → Upload Project → zip'i seç.
-3. Menu → Compiler: pdfLaTeX, Main document: `main.tex`.
+- Her bölüm ya da büyük değişiklik ayrı bir dalda yazılır ve PR'la `main`'e girer. Yorumlar PR'da satır satır yapılır.
+- Bölüm sahipleri: Yöntem, deney ve analiz → Polat; Sistem → ilgili kısmın sahibi (Berkay, Yusuf, Taha); Model, derlem ve Çalışma A → Taha.
+- `report/` altında bir dosyaya dokunan her PR'da GitHub Actions raporu derler (`.github/workflows/report.yml`). Derleme hatası
+  PR'ın "Checks" kısmında görünür.
 
-Overleaf'te yapılan değişiklikler haftada bir (Cuma birleştirmesinde) zip olarak indirilip bu klasöre PR'la geri konur.
+## PDF'i görmek
+
+PR sayfası → **Checks** → "Report PDF" → çalıştırma sayfasının altındaki **Artifacts** → `rapor-pdf` (zip içinde `main.pdf`;
+30 gün saklanır). Aynı sayfadaki özette kalan `\todo` sayısı yazar. `main`'deki son hâlin PDF'i için: Actions → Report PDF →
+en son `main` çalıştırması.
 
 ## Kurallar
 

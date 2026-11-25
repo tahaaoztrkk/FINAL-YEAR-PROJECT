@@ -64,7 +64,7 @@ data/study/                       Kullanıcı testi cümleleri (sentences.json) 
 data/processed/, data/sessions/, models/, results/*   Repoya girmez (.gitignore)
 docs/                             architecture, setup, ws-protocol (+ ws-schema.json), hipotezler, yönergeler
 notebooks/qlora_colab.ipynb       Colab'da ince ayar ve GGUF dışa aktarma
-report/                           LaTeX rapor (İngilizce; asıl kopya Overleaf'te)
+report/                           LaTeX rapor (İngilizce; tek kaynak burası, PR'la yazılır; PDF CI'da derlenir)
 ```
 
 ## Veri akışı

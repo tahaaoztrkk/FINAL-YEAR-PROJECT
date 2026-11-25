@@ -1,0 +1,44 @@
+# Builds the LaTeX report on every pull request and push to main that touches report/,
+# and attaches the PDF to the run (Actions run page -> Artifacts -> rapor-pdf).
+name: Report PDF
+
+on:
+  pull_request:
+    paths:
+      - "report/**"
+      - ".github/workflows/report.yml"
+  push:
+    branches: [main]
+    paths:
+      - "report/**"
+      - ".github/workflows/report.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compile report/main.tex
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: main.tex
+          working_directory: report
+          latexmk_use_lualatex: false
+
+      - name: Count TODO markers
+        run: |
+          n=$(grep -rho '\\todo{' report/chapters report/main.tex | wc -l)
+          echo "TODO markers left: $n" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload PDF
+        uses: actions/upload-artifact@v4
+        with:
+          name: rapor-pdf
+          path: report/main.pdf
+          retention-days: 30
