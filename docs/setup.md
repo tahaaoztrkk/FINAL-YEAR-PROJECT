@@ -260,10 +260,12 @@ Cümle başına ölçüler:
 | `yanlis_cikti` | Hedefle eşleşmeyen seslendirme |
 | `aday_sirasi` | B'de söylenen cümlenin aday listesindeki yeri (1 = ilk aday); aday seçilmeden yazıldıysa boş |
 
-İstatistik etik kurul belgesindeki plana uyar. Farkların normalliği
+İstatistik teknik plandaki analiz planına uyar. Farkların normalliği
 Shapiro-Wilk ile sınanır; uyarsa eşleştirilmiş t testi, uymazsa Wilcoxon
 işaretli sıralar testi seçilir. Etki büyüklüğü Cohen d_z'dir. Tabloda iki
-testin p değeri de durur.
+testin p değeri de durur. Kullanıcı testi 4 kişilik ekiple yapıldığı için
+bu p değerleri rapora konmaz; rapor katılımcı başına betimseldir
+(`docs/hipotezler.md`, Bölüm 3.3).
 
 **KSR burada simülasyondan farklı tanımlıdır.** Kullanıcı testinde payda,
 cümleyi aynı arayüzde harf harf yazmanın en az seçim sayısıdır: her harf

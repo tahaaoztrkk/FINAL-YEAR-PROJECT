@@ -8,10 +8,12 @@ için ölçüleri çıkarır, katılımcı x koşul ortalamalarını alır ve A 
 eşleştirilmiş testle karşılaştırır. Çıktılar ``data/sessions/analiz/``
 altına yazılır; o klasör de repoya girmez.
 
-İstatistik etik kurul belgesindeki plana göre: farkların normalliği
+İstatistik teknik plandaki analiz planına göre: farkların normalliği
 Shapiro-Wilk ile sınanır; uyarsa eşleştirilmiş t testi, uymazsa Wilcoxon
 işaretli sıralar testi kullanılır; etki büyüklüğü Cohen d_z. İki testin p
-değeri de tabloda durur, seçilen test ayrıca yazılır.
+değeri de tabloda durur, seçilen test ayrıca yazılır. Kullanıcı testi
+4 kişilik ekiple yapıldığı için bu p değerleri rapora konmaz; rapor
+katılımcı başına betimseldir (docs/hipotezler.md, Bölüm 3.3).
 
 Cümle başına ölçüler:
     sure_s        İlk seçimden doğru seslendirmeye kadar. Hedefi okuma süresi girmez.

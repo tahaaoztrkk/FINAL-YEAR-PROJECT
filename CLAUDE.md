@@ -41,7 +41,8 @@ backend/src/gaze_aac/
     finetune.py      QLoRA eğitimi (Unsloth ya da PEFT), --dry-run sızıntı denetimi
   data/              corpus.py (derlem, grup bazlı bölme, eğitim çiftleri), build_corpus.py (CLI)
   evaluation/        metrics (KSR, ilk-k, MRR, WPM), simulate (şema × sağlayıcı × bağlam),
-                     study (kullanıcı testi analizi), gaze_accuracy (?olcum kayıtlarından derece hatası)
+                     study (kullanıcı testi ayrıntısı), study_descriptive (rapordaki betimsel tablo:
+                     katılımcı başına A/B, 180 sn duyarlılık), gaze_accuracy (?olcum kayıtlarından derece hatası)
   study/             protocol.py (katılımcı kodundan A/B sırası ve plan), recorder.py (JSONL oturum kaydı)
 backend/scripts/     export_schema.py, export_feature_fixture.py, download_model.py
 backend/tests/       pytest (Zemberek'i yüklediği için ~1,5 dk sürer)
@@ -94,7 +95,10 @@ sunucudaki `GazeMapper`'dadır.
 (K01, K02…; tek AB, çift BA) planı kurar ve `study_plan` döner →
 arayüz her cümle için `trial_start` / `trial_end` yollar. Her olay
 `data/sessions/<kod>/<tarih-saat>_<oturum>.jsonl` dosyasına satır tamponlu
-yazılır; analiz `python -m gaze_aac.evaluation.study` ile yapılır.
+yazılır. Kullanıcı testi 4 kişilik ekiple yapıldığı için rapordaki analiz
+betimseldir: `python -m gaze_aac.evaluation.study_descriptive --survey <anket.csv>`
+(ön kayıt Bölüm 3.3). `gaze_aac.evaluation.study` cümle ayrıntısını ve p
+değerlerini üretir; o p değerleri rapora konmaz.
 
 **Model hattı.** `aac_sentences.jsonl` → `build_corpus` (tekrar ayıklama,
 grup bazlı %80/%10/%10 bölme, `split` alanı dolu cümleler o kümede sabit) →
