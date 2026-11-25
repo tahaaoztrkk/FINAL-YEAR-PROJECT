@@ -91,6 +91,9 @@ class FinetuneConfig:
     backend: str = "auto"
     limit: int | None = None
     resume: bool = False
+    # 0: yalnızca epoch sonunda kaydet. N: her N adımda checkpoint ve doğrulama;
+    # GPU kotası ya da oturum süresi bir epoch'a yetmiyorsa ilerleme kaybolmaz.
+    save_steps: int = 0
     hyper: Hyperparameters = field(default_factory=Hyperparameters)
 
 
@@ -227,6 +230,30 @@ def plan_steps(example_count: int, hyper: Hyperparameters) -> tuple[int, int, in
     total = math.ceil(per_epoch * hyper.epochs)
     warmup = max(1, round(total * hyper.warmup_share)) if total else 0
     return per_epoch, total, warmup
+
+
+def checkpoint_arguments(save_steps: int, has_eval: bool) -> dict[str, Any]:
+    """Kaydetme ve doğrulama sıklığı için TrainingArguments alanları.
+
+    En iyi checkpoint'i seçebilmek için transformers doğrulama ile kaydetmenin
+    aynı sıklıkta olmasını ister; bu yüzden ``save_steps`` verilince doğrulama
+    da o adımlarda yapılır.
+    """
+    if save_steps < 0:
+        raise ValueError("save_steps negatif olamaz")
+    if save_steps == 0:
+        return {
+            "save_strategy": "epoch",
+            "eval_strategy": "epoch" if has_eval else "no",
+        }
+    fields: dict[str, Any] = {
+        "save_strategy": "steps",
+        "save_steps": save_steps,
+        "eval_strategy": "steps" if has_eval else "no",
+    }
+    if has_eval:
+        fields["eval_steps"] = save_steps
+    return fields
 
 
 def describe(examples: list[TrainingExample]) -> list[str]:
@@ -406,8 +433,7 @@ def train(
         logging_steps=10,
         # fp16 taşması kaybı NaN yapar; varsayılan süzgeç bunu günlükte gizler.
         logging_nan_inf_filter=False,
-        eval_strategy="epoch" if has_eval else "no",
-        save_strategy="epoch",
+        **checkpoint_arguments(config.save_steps, has_eval),
         save_total_limit=2,
         load_best_model_at_end=has_eval,
         metric_for_best_model="eval_loss" if has_eval else None,
@@ -511,6 +537,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--backend", choices=("auto", "unsloth", "peft"), default="auto")
     parser.add_argument("--limit", type=int, default=None, help="Yalnızca ilk N kayıt (deneme)")
     parser.add_argument("--resume", action="store_true", help="Son checkpoint'ten devam et")
+    parser.add_argument(
+        "--save-steps",
+        type=int,
+        default=0,
+        help="Her N adımda checkpoint ve doğrulama (0: epoch sonunda). Kota kısaysa 100 gibi.",
+    )
     parser.add_argument("--dry-run", action="store_true", help="Veriyi denetle, model yükleme")
     return parser
 
@@ -529,6 +561,7 @@ def main(argv: list[str] | None = None) -> None:
         backend=args.backend,
         limit=args.limit,
         resume=args.resume,
+        save_steps=args.save_steps,
         hyper=Hyperparameters(
             epochs=args.epochs,
             learning_rate=args.lr,

@@ -17,6 +17,7 @@ from gaze_aac.nlp.finetune import (
     IGNORE_INDEX,
     Hyperparameters,
     TrainingExample,
+    checkpoint_arguments,
     encode_example,
     encode_examples,
     find_leaks,
@@ -55,6 +56,28 @@ class TestHyperparameters:
         per_epoch, total, warmup = plan_steps(1158, Hyperparameters())
         assert (per_epoch, total) == (73, 219)
         assert 1 <= warmup < total
+
+
+class TestCheckpointArguments:
+    def test_default_saves_each_epoch(self) -> None:
+        assert checkpoint_arguments(0, has_eval=True) == {
+            "save_strategy": "epoch",
+            "eval_strategy": "epoch",
+        }
+
+    def test_steps_keep_eval_in_sync(self) -> None:
+        # load_best_model_at_end doğrulama ve kaydetmenin aynı sıklıkta olmasını ister.
+        fields = checkpoint_arguments(100, has_eval=True)
+        assert fields["save_strategy"] == fields["eval_strategy"] == "steps"
+        assert fields["save_steps"] == fields["eval_steps"] == 100
+
+    def test_steps_without_eval(self) -> None:
+        fields = checkpoint_arguments(50, has_eval=False)
+        assert fields == {"save_strategy": "steps", "save_steps": 50, "eval_strategy": "no"}
+
+    def test_negative_rejected(self) -> None:
+        with pytest.raises(ValueError):
+            checkpoint_arguments(-1, has_eval=True)
 
 
 class TestEncode:

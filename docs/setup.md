@@ -328,7 +328,13 @@ maliyeti yok. Her ayar komut satırından değiştirilebilir (`--help`).
 - Her epoch sonunda doğrulama kaybı ölçülür; en iyi epoch adaptör olarak
   kaydedilir. Veri az olduğu için son epoch'ta model ezberlemeye başlayabilir.
 - Colab bağlantısı koparsa aynı komutu `--resume` ile yeniden çalıştırın,
-  son epoch'tan devam eder.
+  son checkpoint'ten devam eder. Varsayılan olarak checkpoint yalnızca epoch
+  sonunda alınır; GPU kotası bir epoch'a yetmiyorsa `--save-steps 100` ekleyin,
+  her 100 adımda checkpoint alınır ve doğrulama kaybı ölçülür. Devam ederken
+  diğer ayarları (batch, grad_accum, epoch, lr) değiştirmeyin.
+- Her `checkpoint-N` klasörü tek başına kullanılabilir bir adaptördür
+  (`--adapter <klasör>/checkpoint-N`). Eğitim yarıda kalsa da o ana kadarki
+  model ölçülebilir.
 - Unsloth kuruluysa onunla, değilse PEFT ile yüklenir (`--backend`).
   T4'te Unsloth'u tercih edin: Gemma 2 fp16'da taşabiliyor ve PEFT yolu
   bf16 destekli GPU'da (L4, A100) en sağlıklısı. Kayıp NaN çıkarsa betik
@@ -336,6 +342,40 @@ maliyeti yok. Her ayar komut satırından değiştirilebilir (`--help`).
 - Adaptör klasöründeki `training_info.json` ayarları, veri boyutunu,
   doğrulama kaybını, GPU'yu, süreyi ve kodun commit'ini tutar. Rapordaki
   ayar tablosunu buradan alın.
+
+### Colab kotası biterse: Kaggle'da devam
+
+Kaggle haftada 30 saat ücretsiz GPU verir (oturum başına en çok 12 saat).
+Eğitim Colab'da kaldığı yerden devam eder:
+
+1. Drive'daki `gaze-aac/turkish-gemma-qlora` klasörünü bilgisayara indirin
+   (içinde `checkpoint-N` olmalı). Kaggle'da **Datasets → New Dataset** ile
+   bu klasörü yükleyin, adı `gaze-aac-checkpoint` olsun.
+2. **Code → New Notebook**; sağ panelde **Settings → Accelerator → GPU T4 x2**,
+   **Internet → On** (telefon doğrulaması ister). **Add Input** ile
+   `gaze-aac-checkpoint` veri setini ekleyin.
+3. Hücreler:
+
+```bash
+!git clone -q https://github.com/tahaaoztrkk/FINAL-YEAR-PROJECT.git
+%cd FINAL-YEAR-PROJECT/backend
+!pip install -q -e ".[llm]" && pip install -q unsloth
+# Girdi klasörü salt okunur; checkpoint yazılabilir yere kopyalanır.
+!mkdir -p /kaggle/working/adaptor
+!cp -r /kaggle/input/gaze-aac-checkpoint/* /kaggle/working/adaptor/
+!python -m gaze_aac.data.build_corpus
+!python -m gaze_aac.nlp.finetune --dry-run
+# Tek GPU: 4 bit model iki GPU'ya bölünmez.
+!CUDA_VISIBLE_DEVICES=0 python -m gaze_aac.nlp.finetune --out /kaggle/working/adaptor --resume --save-steps 100
+```
+
+4. Çıktı yalnızca **Save Version → Save & Run All (Commit)** ile kalıcı olur;
+   etkileşimli oturumda bittiğinde `/kaggle/working/adaptor` klasörünü sağ
+   paneldeki Output bölümünden indirin ve Drive'a geri koyun. Karşılaştırma ve
+   GGUF hücreleri Colab defterinde aynı klasörle çalışır.
+
+`build_corpus` aynı derlemden aynı bölmeyi ürettiği için eğitim verisi
+Colab'dakiyle aynıdır; `--dry-run` sızıntı denetimi bunu da doğrular.
 
 Karşılaştırma doğrulama kümesinde, iki ayrı koşuyla yapılır (her koşu modeli
 bir kez yükler):
