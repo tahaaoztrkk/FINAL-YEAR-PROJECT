@@ -16,8 +16,8 @@ komutu değişir (`source .venv/bin/activate`).
 Depoyu klonlayın ve VS Code'da **klasörü** açın (tek dosyayı değil):
 
 ```bash
-git clone <repo-url> FINAL-YEAR-PROJECT
-cd FINAL-YEAR-PROJECT
+git clone https://github.com/tahaaoztrkk/gaze-aac-tr.git
+cd gaze-aac-tr
 code .
 ```
 
