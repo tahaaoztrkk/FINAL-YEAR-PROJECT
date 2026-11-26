@@ -16,8 +16,8 @@ komutu değişir (`source .venv/bin/activate`).
 Depoyu klonlayın ve VS Code'da **klasörü** açın (tek dosyayı değil):
 
 ```bash
-git clone <repo-url> FINAL-YEAR-PROJECT
-cd FINAL-YEAR-PROJECT
+git clone https://github.com/tahaaoztrkk/gaze-aac-tr.git
+cd gaze-aac-tr
 code .
 ```
 
@@ -198,8 +198,10 @@ Durum çubuğuna katılımcı kodunu yazıp **Deneyi başlat** deyin. Kodlar
 
 **Sağlayıcı.** Deney cümleleri derlemde yoktur (bir test bunu denetler);
 model onları eğitimde görseydi B koşulu ezber ölçerdi. Bu yüzden `mock` ve
-`ngram` bu cümleleri üretemez ve asıl test ince ayarlı modelle koşulur
-(`EXPANDER_PROVIDER=hf_local`, `HF_ADAPTER_PATH`). `mock` ile prova
+`ngram` bu cümleleri üretemez ve asıl test ince ayarlı modelle koşulur:
+demo dizüstünde `EXPANDER_PROVIDER=llamacpp`, model GGUF'a çevrilip
+`llama-server`'da yüklenir (bkz. "Demo bilgisayarı (llama.cpp)"). Hangi ince
+ayar sürümünün kullanılacağı ince ayar koşusundan sonra netleşir. `mock` ile prova
 yapılabilir: B'de kelimeleri açık yazıp seslendirin. Analiz, `mock` ile
 alınmış bir kayıt görürse uyarır.
 
@@ -258,10 +260,12 @@ Cümle başına ölçüler:
 | `yanlis_cikti` | Hedefle eşleşmeyen seslendirme |
 | `aday_sirasi` | B'de söylenen cümlenin aday listesindeki yeri (1 = ilk aday); aday seçilmeden yazıldıysa boş |
 
-İstatistik etik kurul belgesindeki plana uyar. Farkların normalliği
+İstatistik teknik plandaki analiz planına uyar. Farkların normalliği
 Shapiro-Wilk ile sınanır; uyarsa eşleştirilmiş t testi, uymazsa Wilcoxon
 işaretli sıralar testi seçilir. Etki büyüklüğü Cohen d_z'dir. Tabloda iki
-testin p değeri de durur.
+testin p değeri de durur. Kullanıcı testi 4 kişilik ekiple yapıldığı için
+bu p değerleri rapora konmaz; rapor katılımcı başına betimseldir
+(`docs/hipotezler.md`, Bölüm 3.3).
 
 **KSR burada simülasyondan farklı tanımlıdır.** Kullanıcı testinde payda,
 cümleyi aynı arayüzde harf harf yazmanın en az seçim sayısıdır: her harf

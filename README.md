@@ -91,4 +91,3 @@ python scripts/export_schema.py
 
 Dal adlandırma: `feat/gaze-kalibrasyon`, `fix/dwell-titreme`.
 `main` dalına doğrudan push yapılmaz, PR açılır.
-# FINAL-YEAR-PROJECT

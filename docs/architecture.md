@@ -132,5 +132,5 @@ Bu yüzden adaylar, kullanıcı hâlâ bakarken önceden üretilmeye başlanır.
 
 Yüz görüntüsü diske hiç yazılmaz. Kamera karesi bellekte işlenir ve atılır;
 yalnızca landmark koordinatları, zaman damgaları ve bakış tahminleri
-kaydedilir. Bu, etik kurul başvurusunda açıkça belirtilir — onay süresini
-kısaltır.
+kaydedilir. Bu, katılımcılara aydınlatılmış onam formunda ve oturumun başında
+okunan metinde açıkça söylenir (`docs/oturum-yonergesi.md`).

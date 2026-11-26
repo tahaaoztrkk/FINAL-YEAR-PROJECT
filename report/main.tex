@@ -1,0 +1,74 @@
+% Graduation project report -- Gaze-Based Turkish AAC
+% Skeleton created 17 November 2026. Overleaf is the working copy;
+% this folder in the repository is the shared copy (see report/README.md).
+
+\documentclass[12pt,a4paper,oneside]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{lmodern}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage[round,authoryear]{natbib}
+\usepackage[hidelinks]{hyperref}
+
+\onehalfspacing
+
+% A visible marker for unfinished text. Search the PDF for "TODO" before submission.
+\newcommand{\todo}[1]{\textbf{[TODO: #1]}}
+
+\begin{document}
+
+% ------------------------------------------------------------------ title
+\begin{titlepage}
+  % University and faculty names: as on the university's English pages (checked 23 Nov 2026).
+  % Advisor's title: SBTÜ Computer Engineering 2025 activity report, academic staff table (checked 23 Nov 2026).
+  % Title: working title, to be agreed with the team and the advisor.
+  \centering
+  {\large Sivas University of Science and Technology\\
+  Faculty of Engineering and Natural Sciences\\
+  Department of Computer Engineering\par}
+  \vspace{3cm}
+  {\LARGE\bfseries Gaze-Based Turkish Augmentative and Alternative Communication with Abbreviation Expansion\par}
+  \vspace{1cm}
+  {\large Graduation Project Report\par}
+  \vspace{2cm}
+  {\large
+  Polat Elmas\\[0.3em]
+  Taha Seyfülislam Öztürk\\[0.3em]
+  Ali Berkay Şimşek\\[0.3em]
+  Yusuf Yazıcı\par}
+  \vspace{1.5cm}
+  {\large Advisor: Prof. Dr. Ramazan Katırcı\par}
+  \vfill
+  {\large January 2027\par}
+\end{titlepage}
+
+\pagenumbering{roman}
+\input{chapters/abstract}
+\tableofcontents
+\listoffigures
+\listoftables
+
+\clearpage
+\pagenumbering{arabic}
+
+\input{chapters/introduction}
+\input{chapters/related_work}
+\input{chapters/system}
+\input{chapters/study_a}
+\input{chapters/study_b}
+\input{chapters/discussion}
+\input{chapters/conclusion}
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\appendix
+\input{chapters/appendix}
+
+\end{document}
