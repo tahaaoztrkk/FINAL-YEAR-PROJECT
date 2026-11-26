@@ -99,6 +99,12 @@ tutulur; biri değişirse diğeri gözden geçirilir.
 
 Eksikler: doğrulama noktaları ve derece cinsinden hata yok; kalibrasyon
 tarayıcı belleğinde olduğu için `?deney`'e geçiş (sayfa yenilenir) onu siler.
+İlk gerçek kamera denemesinde (26 Kasım, Yusuf) zincir uçtan uca çalıştı ama
+imleç dikeyde kayıyor (ör. "j k l m" yerine hemen altındaki "Boşluk"). Bu,
+10–13 Kasım ölçümlerindeki dikey hatayla uyumlu; ayrıca ana uygulamada ızgara
+ekranın yalnızca alt %62'sini kapladığı için (`layout.ts` `GRID_AREA`) tuşlar
+tam ekran `?bakis` ızgarasından ~%40 alçak. Izgara kararı ve θ bunu hesaba
+katmalı.
 Kalıcı yol (K1-b) `gaze_features` mesajı ve sunucudaki `GazeMapper`
 (`calibration_sample` / `calibration_fit` hazır) ile olacak; karar
 `docs/oneri-canli-bakis-mesaji.md` içinde bekliyor. `?bakis` sayfası

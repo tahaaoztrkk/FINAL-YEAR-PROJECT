@@ -32,6 +32,9 @@ import { useGazeSource } from '@/hooks/useGazeSource';
 import { speak } from '@/lib/speech';
 import type { GazeTarget } from '@/types/messages';
 
+/** Söylenen cümleler listesinin üst kenarı (global.css `.history` ile aynı). */
+const HISTORY_TOP_PX = 120;
+
 export default function App() {
   const studyEnabled = useMemo(
     () => new URLSearchParams(window.location.search).has('deney'),
@@ -337,7 +340,13 @@ export default function App() {
       </main>
 
       {!inStudy && spoken.length > 0 && (
-        <aside className="history" aria-label="Söylenen cümleler">
+        // Liste ızgaranın üst kenarında kesilir: uzarsa sağ üstteki tuşun
+        // üstüne biner. En yeni cümle en üstte, sığmayan eskiler gizlenir.
+        <aside
+          className="history"
+          aria-label="Söylenen cümleler"
+          style={{ maxHeight: `calc(${GRID_TOP * 100}% - ${HISTORY_TOP_PX + 8}px)` }}
+        >
           {spoken.map((text, index) => (
             <button key={`${text}-${index}`} type="button" onClick={() => speak(text)}>
               {text}

@@ -582,9 +582,12 @@ button {
   flex-direction: column;
   gap: 6px;
   z-index: 5;
+  /* Yükseklik App'ten gelir (ızgaranın üst kenarı); sığmayan eski cümleler gizlenir. */
+  overflow: hidden;
 }
 
 .history button {
+  flex: none;
   background: var(--surface);
   border: 1px solid #232a3a;
   border-radius: 10px;
