@@ -1,35 +1,43 @@
 /**
  * Bakış kaynağı.
  *
- * Geliştirme sırasında fare imleci bakış gibi davranır; böylece arayüz
- * kamera ve kalibrasyon hazır olmadan uçtan uca çalışır. Kişi 3 bu sayede
- * Kişi 1'in modülünü beklemez.
+ * İki kaynak aynı çıktıyı verir: ekranın 0–1 aralığında normalize bir nokta
+ * (`onSample`). App bunu `gaze` mesajıyla sunucuya yollar; sunucudaki
+ * yumuşatma ve dwell kaynaktan habersiz çalışır.
  *
- * Kamera moduna geçiş tek satır: `useGazeSource('webcam')`. MediaPipe hattı
- * tarayıcıda çalıştığında bu dosya landmark'ları öznitelik vektörüne çevirip
- * sunucuya gönderir; sunucu kalibrasyon modeliyle ekran koordinatına çevirir.
+ * - `mouse`: fare imleci bakış gibi davranır (geliştirme, kamera olmadan).
+ * - `webcam`: kamera + tarayıcı içi kalibrasyon modeli (features/gaze/useWebcamGaze).
+ *   Bu kestirme yoldur (K1-a, docs/oneri-canli-bakis-mesaji.md): model
+ *   tarayıcıda, protokol değişmez. Kalıcı yolda (K1-b) tarayıcı `gaze_features`
+ *   gönderecek, eşleme sunucudaki GazeMapper'a geçecek.
+ *
+ * Hangi kaynağın kullanılacağına sunucu karar verir (`ready.gaze_source`,
+ * backend/.env içindeki GAZE_SOURCE; K5).
  */
 
 import { useEffect, useRef } from 'react';
 
-export type GazeSourceKind = 'mouse' | 'webcam';
+import {
+  useWebcamGaze,
+  type RawGazeSample,
+  type WebcamGaze,
+} from '@/features/gaze/useWebcamGaze';
 
-export interface RawGazeSample {
-  x: number;
-  y: number;
-  t: number;
-  confidence: number;
-}
+export type { RawGazeSample };
+
+export type GazeSourceKind = 'mouse' | 'webcam';
 
 interface Options {
   kind: GazeSourceKind;
   onSample: (sample: RawGazeSample) => void;
-  /** Örnekleme hızı. Backend 30 Hz varsayıyor. */
+  /** Fare örnekleme hızı. Backend 30 Hz varsayıyor; kamera kare başına bir örnek verir. */
   hz?: number;
+  /** Örnek gönderilsin mi (ör. bağlantı açıkken). Kamera bundan bağımsız açık kalır. */
   enabled?: boolean;
 }
 
-export function useGazeSource({ kind, onSample, hz = 30, enabled = true }: Options): void {
+/** Fare modunda da döner; kamera kapalıyken `phase === 'off'`. */
+export function useGazeSource({ kind, onSample, hz = 30, enabled = true }: Options): WebcamGaze {
   // Geri çağrıyı ref'te tut: her render'da efekti yeniden kurmak,
   // örnekleme zamanlayıcısını sıfırlar ve akışı kesintiye uğratır.
   const callbackRef = useRef(onSample);
@@ -61,14 +69,11 @@ export function useGazeSource({ kind, onSample, hz = 30, enabled = true }: Optio
     };
   }, [kind, hz, enabled]);
 
-  useEffect(() => {
-    if (!enabled || kind !== 'webcam') return;
-    // TODO(Kişi 1): Kamera hattını buraya bağla.
-    // 1-2. Hazır: features/gaze/useFaceTracking (kamera + 478 landmark),
-    //      tarayıcıda denemek için ?kamera sayfası.
-    // 3. Hazır: features/gaze/features.ts → extractFeatures (features.py ile birebir)
-    // 4. Kalibrasyon modundaysa calibration_sample, değilse canlı mesaj gönder.
-    //    Canlı mesajın biçimi docs/oneri-canli-bakis-mesaji.md'de, Kişi 3 ile karara bağlanacak.
-    console.warn('Kamera tabanlı bakış kaynağı henüz bağlanmadı.');
-  }, [kind, enabled]);
+  // Kamera, bağlantı koptuğunda kapanmaz: kalibrasyon tarayıcıda olduğu için
+  // yeniden bağlanınca kaldığı yerden devam eder. Yalnızca gönderim durur.
+  return useWebcamGaze({
+    enabled: kind === 'webcam',
+    sending: enabled,
+    onSample: (sample) => callbackRef.current(sample),
+  });
 }

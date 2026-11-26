@@ -12,6 +12,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import { CalibrationScreen, GazeHoldBanner } from '@/components/CalibrationScreen';
 import { CandidateList } from '@/components/CandidateList';
 import { GazeCursor } from '@/components/GazeCursor';
 import { StatusBar } from '@/components/StatusBar';
@@ -187,11 +188,35 @@ export default function App() {
 
   expandRef.current = handleExpand;
 
-  useGazeSource({
-    kind: 'mouse',
+  // Kaynağı sunucu seçer (ready.gaze_source, backend/.env GAZE_SOURCE; K5).
+  // Kamera modunda kalibrasyon tarayıcıda tutulur (K1-a).
+  const webcam = useGazeSource({
+    kind: state.gazeSource === 'webcam' ? 'webcam' : 'mouse',
     onSample: ({ x, y, t, confidence }) => sendGaze(x, y, t, confidence),
     enabled: state.connection === 'open',
   });
+  const webcamMode = webcam.phase !== 'off';
+  // Kalibrasyon ekranı açıkken klavyede hiçbir şey seçilmemeli.
+  const calibrating = webcamMode && webcam.phase !== 'live';
+
+  // Boşluk: ortala, K: yeniden kalibre et, Esc: kalibrasyonu bırak (?bakis ile aynı).
+  const { calibrate, recenter, cancel } = webcam;
+  useEffect(() => {
+    if (!webcamMode) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.target instanceof HTMLInputElement) return;
+      if (event.code === 'Space' && webcam.phase === 'live') {
+        event.preventDefault();
+        recenter();
+      } else if (event.key.toLowerCase() === 'k' && webcam.phase !== 'calibrating') {
+        calibrate();
+      } else if (event.key === 'Escape' && calibrating) {
+        cancel();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [webcamMode, webcam.phase, calibrating, calibrate, recenter, cancel]);
 
   // Etiketler bir dize olarak karşılaştırılır: her harfte yeni dizi
   // üretilirse hedefler gereksiz yere yeniden sunucuya gönderilir.
@@ -217,21 +242,21 @@ export default function App() {
   // ayrışırlarsa kullanıcı bir yere bakar, başka yer seçilir. Yeniden
   // bağlanınca (yeni oturum) sunucu hedefleri bilmez, yine gönderilir.
   useEffect(() => {
-    if (blocked) {
+    if (blocked || calibrating) {
       sendTargets([]);
       return;
     }
     sendTargets([...targets, ...(lettersOnly ? [] : candidateTargets)]);
-  }, [targets, candidateTargets, lettersOnly, blocked, sendTargets, state.sessionId]);
+  }, [targets, candidateTargets, lettersOnly, blocked, calibrating, sendTargets, state.sessionId]);
 
   // Tıklama doğrudan işlenmez, sunucuya gönderilir: sunucu dwell'e kilit
   // koyar ve seçimi geri yollar. Böylece tıklama ile dwell aynı tuşu iki
   // kez seçmez ve her seçim tek yoldan (handleSelection) geçer.
   const handleTileClick = useCallback(
     (targetId: string) => {
-      if (!blocked) send({ type: 'select', target_id: targetId });
+      if (!blocked && !calibrating) send({ type: 'select', target_id: targetId });
     },
-    [send, blocked],
+    [send, blocked, calibrating],
   );
 
   const handleBeginBlock = useCallback(() => {
@@ -323,12 +348,44 @@ export default function App() {
 
       <StudyOverlay study={study} block={block} onBegin={handleBeginBlock} />
 
-      <GazeCursor position={state.gaze} />
+      <GazeCursor position={state.gaze} held={webcam.hold !== null} />
 
-      {!inStudy && (
+      {webcamMode && (
+        <>
+          {/* Kamera görüntüsü yalnızca kurulumda gösterilir, hiçbir yere yazılmaz. */}
+          <video
+            ref={webcam.videoRef}
+            muted
+            playsInline
+            className={
+              webcam.phase === 'needs_calibration'
+                ? 'webcam-video webcam-video--preview'
+                : 'webcam-video'
+            }
+          />
+          <GazeHoldBanner gaze={webcam} />
+          <CalibrationScreen gaze={webcam} />
+        </>
+      )}
+
+      {!inStudy && !webcamMode && (
         <p className="devnote">
           Geliştirme modu: fare imleci bakış yerine geçiyor. Tuşların üstünde{' '}
           {state.dwellMs} ms bekleyin ya da doğrudan tıklayın.
+        </p>
+      )}
+
+      {webcam.phase === 'live' && (
+        <p className="devnote">
+          Kamera modu · {state.dwellMs} ms bakınca seçilir
+          <span className="webcam-controls">
+            <button type="button" onClick={recenter}>
+              Ortala (Boşluk)
+            </button>
+            <button type="button" onClick={calibrate}>
+              Yeniden kalibre et (K)
+            </button>
+          </span>
         </p>
       )}
     </div>
