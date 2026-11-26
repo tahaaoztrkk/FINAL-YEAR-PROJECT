@@ -1,8 +1,10 @@
 /**
  * Canlı bakış denemesi (`?bakis`).
  *
- * Geliştirici aracıdır. 9 noktayla kalibre eder, sonra baktığın yeri tam
- * ekranda imleçle ve ızgarada (varsayılan 4x3, `&izgara=3x2` gibi) vurgulanan hücreyle gösterir. Sunucu
+ * Geliştirici aracıdır. 9 noktayla kalibre eder, sonra baş pozu değişimini
+ * kameradan okuyup (yeterince dönünce otomatik ilerleyen bir çubukla) dört
+ * yönde ek örnek toplar, sonra baktığın yeri tam ekranda imleçle ve ızgarada
+ * (varsayılan 4x3, `&izgara=3x2` gibi) vurgulanan hücreyle gösterir. Sunucu
  * gerekmez; görüntü ve landmark hiçbir yere kaydedilmez.
  *
  * D tuşu 10 denemelik dwell oturumu başlatır (dwellTrial.ts): işaretli hücreye
@@ -51,6 +53,30 @@ const GRID: readonly Point[] = [0.1, 0.5, 0.9].flatMap((y) =>
 );
 const CENTER: Point = [0.5, 0.5];
 
+// Boşluk (recenter) bu iki köşegen noktaya bakılarak eksen başına
+// kazanç+offset çözer. Tek nokta (eski hal) yalnızca düz kaymayı
+// düzeltiyordu; model canlıda kazanç kayması yaşadığında (baş kameraya
+// uzaklığı/açısı değiştiğinde) düz kayma kenarları düzeltemiyordu.
+const RECENTER_POINTS: readonly [Point, Point] = [
+  [0.15, 0.15],
+  [0.85, 0.85],
+];
+
+interface AxisCorrection {
+  gainX: number;
+  offsetX: number;
+  gainY: number;
+  offsetY: number;
+}
+
+/** İki (ham, gerçek) çiftinden doğrusal kazanç+offset; noktalar çakışırsa kazanç 1 sayılır. */
+function fitAxis(rawA: number, trueA: number, rawB: number, trueB: number): { gain: number; offset: number } {
+  const span = rawB - rawA;
+  if (Math.abs(span) < 1e-6) return { gain: 1, offset: trueA - rawA };
+  const gain = (trueB - trueA) / span;
+  return { gain, offset: trueA - gain * rawA };
+}
+
 // Baş pozları: model başın nereye döndüğünü ancak bunları görürse öğrenir.
 const HEAD_POINTS: readonly Point[] = [
   [0.1, 0.1],
@@ -60,7 +86,23 @@ const HEAD_POINTS: readonly Point[] = [
   [0.9, 0.9],
 ];
 const HEAD_POSES = ['sağa', 'sola', 'yukarı', 'aşağı'] as const;
-const POSE_PROMPT_MS = 3000;
+// Eşikler ilk tahmin; kamerada test edilip ayarlanmalı.
+const YAW_TURN_THRESHOLD = 0.04;
+const PITCH_TURN_THRESHOLD = 0.035;
+// ~0,6 sn üst üste eşiği geçmesi istenir; kısa tutulursa küçük bir
+// kıpırdanma bile anında onaylanıp "tak diye" geçmiş gibi hissettiriyordu.
+const POSE_STABLE_FRAMES = 18;
+const POSE_CONFIRM_TIMEOUT_MS = 8000;
+const POSE_READ_DELAY_MS = 600;
+// Onaylandıktan sonra ekranda kısa bir süre "Tamam" yazısı kalsın; hemen
+// sıradaki adıma atlamak geçişi ani/sarsıcı gösteriyordu.
+const POSE_SETTLE_MS = 500;
+const POSE_AXIS: Record<(typeof HEAD_POSES)[number], 'yaw' | 'pitch'> = {
+  sağa: 'yaw',
+  sola: 'yaw',
+  yukarı: 'pitch',
+  aşağı: 'pitch',
+};
 
 // Kalibrasyonda görülen baş aralığının bu oranı kadar dışına tolerans.
 const HEAD_RANGE_MARGIN = 0.3;
@@ -70,6 +112,14 @@ const CLOSED_WARNING_FRAMES = 15;
 interface HeadRange {
   yaw: [number, number];
   pitch: [number, number];
+}
+
+interface PoseTarget {
+  axis: 'yaw' | 'pitch';
+  baseline: number;
+  threshold: number;
+  /** null: ilk yön, hangisi gelirse kabul edilir. Belirliyse yalnız o yön sayılır. */
+  requireSign: number | null;
 }
 
 function rangeOf(values: number[]): [number, number] {
@@ -104,6 +154,26 @@ function median(values: number[]): number {
   return sorted.length % 2 ? (sorted[mid] ?? 0) : ((sorted[mid - 1] ?? 0) + (sorted[mid] ?? 0)) / 2;
 }
 
+interface TileStat {
+  tile: number;
+  attempts: number;
+  correct: number;
+}
+
+/** Hangi hücre kaç kez hedef oldu, kaçında doğru seçildi — tek tek rapor etmek yerine. */
+function tileBreakdown(results: readonly TrialResult[]): TileStat[] {
+  const byTile = new Map<number, { attempts: number; correct: number }>();
+  for (const result of results) {
+    const entry = byTile.get(result.target) ?? { attempts: 0, correct: 0 };
+    entry.attempts += 1;
+    if (result.correct) entry.correct += 1;
+    byTile.set(result.target, entry);
+  }
+  return [...byTile.entries()]
+    .sort(([a], [b]) => a - b)
+    .map(([tile, stats]) => ({ tile, ...stats }));
+}
+
 function download(name: string, data: unknown): void {
   const blob = new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -125,16 +195,30 @@ export function GazeLive() {
   const [message, setMessage] = useState<string | null>(null);
   const [prompt, setPrompt] = useState<string | null>(null);
   const [trialSummary, setTrialSummary] = useState<TrialSummary | null>(null);
+  const [posing, setPosing] = useState(false);
 
   const collectRef = useRef<{ target: Point; samples: GazeSample[] } | null>(null);
+  const poseTargetRef = useRef<PoseTarget | null>(null);
+  const poseStableRef = useRef(0);
+  const poseReadyRef = useRef(false);
+  const poseLastSignRef = useRef(0);
+  const axisSignRef = useRef<{ yaw: number | null; pitch: number | null }>({ yaw: null, pitch: null });
+  const poseMeterRef = useRef<HTMLDivElement>(null);
+  const poseInfoRef = useRef<HTMLParagraphElement>(null);
+  // TEŞHİS AMAÇLI: dikey tahminin gerçekte ne kadar genişlediğini görmek için.
+  // Teşhis bitince kaldırılacak.
+  const debugRef = useRef<HTMLParagraphElement>(null);
+  const rawRangeRef = useRef({ minY: Infinity, maxY: -Infinity });
   const modelRef = useRef<LinearGazeModel | null>(null);
-  const shiftRef = useRef<[number, number]>([0, 0]);
+  const correctionRef = useRef<AxisCorrection>({ gainX: 1, offsetX: 0, gainY: 1, offsetY: 0 });
   const liveRef = useRef(false);
   const busyRef = useRef(false);
   const filterRef = useRef({ x: new OneEuro(), y: new OneEuro() });
   const medianRef = useRef({ x: new Median5(), y: new Median5() });
   const gateRef = useRef<BlinkGate | null>(null);
   const headRangeRef = useRef<HeadRange | null>(null);
+  // recenter() baş pozu kaymasını da takip edebilsin diye son bilinen taban.
+  const headBaselineRef = useRef<{ yaw: number; pitch: number } | null>(null);
   const closedFramesRef = useRef(0);
   const bannerRef = useRef<HTMLParagraphElement>(null);
   const cursorRef = useRef<HTMLDivElement>(null);
@@ -220,6 +304,33 @@ export function GazeLive() {
       });
     }
 
+    // Baş pozu onayı: kör süre yerine gerçek dönüş miktarı ve yönü kameradan okunur.
+    const poseTarget = poseTargetRef.current;
+    if (poseTarget) {
+      const value =
+        poseTarget.axis === 'yaw' ? (features.values[YAW] ?? 0) : (features.values[PITCH] ?? 0);
+      const delta = value - poseTarget.baseline;
+      const sign = Math.sign(delta);
+      const matchesSign = poseTarget.requireSign === null || sign === poseTarget.requireSign;
+      const magnitude = clamp01(Math.abs(delta) / poseTarget.threshold);
+      const progress = matchesSign ? magnitude : 0;
+      if (poseMeterRef.current) poseMeterRef.current.style.width = `${progress * 100}%`;
+      if (progress >= 1) {
+        poseStableRef.current += 1;
+        poseLastSignRef.current = sign;
+      } else {
+        poseStableRef.current = 0;
+      }
+      if (poseStableRef.current >= POSE_STABLE_FRAMES) {
+        poseReadyRef.current = true;
+        if (poseInfoRef.current) poseInfoRef.current.textContent = 'Tamam, böyle kal…';
+      } else if (poseInfoRef.current) {
+        poseInfoRef.current.textContent = matchesSign
+          ? `Dönüş: %${Math.round(magnitude * 100)}`
+          : 'Ters yöne döndün, diğer tarafa çevir.';
+      }
+    }
+
     const model = modelRef.current;
     if (!model || !liveRef.current) return;
 
@@ -247,13 +358,21 @@ export function GazeLive() {
     }
 
     const [rawX, rawY] = predictLinear(model, features.values);
-    const [shiftX, shiftY] = shiftRef.current;
+    const rawRange = rawRangeRef.current;
+    if (rawY < rawRange.minY) rawRange.minY = rawY;
+    if (rawY > rawRange.maxY) rawRange.maxY = rawY;
+    if (debugRef.current) {
+      debugRef.current.textContent =
+        `ham y: ${rawY.toFixed(2)} (görülen aralık ${rawRange.minY.toFixed(2)}–${rawRange.maxY.toFixed(2)}) · ` +
+        `ham x: ${rawX.toFixed(2)}`;
+    }
+    const { gainX, offsetX, gainY, offsetY } = correctionRef.current;
     const x = filterRef.current.x.apply(
-      medianRef.current.x.apply(clamp01(rawX + shiftX)),
+      medianRef.current.x.apply(clamp01(rawX * gainX + offsetX)),
       frame.t,
     );
     const y = filterRef.current.y.apply(
-      medianRef.current.y.apply(clamp01(rawY + shiftY)),
+      medianRef.current.y.apply(clamp01(rawY * gainY + offsetY)),
       frame.t,
     );
 
@@ -325,12 +444,26 @@ export function GazeLive() {
     return collect.samples;
   };
 
+  const waitForPoseReady = (timeoutMs: number): Promise<void> =>
+    new Promise((resolve) => {
+      const start = performance.now();
+      const check = () => {
+        if (poseReadyRef.current || performance.now() - start > timeoutMs) {
+          resolve();
+          return;
+        }
+        window.requestAnimationFrame(check);
+      };
+      check();
+    });
+
   const goLive = () => {
     filterRef.current.x.reset();
     filterRef.current.y.reset();
     medianRef.current.x.reset();
     medianRef.current.y.reset();
     closedFramesRef.current = 0;
+    rawRangeRef.current = { minY: Infinity, maxY: -Infinity };
     // Hücreler kalibrasyon sırasında DOM'dan kalkar; eski vurgu geçersizdir.
     activeTileRef.current = -1;
     liveRef.current = true;
@@ -346,7 +479,8 @@ export function GazeLive() {
     modelRef.current = null;
     trialRef.current = null;
     setTrialSummary(null);
-    shiftRef.current = [0, 0];
+    correctionRef.current = { gainX: 1, offsetX: 0, gainY: 1, offsetY: 0 };
+    axisSignRef.current = { yaw: null, pitch: null };
     setMessage(null);
     setPhase('calibrating');
     await document.documentElement.requestFullscreen().catch(() => undefined);
@@ -355,10 +489,38 @@ export function GazeLive() {
     const collected: GazeSample[] = [];
     for (const target of shuffled(GRID)) collected.push(...(await collectAt(target)));
 
+    // Baş düz tutulduğunda ölçülen yaw/pitch, pozların kıyaslanacağı taban.
+    const baselineYaw = median(collected.map((sample) => sample.features[YAW] ?? 0));
+    const basePitch = median(collected.map((sample) => sample.features[PITCH] ?? 0));
+
     for (const pose of HEAD_POSES) {
       setPoint(null);
-      setPrompt(`Başını hafifçe ${pose} çevir, öyle kal. Gözlerinle noktalara bakmaya devam et.`);
-      await sleep(POSE_PROMPT_MS);
+      setPosing(true);
+      setPrompt(
+        `Başını hafifçe ${pose} çevir. Yeterince dönünce çubuk dolar ve otomatik devam eder; ` +
+          'gözlerinle noktalara bakmaya devam et.',
+      );
+      poseStableRef.current = 0;
+      poseReadyRef.current = false;
+      const axis = POSE_AXIS[pose];
+      // Çiftin ilk pozu (sağa/yukarı) hangi yönden gelirse kabul eder ve o yönü
+      // kaydeder; ikincisi (sola/aşağı) tam tersini ister. Yoksa baş geri
+      // getirilmeden bile ikincisi anında "onaylanmış" görünüyordu.
+      const isPairLeader = pose === 'sağa' || pose === 'yukarı';
+      const recordedSign = axisSignRef.current[axis];
+      const requireSign = isPairLeader ? null : recordedSign !== null ? -recordedSign : null;
+      poseTargetRef.current = {
+        axis,
+        baseline: axis === 'yaw' ? baselineYaw : basePitch,
+        threshold: axis === 'yaw' ? YAW_TURN_THRESHOLD : PITCH_TURN_THRESHOLD,
+        requireSign,
+      };
+      await sleep(POSE_READ_DELAY_MS);
+      await waitForPoseReady(POSE_CONFIRM_TIMEOUT_MS);
+      if (isPairLeader) axisSignRef.current[axis] = poseLastSignRef.current || null;
+      await sleep(POSE_SETTLE_MS);
+      poseTargetRef.current = null;
+      setPosing(false);
       setPrompt(null);
       for (const target of shuffled(HEAD_POINTS)) collected.push(...(await collectAt(target)));
     }
@@ -374,34 +536,98 @@ export function GazeLive() {
       setPhase('setup');
       return;
     }
-    modelRef.current = fitLinear(samples);
+    const model = fitLinear(samples);
+    modelRef.current = model;
     gateRef.current = new BlinkGate(threshold);
     headRangeRef.current = {
       yaw: rangeOf(samples.map((sample) => sample.features[YAW] ?? 0)),
       pitch: rangeOf(samples.map((sample) => sample.features[PITCH] ?? 0)),
     };
+    headBaselineRef.current = { yaw: baselineYaw, pitch: basePitch };
+
+    // GRID/HEAD_POINTS'in uç değerleri (0.1/0.9) hep aynı; model bu
+    // noktalarda tam orada çıkmayabiliyor (köşelerde en gürültülü bölge).
+    // Kendi kalibrasyon verisiyle "orada ne tahmin etti" ölçülüp eksen
+    // başına kazanç+offset ile tam 0.1/0.9'a çekiliyor — recenter()'ın el
+    // ile yaptığını kalibrasyon bitince otomatik yapmış oluyoruz.
+    const groupMedian = (target: number, axis: 0 | 1) =>
+      median(
+        samples
+          .filter((sample) => (axis === 0 ? sample.x : sample.y) === target)
+          .map((sample) => predictLinear(model, sample.features)[axis]),
+      );
+    const fx = fitAxis(groupMedian(0.1, 0), 0.1, groupMedian(0.9, 0), 0.9);
+    const fy = fitAxis(groupMedian(0.1, 1), 0.1, groupMedian(0.9, 1), 0.9);
+    correctionRef.current = { gainX: fx.gain, offsetX: fx.offset, gainY: fy.gain, offsetY: fy.offset };
+
     goLive();
   };
 
-  /** Baş oynadıysa: tek noktaya bakılır, tahmin o noktaya kaydırılır. */
+  /**
+   * Baş oynadıysa veya model kazanç kaymışsa: iki köşegen noktaya bakılır,
+   * her eksen için ayrı kazanç+offset çözülür (yalnızca düz kaymak yerine).
+   *
+   * Baş, kalibrasyondaki aralığın dışına çıktıysa canlı moddaki kontrol
+   * (headRangeRef) imleci zaten dondurur ve o uyarı correctionRef'ten önce
+   * devreye girer — yani kazanç/offset ne olursa olsun imleç donuk kalır.
+   * Bu yüzden recenter sırasında ölçülen yaw/pitch de okunup izin verilen
+   * aralık aynı miktarda kaydırılıyor; yoksa baş kalıcı olarak "çok uzakta"
+   * sayılır ve Boşluk hiçbir şeyi düzeltmiyormuş gibi görünür.
+   */
   const recenter = async () => {
     const model = modelRef.current;
     if (!model || busyRef.current) return;
     busyRef.current = true;
     liveRef.current = false;
     setPhase('recenter');
-    const samples = await collectAt(CENTER);
-    busyRef.current = false;
 
-    if (samples.length > 0) {
+    const means: Array<[number, number] | null> = [];
+    let yawSum = 0;
+    let pitchSum = 0;
+    let poseCount = 0;
+    for (const target of RECENTER_POINTS) {
+      const samples = await collectAt(target);
+      if (samples.length === 0) {
+        means.push(null);
+        continue;
+      }
       let sumX = 0;
       let sumY = 0;
       for (const sample of samples) {
         const [x, y] = predictLinear(model, sample.features);
         sumX += x;
         sumY += y;
+        yawSum += sample.features[YAW] ?? 0;
+        pitchSum += sample.features[PITCH] ?? 0;
+        poseCount += 1;
       }
-      shiftRef.current = [CENTER[0] - sumX / samples.length, CENTER[1] - sumY / samples.length];
+      means.push([sumX / samples.length, sumY / samples.length]);
+    }
+    busyRef.current = false;
+
+    const [a, b] = means;
+    if (a && b) {
+      const [rawXa, rawYa] = a;
+      const [rawXb, rawYb] = b;
+      const [trueXa, trueYa] = RECENTER_POINTS[0];
+      const [trueXb, trueYb] = RECENTER_POINTS[1];
+      const fx = fitAxis(rawXa, trueXa, rawXb, trueXb);
+      const fy = fitAxis(rawYa, trueYa, rawYb, trueYb);
+      correctionRef.current = { gainX: fx.gain, offsetX: fx.offset, gainY: fy.gain, offsetY: fy.offset };
+    }
+
+    const baseline = headBaselineRef.current;
+    const range = headRangeRef.current;
+    if (poseCount > 0 && baseline && range) {
+      const yaw = yawSum / poseCount;
+      const pitch = pitchSum / poseCount;
+      const deltaYaw = yaw - baseline.yaw;
+      const deltaPitch = pitch - baseline.pitch;
+      headRangeRef.current = {
+        yaw: [range.yaw[0] + deltaYaw, range.yaw[1] + deltaYaw],
+        pitch: [range.pitch[0] + deltaPitch, range.pitch[1] + deltaPitch],
+      };
+      headBaselineRef.current = { yaw, pitch };
     }
     goLive();
   };
@@ -449,11 +675,45 @@ export function GazeLive() {
         muted
         playsInline
         style={
-          fullscreenStage
-            ? { position: 'fixed', width: 1, height: 1, opacity: 0 }
-            : { width: 320, borderRadius: 10, transform: 'scaleX(-1)', background: '#000' }
+          posing
+            ? {
+                position: 'fixed',
+                top: 140,
+                left: '50%',
+                width: 360,
+                height: 202,
+                transform: 'translateX(-50%) scaleX(-1)',
+                borderRadius: 12,
+                background: '#000',
+                objectFit: 'cover',
+                zIndex: 2,
+              }
+            : fullscreenStage
+              ? { position: 'fixed', width: 1, height: 1, opacity: 0 }
+              : { width: 320, borderRadius: 10, transform: 'scaleX(-1)', background: '#000' }
         }
       />
+
+      {posing && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 140 + 202 + 16,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: 360,
+            textAlign: 'center',
+            zIndex: 2,
+          }}
+        >
+          <div
+            style={{ height: 10, borderRadius: 6, background: 'var(--surface-hover)', overflow: 'hidden' }}
+          >
+            <div ref={poseMeterRef} style={{ height: '100%', width: 0, background: 'var(--accent)' }} />
+          </div>
+          <p ref={poseInfoRef} style={{ margin: '8px 0 0', fontSize: 20, color: 'var(--text)' }} />
+        </div>
+      )}
 
       {phase === 'setup' && (
         <>
@@ -573,6 +833,30 @@ export function GazeLive() {
                     Ölçüt: en az 8 · medyan seçim süresi{' '}
                     {(trialSummary.medianMs / 1000).toFixed(1).replace('.', ',')} sn
                   </p>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      gap: 6,
+                      justifyContent: 'center',
+                      margin: '0 0 16px',
+                      fontSize: 16,
+                    }}
+                  >
+                    {tileBreakdown(trialSummary.results).map(({ tile, attempts, correct }) => (
+                      <span
+                        key={tile}
+                        style={{
+                          padding: '2px 10px',
+                          borderRadius: 8,
+                          background: 'var(--surface-hover)',
+                          color: correct === attempts ? 'var(--text-dim)' : 'var(--warn)',
+                        }}
+                      >
+                        {tile + 1}: {correct}/{attempts}
+                      </span>
+                    ))}
+                  </div>
                   <button type="button" onClick={() => downloadTrial(trialSummary)}>
                     Sonucu indir
                   </button>{' '}
@@ -599,6 +883,19 @@ export function GazeLive() {
                   margin: 0,
                 }}
               />
+              {/* TEŞHİS AMAÇLI: dikey tahmin sorununu incelemek için eklendi, sonra kaldırılacak. */}
+              <p
+                ref={debugRef}
+                style={{
+                  position: 'absolute',
+                  bottom: 40,
+                  right: 16,
+                  margin: 0,
+                  fontSize: 14,
+                  fontFamily: 'monospace',
+                  color: 'var(--text-dim)',
+                }}
+              />
               <p
                 style={{
                   position: 'absolute',
@@ -616,9 +913,7 @@ export function GazeLive() {
           )}
 
           {prompt && (
-            <h2 style={{ position: 'absolute', top: '40%', width: '100%', textAlign: 'center' }}>
-              {prompt}
-            </h2>
+            <h2 style={{ position: 'absolute', top: 40, width: '100%', textAlign: 'center' }}>{prompt}</h2>
           )}
 
           {point && (

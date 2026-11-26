@@ -61,12 +61,14 @@ describe('extractFeatures', () => {
 });
 
 describe('irisFeatures (?bakis)', () => {
-  it('12 özniteliğin ilk 8\'ini aynen veriyor', () => {
+  it('12 özniteliğin ilk 8\'ini aynen verip göz başına x*y çarpım terimi ekliyor', () => {
     for (const c of cases) {
       const points = landmarks(c.points) as Parameters<typeof irisFeatures>[0];
       const full = extractFeatures(points);
       const iris = irisFeatures(points);
-      expect(iris.values).toEqual(full.values.slice(0, 8));
+      const base = full.values.slice(0, 8);
+      const [lx, ly, rx, ry] = base;
+      expect(iris.values).toEqual([...base, (lx ?? 0) * (ly ?? 0), (rx ?? 0) * (ry ?? 0)]);
       expect(iris.confidence).toBe(full.confidence);
     }
   });
