@@ -50,13 +50,15 @@ backend/tests/       pytest (Zemberek'i yüklediği için ~1,5 dk sürer)
 frontend/src/
   main.tsx           URL'e göre sayfa seçer: varsayılan App, ?bakis GazeLive, ?olcum GazeMeasure, ?kamera CameraCheck
   App.tsx            Uygulama kabuğu; bütün durum burada (klavye modu, kısaltma, şema, deney)
-  hooks/             useGazeSession (WS durumu), useGazeSource (fare örnekleyici; webcam dalı henüz boş)
+  hooks/             useGazeSession (WS durumu), useGazeSource (fare ya da kamera; kamera kontrollerini döndürür)
   lib/               ws.ts (yeniden bağlanan GazeSocket), speech.ts (Web Speech API, tr-TR)
-  components/        TargetTile, CandidateList, StatusBar, StudyPanel, GazeCursor
+  components/        TargetTile, CandidateList, StatusBar, StudyPanel, GazeCursor,
+                     CalibrationScreen (kamera modunda kalibrasyon + GazeHoldBanner)
   features/keyboard/ layout.ts: 12 hücrelik ızgara, iki adımlı harf seçimi (grup → harf), S4 etiket satırı
   features/study/    useStudy (plan akışı), normalize.ts (sunucudaki normalize_sentence'ın eşi)
   features/gaze/     Tarayıcıda MediaPipe: camera, landmarker, useFaceTracking, features.ts
-                     (features.py'nin birebir eşi), gazeLinear.ts + dwellTrial.ts (?bakis denemesi)
+                     (features.py'nin birebir eşi), gazeLinear.ts + dwellTrial.ts (?bakis denemesi),
+                     browserGaze.ts + useWebcamGaze.ts (ana uygulamanın tarayıcı içi bakış modeli)
   types/             messages.generated.ts (ÜRETİLİR, elle düzenlenmez), messages.ts
 
 data/corpus/aac_sentences.jsonl   Elle derlenen ~2.900 cümle, 6 kategori (repoda)
@@ -69,7 +71,7 @@ report/                           LaTeX rapor (İngilizce; tek kaynak burası, P
 
 ## Veri akışı
 
-**Ana uygulama (bugünkü hali, fare modu).** `useGazeSource` fare konumunu
+**Ana uygulama, fare modu (`GAZE_SOURCE=mouse`, varsayılan).** `useGazeSource` fare konumunu
 30 Hz'de normalize koordinat olarak `gaze_sample` mesajıyla yollar. Sunucuda
 `GazeSession.process_gaze` One Euro filtresinden geçirir, `DwellDetector`
 arayüzün bildirdiği hedeflere (`targets`) göre dwell ilerlemesi ve seçim
@@ -80,16 +82,33 @@ hesaplayıp girilenle karşılaştırır (geri kontrol), `top_k`'dan az geçerli
 aday kalırsa `EXPANDER_MAX_REFILLS` kadar yeniden ister ve `candidates` döner.
 Seslendirme tarayıcıda yapılır; `speak` mesajı yalnızca kayıt içindir.
 
-**Kamera hattı (kısmen bağlı).** MediaPipe FaceLandmarker tarayıcıda koşar
-(`features/gaze/`), 478 noktadan `features.ts` ile 12 boyutlu öznitelik çıkar.
-Sunucu tarafında `calibration_sample` / `calibration_fit` ve `GazeMapper`
-hazırdır. Ancak ana uygulamada `useGazeSource('webcam')` dalı henüz bir TODO:
-canlı bakış için öznitelik taşıyan mesajın biçimi
-`docs/oneri-canli-bakis-mesaji.md` taslağında, karar bekliyor. `GAZE_SOURCE`
-ayarı şu an yalnızca sunucuda raporlanır; App.tsx fareyi sabit kullanır.
-`?bakis` sayfası sunucusuz, tarayıcıda kendi doğrusal modeliyle
-(`gazeLinear.ts`, ilk 8 öznitelik) çalışan bir deneme aracıdır; asıl eşleme
-sunucudaki `GazeMapper`'dadır.
+**Ana uygulama, kamera modu (`GAZE_SOURCE=webcam`; K1-a, kestirme yol).**
+App kaynağı `ready.gaze_source`'tan seçer (K5); sunucu bu ayarı yalnızca
+bildirir. MediaPipe FaceLandmarker tarayıcıda koşar (`features/gaze/`),
+`irisFeatures` (12 özniteliğin ilk 8'i + göz başına x·y çarpımı) çıkar.
+`useWebcamGaze` tam ekran kalibrasyonu yürütür (9 nokta baş sabit + 4 baş
+pozunda 5'er nokta), `browserGaze.ts` modeli kurar (StandardScaler + Ridge,
+köşe düzeltmesi, kırpış kapısı, baş aralığı, iki noktalı ortalama) ve
+tahmin edilen nokta mevcut `gaze` mesajıyla gider. Protokol değişmedi;
+yumuşatma yalnızca sunucuda yapılır (tarayıcıda ikinci kez yapılmaz).
+Kırpışta, yüz yokken, baş aralık dışındayken ya da pencere boyutu
+kalibrasyondakinden farklıyken örnek gönderilmez ve neden ekrana yazılır.
+Kısayollar: Boşluk ortala, K yeniden kalibre et, Esc kalibrasyonu bırak.
+`browserGaze.ts`'deki sayılar ve kurallar `?bakis` (`GazeLive.tsx`) ile aynı
+tutulur; biri değişirse diğeri gözden geçirilir.
+
+Eksikler: doğrulama noktaları ve derece cinsinden hata yok; kalibrasyon
+tarayıcı belleğinde olduğu için `?deney`'e geçiş (sayfa yenilenir) onu siler.
+İlk gerçek kamera denemesinde (26 Kasım, Yusuf) zincir uçtan uca çalıştı ama
+imleç dikeyde kayıyor (ör. "j k l m" yerine hemen altındaki "Boşluk"). Bu,
+10–13 Kasım ölçümlerindeki dikey hatayla uyumlu; ayrıca ana uygulamada ızgara
+ekranın yalnızca alt %62'sini kapladığı için (`layout.ts` `GRID_AREA`) tuşlar
+tam ekran `?bakis` ızgarasından ~%40 alçak. Izgara kararı ve θ bunu hesaba
+katmalı.
+Kalıcı yol (K1-b) `gaze_features` mesajı ve sunucudaki `GazeMapper`
+(`calibration_sample` / `calibration_fit` hazır) ile olacak; karar
+`docs/oneri-canli-bakis-mesaji.md` içinde bekliyor. `?bakis` sayfası
+sunucusuz, kendi doğrusal modeliyle çalışan bir deneme aracı olarak durur.
 
 **Kullanıcı testi (`?deney`).** `study_start` → sunucu katılımcı kodundan
 (K01, K02…; tek AB, çift BA) planı kurar ve `study_plan` döner →
