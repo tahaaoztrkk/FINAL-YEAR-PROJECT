@@ -27,12 +27,21 @@ export function openness(features: readonly number[]): number {
 }
 
 /**
- * features.ts'deki 12 özniteliğin ilk 8'i. 10 Kasım ölçümleri bu 8'le
- * yapıldı; ?bakis modeli ölçülenden farklılaşmasın diye sınır korunuyor.
+ * features.ts'deki 12 özniteliğin ilk 8'i, artı göz başına x*y çarpım terimi.
+ * 10 Kasım ölçümleri ilk 8'le yapıldı; ?bakis modeli ölçülenden farklılaşmasın
+ * diye o sınır korunuyor, çarpım terimleri sona ekleniyor. Saf doğrusal model
+ * alt köşelerde (bakış hem yatay hem dikey uçta) sistematik hata veriyordu:
+ * her gözün dikey konumu, o anki yatay konumuna bağlı olarak farklı
+ * sıkışıyor (göz kapağı/kirpik geometrisi köşeye göre asimetrik). Çarpım
+ * terimi bu etkileşimi doğrusal regresyonun yakalayabileceği bir biçime
+ * sokuyor.
  */
 export function irisFeatures(points: Landmarks): IrisFeatures {
   const { values, confidence } = extractFeatures(points);
-  return { values: values.slice(0, IRIS_FEATURE_COUNT), confidence };
+  const base = values.slice(0, IRIS_FEATURE_COUNT);
+  const [lx, ly, rx, ry] = base;
+  const interactions = [(lx ?? 0) * (ly ?? 0), (rx ?? 0) * (ry ?? 0)];
+  return { values: [...base, ...interactions], confidence };
 }
 
 export interface GazeSample {
