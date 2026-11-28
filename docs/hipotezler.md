@@ -159,8 +159,9 @@ commit hash, model/adaptör sürümü ve kütüphane sürümleri yazılır.
 ### 2.4 Kullanıcı testi ölçütleri (`study.py`)
 
 - **`wpm`** = (karakter − 1) / saniye × 60 / 5. Karakter: noktalamasız hedefin boşluk dahil uzunluğu. Süre: ilk seçimden doğru
-  seslendirmeye kadar (hedefi okuma süresi girmez). **[DOĞRULANACAK]** Kodda MacKenzie'ye atıf var; atıf yapmadan önce kaynak açılıp
-  kontrol edilecek. "5 karakter = 1 kelime" uzlaşımı Türkçede de kullanılır, aksi hâlde İngilizce çalışmalarla karşılaştırılamaz;
+  seslendirmeye kadar (hedefi okuma süresi girmez). Tanım, metin girişi literatüründeki standart WPM tanımıdır
+  (Wobbrock, 2007, "Measures of Text Entry Performance", Denklem 3.1; künye ve sayfalar 47–74, bölüm PDF'inden doğrulandı,
+  PR #38). Tek fark: noktalama sayılmaz, çünkü arayüzde noktalama tuşu yoktur. "5 karakter = 1 kelime" uzlaşımı Türkçede de kullanılır, aksi hâlde İngilizce çalışmalarla karşılaştırılamaz;
   sınırlılık olarak yazılır.
 - **Görev:** Kopyalama. Hedef cümle gösterilir; cümle ancak hedefle eşleşen seslendirmeyle biter (tam düzeltme koşulu).
   Düzeltme maliyeti böylece WPM'in içindedir.
@@ -170,10 +171,12 @@ commit hash, model/adaptör sürümü ve kütüphane sürümleri yazılır.
   ezberlemediğini ölçer, gerçek hatayı değil.
   **[EKİPLE — Berkay, Yusuf]** `fit_calibration` şu an hatayı eğitim noktalarından hesaplıyor (Berkay'ın notu,
   `docs/oneri-canli-bakis-mesaji.md`). Dışlama kuralı (Bölüm 5) ancak `calibration_sample` mesajına `purpose: "fit" | "validate"`
-  alanı eklenip `mean_error_deg` yalnızca doğrulama noktalarından hesaplandığında uygulanabilir. Kalibrasyon ekranı 14 Kasım'da
-  yazılacağı için bu karar ondan önce verilmeli.
+  alanı eklenip `mean_error_deg` yalnızca doğrulama noktalarından hesaplandığında uygulanabilir. Kalibrasyon ekranı bu ayrımla
+  yazılmadan hiçbir K oturumu başlamaz.
 - **SUS:** `study.sus_score` (tek maddeler yanıt − 1, çift maddeler 5 − yanıt, × 2,5). Geçerlik çalışması yapılmış Türkçe sürüm
-  kullanılır; kendi çevirimiz kullanılmaz. **[DOĞRULANACAK]** Sürüm ve kaynak 11 Kasım'da `data/study/` altına yazılacak.
+  kullanılır; kendi çevirimiz kullanılmaz: SUS-TR (Demirkol ve Şeneler, 2018, *Uşak Üniversitesi Sosyal Bilimler Dergisi*
+  11(3), 237–253). 10 maddesi 10 Kasım'da yayımlanan Tablo A2 ile karakter karakter karşılaştırıldı ve birebir aynı;
+  `data/study/anket_formu.md`.
 
 ---
 
@@ -285,8 +288,13 @@ Izgara, Berkay ve Yusuf'un karar belgesindeki ölçüm kuralıyla seçilir (`doc
 Izgara seçilip θ yazılmadan hiçbir K oturumu başlamaz.
 Gerekçe: Katılımcı, sistemi kullanamadığı için dışlanmalı; kullanılabilirliği de tuşun boyutu belirler. Bakış hatası tuşun yarı
 boyunu aşınca bakış ortalamada tuşun dışına düşer ve ölçülen WPM sistemi değil kalibrasyonu yansıtır. Sabit 2,5° bu ilişkiyi yok
-sayıyordu: bugünkü 4×3 ızgarada (tuşun yarı yüksekliği ≈ 1,9 cm) formül ≈ 1,8° verir, ekip ölçümleri ise 1,8–4,5° (Taha, 13 Kasım;
+sayıyordu: 4×3 ızgarada (tuşun yarı yüksekliği ≈ 1,9 cm) formül ≈ 1,8° verir, ekip ölçümleri ise 1,8–4,5° (Taha, 13 Kasım;
 tek kişi). Daha büyük tuşlar seçilirse eşik kendiliğinden gevşer.
+**Not (28 Kasım, açık soru):** k, deneyin yapılacağı ekranda **ana uygulamadaki** tuştan ölçülür, `?bakis`'ten değil: ana
+uygulamada ızgara ekranın alt %62'sini kapladığı için (`layout.ts`, `GRID_AREA`; PR #42) tuş yüksekliği ekran yüksekliğinin
+≈ 0,199'u, `?bakis`'te 1/3'ü. 16:9 ekranda hesapla (ölçülmedi): 14" → θ ≈ 1,7°, 15,6" → ≈ 1,8°, 24" → ≈ 2,8°. Yukarıdaki
+1,9 cm örneği 15,6" ekrandaki ana uygulamayla uyumlu. Eşik ekip ölçümlerinin alt ucunda kaldığı için ön kayıt, ekran / ızgara
+alanı ya da kural ekiple konuşulmadan kilitlenmez.
 `study.py` dışlamayı şu an uygulamıyor; analizden önce eklenecek ya da elle uygulanıp gerekçesiyle raporlanacak.
 
 **Diğer kurallar:**
@@ -317,3 +325,4 @@ katılımcılarla kullanılmaz ve kayıtları repoya girmez.
 | 2026-11-20 | 1.1, 2.2, 3.2 | Tur sınırı kaldırıldı (`max_rounds = 0`); cümle başına CSV tanımlandı; test kümesinin Ocak'ta bir kez çalıştırılması onaylandı; 1.1'deki etik onay gerekçesi düzeltildi | Taha'nın kararları (PR #29) | Evet (yalnızca n-gram doğrulama sonuçları görüldü; karar o karşılaştırmaya dayanıyor. İnce ayarlı modelin ilk 20 cümlelik doğrulama koşusu karardan sonra yapıldı; test sonuçları görülmedi) |
 | 2026-11-20 | 0, 1.1, 1.2, 3.3, 3.4, 4, 5 | Çalışma B yalnızca ekibin 4 üyesiyle; hipotez testi yerine katılımcı başına betimsel raporlama; sıra 2/2, yerine alma yok; ekip içi yanlılıklar sınırlılık olarak eklendi; etik kurul ifadeleri çıkarıldı | Danışmanla kararlaştırılan örneklem; 4 kişiyle test gücü yetersiz (d_z ≈ 2,13) | Evet (katılımcı verisi yok) |
 | 2026-11-21 | 4, 5 | Kalibrasyon eşiği sabit 2,5° yerine tuş boyutundan türetiliyor (θ = atan((k/2)/60 cm)); Polat'ın K oturumu ilk ve Taha yürütür; prova ve pilot ayrı cümle setiyle (`prova_sentences.json`) | Ekip ölçümleri (1,8–4,5°) sabit eşiğin üstünde; ekip içi testte prova deney cümlelerini açığa çıkarırdı | Evet (katılımcı verisi yok; yalnızca ekibin göz takibi ölçümleri görüldü) |
+| 2026-11-25 | 2.4 | Kilit öncesi düzeltme: SUS-TR kaynağı yazıldı (10 Kasım'da doğrulanmıştı); WPM tanımının kaynağı (Wobbrock, 2007) eklendi ve künyesi doğrulandı (s. 47–74); k'nin deney ekranındaki ana uygulama tuşundan ölçüleceği ve ekran boyutuna göre θ notu eklendi; kalibrasyon maddesindeki eskimiş tarih yerine "ayrım yazılmadan K oturumu başlamaz" | Kilitli belgede eskimiş bilgi kalmaması | Evet (katılımcı verisi yok); kural değişmedi |
