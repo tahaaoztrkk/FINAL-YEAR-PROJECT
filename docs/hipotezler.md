@@ -288,12 +288,13 @@ Izgara, Berkay ve Yusuf'un karar belgesindeki ölçüm kuralıyla seçilir (`doc
 Izgara seçilip θ yazılmadan hiçbir K oturumu başlamaz.
 Gerekçe: Katılımcı, sistemi kullanamadığı için dışlanmalı; kullanılabilirliği de tuşun boyutu belirler. Bakış hatası tuşun yarı
 boyunu aşınca bakış ortalamada tuşun dışına düşer ve ölçülen WPM sistemi değil kalibrasyonu yansıtır. Sabit 2,5° bu ilişkiyi yok
-sayıyordu: tam ekran `?bakis` 4×3 ızgarasında (tuşun yarı yüksekliği ≈ 1,9 cm) formül ≈ 1,8° verir, ekip ölçümleri ise 1,8–4,5°
-(Taha, 13 Kasım; tek kişi). Daha büyük tuşlar seçilirse eşik kendiliğinden gevşer.
-**Not (27 Kasım, açık soru):** k, deneyin yapılacağı **ana uygulamadaki** tuştan ölçülür, `?bakis`'ten değil. Ana uygulamada
-ızgara ekranın alt %62'sini kapladığı için (`layout.ts`, `GRID_AREA`; PR #42) tuşlar ~%40 alçak; kaba hesapla θ ≈ 1,1°
-**[DOĞRULANACAK, cetvelle ölçülmedi]**. Bu, ekip ölçümlerinin altında kalır. Ön kayıt, ızgara alanı ya da kural ekiple
-konuşulmadan kilitlenmez.
+sayıyordu: 4×3 ızgarada (tuşun yarı yüksekliği ≈ 1,9 cm) formül ≈ 1,8° verir, ekip ölçümleri ise 1,8–4,5° (Taha, 13 Kasım;
+tek kişi). Daha büyük tuşlar seçilirse eşik kendiliğinden gevşer.
+**Not (28 Kasım, açık soru):** k, deneyin yapılacağı ekranda **ana uygulamadaki** tuştan ölçülür, `?bakis`'ten değil: ana
+uygulamada ızgara ekranın alt %62'sini kapladığı için (`layout.ts`, `GRID_AREA`; PR #42) tuş yüksekliği ekran yüksekliğinin
+≈ 0,199'u, `?bakis`'te 1/3'ü. 16:9 ekranda hesapla (ölçülmedi): 14" → θ ≈ 1,7°, 15,6" → ≈ 1,8°, 24" → ≈ 2,8°. Yukarıdaki
+1,9 cm örneği 15,6" ekrandaki ana uygulamayla uyumlu. Eşik ekip ölçümlerinin alt ucunda kaldığı için ön kayıt, ekran / ızgara
+alanı ya da kural ekiple konuşulmadan kilitlenmez.
 `study.py` dışlamayı şu an uygulamıyor; analizden önce eklenecek ya da elle uygulanıp gerekçesiyle raporlanacak.
 
 **Diğer kurallar:**
@@ -324,4 +325,4 @@ katılımcılarla kullanılmaz ve kayıtları repoya girmez.
 | 2026-11-20 | 1.1, 2.2, 3.2 | Tur sınırı kaldırıldı (`max_rounds = 0`); cümle başına CSV tanımlandı; test kümesinin Ocak'ta bir kez çalıştırılması onaylandı; 1.1'deki etik onay gerekçesi düzeltildi | Taha'nın kararları (PR #29) | Evet (yalnızca n-gram doğrulama sonuçları görüldü; karar o karşılaştırmaya dayanıyor. İnce ayarlı modelin ilk 20 cümlelik doğrulama koşusu karardan sonra yapıldı; test sonuçları görülmedi) |
 | 2026-11-20 | 0, 1.1, 1.2, 3.3, 3.4, 4, 5 | Çalışma B yalnızca ekibin 4 üyesiyle; hipotez testi yerine katılımcı başına betimsel raporlama; sıra 2/2, yerine alma yok; ekip içi yanlılıklar sınırlılık olarak eklendi; etik kurul ifadeleri çıkarıldı | Danışmanla kararlaştırılan örneklem; 4 kişiyle test gücü yetersiz (d_z ≈ 2,13) | Evet (katılımcı verisi yok) |
 | 2026-11-21 | 4, 5 | Kalibrasyon eşiği sabit 2,5° yerine tuş boyutundan türetiliyor (θ = atan((k/2)/60 cm)); Polat'ın K oturumu ilk ve Taha yürütür; prova ve pilot ayrı cümle setiyle (`prova_sentences.json`) | Ekip ölçümleri (1,8–4,5°) sabit eşiğin üstünde; ekip içi testte prova deney cümlelerini açığa çıkarırdı | Evet (katılımcı verisi yok; yalnızca ekibin göz takibi ölçümleri görüldü) |
-| 2026-11-25 | 2.4 | Kilit öncesi düzeltme: SUS-TR kaynağı yazıldı (10 Kasım'da doğrulanmıştı); WPM tanımının kaynağı (Wobbrock, 2007) eklendi ve künyesi doğrulandı (s. 47–74); θ örneğinin `?bakis` ızgarasından olduğu, k'nin ana uygulamadaki tuştan ölçüleceği notu eklendi; kalibrasyon maddesindeki eskimiş tarih yerine "ayrım yazılmadan K oturumu başlamaz" | Kilitli belgede eskimiş bilgi kalmaması | Evet (katılımcı verisi yok); kural değişmedi |
+| 2026-11-25 | 2.4 | Kilit öncesi düzeltme: SUS-TR kaynağı yazıldı (10 Kasım'da doğrulanmıştı); WPM tanımının kaynağı (Wobbrock, 2007) eklendi ve künyesi doğrulandı (s. 47–74); k'nin deney ekranındaki ana uygulama tuşundan ölçüleceği ve ekran boyutuna göre θ notu eklendi; kalibrasyon maddesindeki eskimiş tarih yerine "ayrım yazılmadan K oturumu başlamaz" | Kilitli belgede eskimiş bilgi kalmaması | Evet (katılımcı verisi yok); kural değişmedi |
